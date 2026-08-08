@@ -19,6 +19,30 @@ export function wordKey(surface: string): string {
  * Splits the body into paragraphs -> sentences -> tokens.
  * Timings are left null; the aligner fills them in from TTS boundaries.
  */
+/** Tokenizes a single line — used for the title, which is narrated too. */
+export function tokenizeLine(text: string, id: string): Sentence {
+  const tokens: Token[] = [];
+  let wordIndex = 0;
+
+  for (const part of wordSegmenter.segment(text.trim())) {
+    if (part.isWordLike) {
+      tokens.push({
+        kind: "word",
+        id: `${id}w${wordIndex}`,
+        text: part.segment,
+        key: wordKey(part.segment),
+        start: null,
+        end: null,
+      });
+      wordIndex += 1;
+    } else {
+      tokens.push({ kind: "punct", text: part.segment });
+    }
+  }
+
+  return { id, text: text.trim(), start: null, end: null, tokens };
+}
+
 export function tokenize(body: string): Paragraph[] {
   const paragraphs: Paragraph[] = [];
 
@@ -68,14 +92,13 @@ export function tokenize(body: string): Paragraph[] {
   return paragraphs;
 }
 
-export function countWords(paragraphs: Paragraph[]): number {
-  return paragraphs.reduce(
-    (total, p) =>
-      total +
-      p.sentences.reduce(
-        (sum, s) => sum + s.tokens.filter((t) => t.kind === "word").length,
-        0,
-      ),
+export function flattenSentences(paragraphs: Paragraph[]): Sentence[] {
+  return paragraphs.flatMap((p) => p.sentences);
+}
+
+export function countWords(sentences: Sentence[]): number {
+  return sentences.reduce(
+    (total, s) => total + s.tokens.filter((t) => t.kind === "word").length,
     0,
   );
 }
@@ -86,19 +109,17 @@ export function countWords(paragraphs: Paragraph[]): number {
  * nothing about the word itself, so a mid-sentence spelling wins when we have
  * one — that is what distinguishes the noun "Sie" from the pronoun "sie".
  */
-export function collectVocabulary(paragraphs: Paragraph[]): Map<string, string> {
+export function collectVocabulary(sentences: Sentence[]): Map<string, string> {
   const preferred = new Map<string, string>();
   const fallback = new Map<string, string>();
 
-  for (const p of paragraphs) {
-    for (const s of p.sentences) {
-      const firstWordIndex = s.tokens.findIndex((t) => t.kind === "word");
-      s.tokens.forEach((token, index) => {
-        if (token.kind !== "word" || !token.key) return;
-        const target = index === firstWordIndex ? fallback : preferred;
-        if (!target.has(token.key)) target.set(token.key, token.text);
-      });
-    }
+  for (const s of sentences) {
+    const firstWordIndex = s.tokens.findIndex((t) => t.kind === "word");
+    s.tokens.forEach((token, index) => {
+      if (token.kind !== "word" || !token.key) return;
+      const target = index === firstWordIndex ? fallback : preferred;
+      if (!target.has(token.key)) target.set(token.key, token.text);
+    });
   }
 
   const vocab = new Map<string, string>();

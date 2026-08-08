@@ -17,7 +17,13 @@ import type {
 } from "../shared/types.ts";
 import { PATHS } from "./pipeline/config.ts";
 import { loadSourceTexts, type SourceText } from "./pipeline/source.ts";
-import { collectVocabulary, countWords, tokenize } from "./pipeline/tokenize.ts";
+import {
+  collectVocabulary,
+  countWords,
+  flattenSentences,
+  tokenize,
+  tokenizeLine,
+} from "./pipeline/tokenize.ts";
 import { synthesize } from "./pipeline/tts.ts";
 import { alignTimings } from "./pipeline/align.ts";
 import { lookup } from "./pipeline/wiktionary.ts";
@@ -36,19 +42,26 @@ const statePath = path.join(PATHS.cache, "build-state.json");
 async function buildText(source: SourceText): Promise<TextSummary> {
   log.step(`${source.title} (${source.slug})`);
 
+  const heading = tokenizeLine(source.title, "h0");
   const paragraphs = tokenize(source.body);
-  const wordCount = countWords(paragraphs);
-  log.info(`${paragraphs.length} paragraphs, ${wordCount} words`);
+  // Narration order: the title is read first, then the body.
+  const sentences = [heading, ...flattenSentences(paragraphs)];
+  const wordCount = countWords(sentences);
+  log.info(`${paragraphs.length} paragraphs, ${wordCount} words (title included)`);
 
   log.info(`synthesizing with ${source.voice} at rate ${source.rate}...`);
-  const narration = await synthesize(source.body, source.voice, source.rate);
+  const narration = await synthesize(
+    `${source.title}\n\n${source.body}`,
+    source.voice,
+    source.rate,
+  );
 
   await ensureDir(PATHS.mediaTexts);
   const audioName = `${source.slug}.mp3`;
   await fs.writeFile(path.join(PATHS.mediaTexts, audioName), narration.audio);
   log.ok(`audio ${(narration.audio.length / 1024).toFixed(0)} KB, ${narration.durationSec.toFixed(1)}s`);
 
-  const alignment = alignTimings(paragraphs, narration.words);
+  const alignment = alignTimings(sentences, narration.words);
   const percent = alignment.total > 0 ? (alignment.matched / alignment.total) * 100 : 100;
   const alignMessage = `aligned ${alignment.matched}/${alignment.total} words (${percent.toFixed(0)}%)`;
   if (alignment.unmatched.length > 0) {
@@ -57,7 +70,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     log.ok(alignMessage);
   }
 
-  const vocabulary = collectVocabulary(paragraphs);
+  const vocabulary = collectVocabulary(sentences);
   log.info(`looking up ${vocabulary.size} distinct words...`);
 
   const dictionary: Record<string, DictionaryEntry> = {};
@@ -93,6 +106,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
       durationSec: narration.durationSec,
       voice: source.voice,
     },
+    heading,
     paragraphs,
     dictionary,
   };
@@ -135,7 +149,7 @@ async function main(): Promise<void> {
           title: existing.title,
           level: existing.level,
           topic: existing.topic,
-          wordCount: countWords(existing.paragraphs),
+          wordCount: countWords([existing.heading, ...flattenSentences(existing.paragraphs)]),
           durationSec: existing.audio.durationSec,
         });
         continue;

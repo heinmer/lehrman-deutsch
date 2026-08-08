@@ -1,4 +1,4 @@
-import type { Paragraph, WordToken } from "../../shared/types.ts";
+import type { Sentence, WordToken } from "../../shared/types.ts";
 import type { Boundary } from "./tts.ts";
 import { foldGerman } from "./util.ts";
 
@@ -22,20 +22,15 @@ const LOOKAHEAD = 4;
 
 /**
  * Writes TTS timings onto the tokens, then derives sentence spans from the
- * words that were matched. Mutates the paragraphs in place.
+ * words that were matched. Mutates the sentences in place.
+ *
+ * `sentences` must be in narration order — the title first, then the body.
  */
 export function alignTimings(
-  paragraphs: Paragraph[],
+  sentences: Sentence[],
   boundaries: Boundary[],
 ): AlignmentReport {
-  const tokens: WordToken[] = [];
-  for (const p of paragraphs) {
-    for (const s of p.sentences) {
-      for (const t of s.tokens) {
-        if (t.kind === "word") tokens.push(t);
-      }
-    }
-  }
+  const tokens = wordsOf(sentences);
 
   const unmatched: string[] = [];
 
@@ -112,35 +107,34 @@ export function alignTimings(
 
   const matched = tokens.filter((t) => t.start !== null).length;
 
-  fillGaps(paragraphs);
+  fillGaps(tokens);
 
-  for (const p of paragraphs) {
-    for (const s of p.sentences) {
-      const timed = s.tokens.filter(
-        (t): t is WordToken => t.kind === "word" && t.start !== null,
-      );
-      s.start = timed[0]?.start ?? null;
-      s.end = timed.at(-1)?.end ?? null;
-    }
+  for (const s of sentences) {
+    const timed = s.tokens.filter(
+      (t): t is WordToken => t.kind === "word" && t.start !== null,
+    );
+    s.start = timed[0]?.start ?? null;
+    s.end = timed.at(-1)?.end ?? null;
   }
 
   return { total: tokens.length, matched, unmatched };
+}
+
+function wordsOf(sentences: Sentence[]): WordToken[] {
+  const tokens: WordToken[] = [];
+  for (const s of sentences) {
+    for (const t of s.tokens) {
+      if (t.kind === "word") tokens.push(t);
+    }
+  }
+  return tokens;
 }
 
 /**
  * Gives untimed words the span between their timed neighbours, so a word the
  * engine skipped still highlights instead of being silently dead.
  */
-function fillGaps(paragraphs: Paragraph[]): void {
-  const tokens: WordToken[] = [];
-  for (const p of paragraphs) {
-    for (const s of p.sentences) {
-      for (const t of s.tokens) {
-        if (t.kind === "word") tokens.push(t);
-      }
-    }
-  }
-
+function fillGaps(tokens: WordToken[]): void {
   for (let i = 0; i < tokens.length; i += 1) {
     if (tokens[i].start !== null) continue;
 

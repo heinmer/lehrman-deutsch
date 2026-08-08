@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Paragraph } from "../../shared/types";
+import type { Sentence } from "../../shared/types";
 
 interface TimedWord {
   wordId: string;
@@ -21,18 +21,16 @@ export interface Narration {
   changeRate: (rate: number) => void;
 }
 
-function buildTimeline(paragraphs: Paragraph[]): TimedWord[] {
+function buildTimeline(sentences: Sentence[]): TimedWord[] {
   const timeline: TimedWord[] = [];
-  for (const paragraph of paragraphs) {
-    for (const sentence of paragraph.sentences) {
-      for (const token of sentence.tokens) {
-        if (token.kind === "word" && token.start !== null) {
-          timeline.push({
-            wordId: token.id,
-            sentenceId: sentence.id,
-            start: token.start,
-          });
-        }
+  for (const sentence of sentences) {
+    for (const token of sentence.tokens) {
+      if (token.kind === "word" && token.start !== null) {
+        timeline.push({
+          wordId: token.id,
+          sentenceId: sentence.id,
+          start: token.start,
+        });
       }
     }
   }
@@ -63,7 +61,7 @@ function findActive(timeline: TimedWord[], time: number): number {
  * element's `timeupdate` event, which only fires about four times a second —
  * far too coarse to follow individual words.
  */
-export function useNarration(src: string | null, paragraphs: Paragraph[]): Narration {
+export function useNarration(src: string | null, sentences: Sentence[]): Narration {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const frameRef = useRef<number | null>(null);
 
@@ -73,7 +71,7 @@ export function useNarration(src: string | null, paragraphs: Paragraph[]): Narra
   const [duration, setDuration] = useState(0);
   const [rate, setRate] = useState(1);
 
-  const timeline = useMemo(() => buildTimeline(paragraphs), [paragraphs]);
+  const timeline = useMemo(() => buildTimeline(sentences), [sentences]);
 
   useEffect(() => {
     if (!src) return undefined;

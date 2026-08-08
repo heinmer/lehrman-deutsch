@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import type { TextDocument, TextSummary, WordToken } from "../shared/types";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Sentence, TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
 import { useAutoSpeak } from "./hooks/useAutoSpeak";
 import { useNarration } from "./hooks/useNarration";
@@ -12,7 +12,7 @@ import { PlayerBar } from "./components/PlayerBar";
 import { WordPanel } from "./components/WordPanel";
 import styles from "./App.module.css";
 
-const NO_PARAGRAPHS: TextDocument["paragraphs"] = [];
+const NO_SENTENCES: Sentence[] = [];
 
 export function App() {
   const { theme, toggleTheme } = useTheme();
@@ -53,10 +53,16 @@ export function App() {
     };
   }, [slug]);
 
-  const narration = useNarration(
-    document?.audio.src ?? null,
-    document?.paragraphs ?? NO_PARAGRAPHS,
+  // Narration order: the title is spoken first, then the body.
+  const sentences = useMemo(
+    () =>
+      document
+        ? [document.heading, ...document.paragraphs.flatMap((p) => p.sentences)]
+        : NO_SENTENCES,
+    [document],
   );
+
+  const narration = useNarration(document?.audio.src ?? null, sentences);
 
   // Decode the text's recordings ahead of time so a click plays instantly.
   useEffect(() => {

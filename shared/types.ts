@@ -111,6 +111,8 @@ export interface TextDocument {
     durationSec: number;
     voice: string;
   };
+  /** The German title, narrated and clickable like the body. */
+  heading: Sentence;
   paragraphs: Paragraph[];
   /** Keyed by WordToken.key. */
   dictionary: Record<string, DictionaryEntry>;
