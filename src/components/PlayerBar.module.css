@@ -1,7 +1,7 @@
 .bar {
   display: flex;
   align-items: center;
-  gap: 1.4rem;
+  gap: 1.1rem;
   padding: 1rem 1.5rem;
   background: var(--surface-player);
 }
@@ -25,6 +25,28 @@
 }
 
 .play:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.restart {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: var(--surface-inset);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.restart:hover:not(:disabled) {
+  background: var(--surface-raised);
+  color: var(--accent);
+}
+
+.restart:disabled {
   opacity: 0.45;
   cursor: default;
 }

@@ -50,6 +50,12 @@ const STRUCTURAL_TAGS = new Set([
   "form-of",
   "plural",
   "singular",
+  "comparable",
+  "not-comparable",
+  "predicative",
+  "attributive",
+  "no-predicative-form",
+  "positive",
 ]);
 
 const cacheDir = path.join(PATHS.cache, "kaikki");

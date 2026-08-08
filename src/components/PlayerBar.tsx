@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Gauge, Pause, Play } from "lucide-react";
+import { Gauge, Pause, Play, SkipBack } from "lucide-react";
 import type { Narration } from "../hooks/useNarration";
 import { formatTime } from "../lib/format";
 import styles from "./PlayerBar.module.css";
@@ -25,6 +25,19 @@ export function PlayerBar({ narration }: { narration: Narration }) {
         ) : (
           <Play size={24} strokeWidth={2} fill="currentColor" />
         )}
+      </button>
+
+      {/* Back to the first word. Seeking never changes play state, so this
+          restarts a running narration and rewinds a paused one. */}
+      <button
+        type="button"
+        className={styles.restart}
+        onClick={() => narration.seek(0)}
+        disabled={!isReady}
+        aria-label="Restart from the beginning"
+        title="Back to the beginning"
+      >
+        <SkipBack size={20} strokeWidth={2} fill="currentColor" />
       </button>
 
       {/* Clicking anywhere on the track jumps there — that is native range
