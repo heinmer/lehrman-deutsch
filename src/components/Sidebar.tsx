@@ -1,16 +1,16 @@
 import { BookOpen, Clock, Moon, Sun, Type, Volume2, VolumeX } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
-import type { Theme } from "../hooks/useTheme";
+import type { ThemeControls } from "../hooks/useTheme";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
+import { ThemePicker } from "./ThemePicker";
 import styles from "./Sidebar.module.css";
 
 interface Props {
   texts: TextSummary[];
   activeSlug: string | null;
   onSelect: (slug: string) => void;
-  theme: Theme;
-  onToggleTheme: () => void;
+  theme: ThemeControls;
   autoSpeak: boolean;
   onToggleAutoSpeak: () => void;
 }
@@ -20,10 +20,10 @@ export function Sidebar({
   activeSlug,
   onSelect,
   theme,
-  onToggleTheme,
   autoSpeak,
   onToggleAutoSpeak,
 }: Props) {
+  const isDark = theme.theme?.mode === "dark";
   return (
     <aside className={`island ${styles.sidebar}`}>
       <header className={styles.header}>
@@ -59,10 +59,21 @@ export function Sidebar({
       </nav>
 
       <footer className={styles.footer}>
-        <button type="button" className={styles.setting} onClick={onToggleTheme}>
-          {theme === "dark" ? <Sun size={19} strokeWidth={2} /> : <Moon size={19} strokeWidth={2} />}
-          {theme === "dark" ? "Light" : "Dark"}
+        <button
+          type="button"
+          className={styles.setting}
+          onClick={theme.toggleMode}
+          title={isDark ? "Switch to the light theme" : "Switch to the dark theme"}
+        >
+          {isDark ? <Sun size={19} strokeWidth={2} /> : <Moon size={19} strokeWidth={2} />}
+          {isDark ? "Light" : "Dark"}
         </button>
+
+        <ThemePicker
+          themeId={theme.themeId}
+          theme={theme.theme}
+          onSelect={theme.setTheme}
+        />
 
         <button
           type="button"

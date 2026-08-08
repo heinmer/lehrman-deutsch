@@ -6,11 +6,23 @@
     <title>Texts in German</title>
     <script>
       // Applied before first paint so the page never flashes the wrong theme.
+      // Keep the ids in step with src/styles/themes.css.
       (() => {
+        const known = [
+          "daylight",
+          "paper",
+          "newsprint",
+          "forest",
+          "midnight",
+          "ink",
+          "sepia",
+          "dusk",
+        ];
         const stored = localStorage.getItem("theme");
-        const theme =
-          stored ?? (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.dataset.theme = theme;
+        const fallback = matchMedia("(prefers-color-scheme: dark)").matches
+          ? "midnight"
+          : "daylight";
+        document.documentElement.dataset.theme = known.includes(stored) ? stored : fallback;
       })();
     </script>
   </head>

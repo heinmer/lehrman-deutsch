@@ -1,3 +1,7 @@
+/**
+ * Structural tokens and base styles. Every colour lives in themes.css.
+ */
+
 :root {
   /* PT Serif is reserved for the German prose itself; everything else —
      headings, buttons, labels — is set in the sans. */
@@ -22,69 +26,6 @@
   --gap: 1rem;
   /* The two side columns are deliberately the same width. */
   --side-width: 21rem;
-
-  /* The page ground sits clearly darker than the islands, so each card lifts
-     off it; the tints stay muted, they just no longer compete with the
-     backdrop for lightness. */
-  --page: #d7dce6;
-  --surface-sidebar: #e7f0e9;
-  --surface-reader: #ffffff;
-  --surface-panel: #f0ebf8;
-  --surface-player: #e8eefa;
-  /* Insets darken, raised elements go white — that way a selected chip reads
-     as lifted even on a tinted island. */
-  --surface-inset: rgb(35 38 46 / 0.055);
-  --surface-raised: #ffffff;
-
-  --text: #23262e;
-  --text-muted: #565b68;
-  --text-soft: #767c8a;
-
-  --border: rgb(35 38 46 / 0.09);
-  --border-strong: rgb(35 38 46 / 0.17);
-
-  --accent: #5d6ba8;
-  --accent-hover: #4e5c96;
-  --accent-contrast: #ffffff;
-  --accent-sage: #4f8a75;
-  --accent-plum: #7c6b9e;
-
-  --highlight-word: #f3dfa6;
-  --highlight-sentence: #eff1f6;
-  --selected-word: #dfe3ee;
-
-  --shadow-card: 0 1px 3px rgb(35 38 46 / 0.07), 0 12px 30px rgb(35 38 46 / 0.09);
-  --shadow-raised: 0 2px 6px rgb(35 38 46 / 0.12);
-}
-
-:root[data-theme="dark"] {
-  --page: #121319;
-  --surface-sidebar: #1a211d;
-  --surface-reader: #1b1d24;
-  --surface-panel: #201f2a;
-  --surface-player: #191c24;
-  --surface-inset: rgb(255 255 255 / 0.05);
-  --surface-raised: rgb(255 255 255 / 0.08);
-
-  --text: #e8eaf0;
-  --text-muted: #aeb3c0;
-  --text-soft: #868c9a;
-
-  --border: rgb(255 255 255 / 0.1);
-  --border-strong: rgb(255 255 255 / 0.2);
-
-  --accent: #98a4d8;
-  --accent-hover: #aab4e4;
-  --accent-contrast: #171922;
-  --accent-sage: #7fc0a9;
-  --accent-plum: #b3a2d4;
-
-  --highlight-word: #6f5c28;
-  --highlight-sentence: rgb(255 255 255 / 0.075);
-  --selected-word: rgb(152 164 216 / 0.22);
-
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35);
-  --shadow-raised: 0 2px 8px rgb(0 0 0 / 0.35);
 }
 
 *,
@@ -127,9 +68,11 @@ button {
   background: var(--selected-word);
 }
 
-/* Shared island: a floating card with its own ground. */
+/* Shared island: a floating card with its own ground. Dark themes lean on the
+   border, where a drop shadow has nothing to darken. */
 .island {
   border-radius: var(--radius-lg);
+  border: 1px solid var(--island-border);
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }

@@ -118,6 +118,10 @@ src/
 - While the narration is paused, clicking a word also plays its native
   recording; while it is playing, the click only seeks, so the two never talk
   over each other. The "Say word" toggle in the sidebar turns this off.
+- Eight colour themes: Daylight, Paper, Newsprint and Forest in the light
+  group, Midnight, Ink, Sepia and Dusk in the dark one. The button next to the
+  theme picker flips between the two defaults; the picker itself chooses any of
+  them. Newsprint and Sepia are the warm, blue-free reading pair.
 - Attribution: word recordings and dictionary content come from Wiktionary and
   Wikimedia Commons, licensed CC BY-SA. The licence asks for attribution when
   the work is *distributed*; this credit covers the local, personal use the

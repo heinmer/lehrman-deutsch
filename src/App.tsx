@@ -15,7 +15,7 @@ import styles from "./App.module.css";
 const NO_SENTENCES: Sentence[] = [];
 
 export function App() {
-  const { theme, toggleTheme } = useTheme();
+  const theme = useTheme();
   const { autoSpeak, toggleAutoSpeak } = useAutoSpeak();
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
@@ -119,7 +119,6 @@ export function App() {
         activeSlug={slug}
         onSelect={setSlug}
         theme={theme}
-        onToggleTheme={toggleTheme}
         autoSpeak={autoSpeak}
         onToggleAutoSpeak={toggleAutoSpeak}
       />

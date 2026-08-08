@@ -1,0 +1,93 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  background: var(--surface-inset);
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+/* Opens upwards: the trigger sits at the bottom of the sidebar. */
+.menu {
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 20;
+  min-width: 13rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-card);
+}
+
+.groupLabel {
+  margin: 0.35rem 0 0.3rem 0.6rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.groupLabel:first-child {
+  margin-top: 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.option:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
+.option[aria-selected="true"] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.optionName {
+  flex: 1;
+  text-align: left;
+  font-size: var(--fs-sm);
+}
+
+/* Page ground as the disc, reading surface as its ring, accent as the dot. */
+.swatch {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid;
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+.swatchDot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+}

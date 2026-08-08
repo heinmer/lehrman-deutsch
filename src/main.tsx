@@ -4,6 +4,7 @@ import "@fontsource/pt-serif/400.css";
 import "@fontsource/pt-serif/400-italic.css";
 import "@fontsource-variable/dm-sans";
 import "./styles/global.css";
+import "./styles/themes.css";
 import { App } from "./App";
 
 const container = document.getElementById("root");

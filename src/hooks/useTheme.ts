@@ -1,23 +1,43 @@
 import { useCallback, useEffect, useState } from "react";
+import { DEFAULT_DARK, DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../lib/themes";
 
-export type Theme = "light" | "dark";
+const STORAGE_KEY = "theme";
 
-function currentTheme(): Theme {
-  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+function initialTheme(): string {
+  const stored = document.documentElement.dataset.theme;
+  return stored && findTheme(stored) ? stored : DEFAULT_LIGHT;
 }
 
-/** Theme is applied by an inline script in index.html to avoid a flash. */
-export function useTheme(): { theme: Theme; toggleTheme: () => void } {
-  const [theme, setTheme] = useState<Theme>(currentTheme);
+export interface ThemeControls {
+  themeId: string;
+  theme: ThemeInfo | undefined;
+  setTheme: (id: string) => void;
+  /** Flips to the counterpart of the current mode, remembering neither. */
+  toggleMode: () => void;
+}
+
+/**
+ * The chosen theme is applied by an inline script in index.html before first
+ * paint; this hook only keeps it in sync afterwards.
+ */
+export function useTheme(): ThemeControls {
+  const [themeId, setThemeId] = useState<string>(initialTheme);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+    document.documentElement.dataset.theme = themeId;
+    localStorage.setItem(STORAGE_KEY, themeId);
+  }, [themeId]);
 
-  const toggleTheme = useCallback(() => {
-    setTheme((previous) => (previous === "dark" ? "light" : "dark"));
+  const toggleMode = useCallback(() => {
+    setThemeId((current) =>
+      findTheme(current)?.mode === "dark" ? DEFAULT_LIGHT : DEFAULT_DARK,
+    );
   }, []);
 
-  return { theme, toggleTheme };
+  return {
+    themeId,
+    theme: findTheme(themeId),
+    setTheme: setThemeId,
+    toggleMode,
+  };
 }

@@ -105,10 +105,25 @@ as `/…/` so transcriptions look the same everywhere.
 
 ### Styling
 
-Plain CSS Modules plus custom properties in `src/styles/global.css`. All
-colours, spacing, radii and the type scale are tokens there — change the token,
-not the component. Both themes must be defined: the light palette on `:root`,
-the dark one under `:root[data-theme="dark"]`.
+Plain CSS Modules plus custom properties. `src/styles/global.css` holds the
+structural tokens (type scale, radii, spacing); `src/styles/themes.css` holds
+every colour. Change the token, not the component — no component names a colour
+directly, which is what makes new themes cheap.
+
+**Adding a theme** means: a full token block in `themes.css` under
+`:root[data-theme="<id>"]`, an entry in `src/lib/themes.ts` (its three swatch
+colours are duplicated there for the picker preview), and the id added to the
+`known` list in the inline script in `index.html`. Miss the last one and the
+theme works until reload, then silently falls back.
+
+Dark themes must set a visible `--island-border`: a drop shadow has nothing to
+darken against a dark page, so without it the cards melt into the background.
+`scratchpad/check-contrast.mjs` walks every theme and reports WCAG ratios —
+body text is kept at AAA (7:1) and the reading island at least 1.08:1 against
+the page ground.
+
+Tailwind was considered and rejected: theming here is pure CSS variables, which
+Tailwind v4 would express the same way, so a rewrite would buy nothing.
 
 Two typefaces, deliberately: `--font-serif` (PT Serif) is used *only* for the
 German prose; everything else uses `--font-sans` (DM Sans). Nothing in the UI
