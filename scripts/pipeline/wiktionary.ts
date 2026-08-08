@@ -4,6 +4,7 @@ import crypto from "node:crypto";
 import type { DictionaryEntry, LexemeInfo, Sense, SenseGroup } from "../../shared/types.ts";
 import { KAIKKI_BASE, PATHS } from "./config.ts";
 import { fetchWithRetry, NotFoundError } from "./http.ts";
+import { fetchGermanIpa } from "./dewiktionary.ts";
 import { ensureDir, exists, log, slugify } from "./util.ts";
 
 /** Shape of the Wiktextract records served by kaikki.org (fields we use). */
@@ -244,10 +245,19 @@ async function resolveSpelling(surface: string): Promise<Resolved | null> {
 }
 
 /** Audio is attached later, once the recording has been downloaded locally. */
-function toLexeme(resolved: Resolved): LexemeInfo {
+async function toLexeme(resolved: Resolved): Promise<LexemeInfo> {
+  let ipa = pickIpa(resolved.records);
+
+  // English Wiktionary often skips inflected spellings; the German edition
+  // transcribes them.
+  if (!ipa) {
+    const fallback = await fetchGermanIpa(resolved.word);
+    if (fallback) ipa = normalizeIpa(fallback);
+  }
+
   return {
     word: resolved.word,
-    ipa: pickIpa(resolved.records),
+    ipa,
     audio: null,
     groups: buildGroups(resolved.records),
     wiktionaryUrl: wiktionaryUrl(resolved.word),
@@ -283,7 +293,7 @@ export async function lookup(key: string, surface: string): Promise<LookupResult
   }
 
   const formSound = pickSound(resolved.records);
-  const form = toLexeme(resolved);
+  const form = await toLexeme(resolved);
   const inflection = findInflection(resolved.records);
 
   let lemma: LexemeInfo | null = null;
@@ -294,7 +304,7 @@ export async function lookup(key: string, surface: string): Promise<LookupResult
     const lemmaResolved = await resolveSpelling(inflection.lemma);
     if (lemmaResolved) {
       lemmaSound = pickSound(lemmaResolved.records);
-      lemma = toLexeme(lemmaResolved);
+      lemma = await toLexeme(lemmaResolved);
     }
   }
 
