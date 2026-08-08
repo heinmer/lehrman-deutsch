@@ -84,10 +84,13 @@
 }
 
 .footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   padding: 0.9rem 1.1rem 1.25rem;
 }
 
-.themeButton {
+.setting {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -99,7 +102,19 @@
   transition: color 130ms ease, background-color 130ms ease;
 }
 
-.themeButton:hover {
+.setting:hover {
   background: var(--surface-raised);
   color: var(--text);
+}
+
+/* Only the toggle carries a pressed state; the theme button just swaps its
+   label and icon. */
+.setting[aria-pressed="true"] {
+  background: var(--surface-raised);
+  color: var(--accent);
+  box-shadow: var(--shadow-raised);
+}
+
+.setting[aria-pressed="false"] {
+  color: var(--text-soft);
 }

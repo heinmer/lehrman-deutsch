@@ -1,7 +1,7 @@
-import { useCallback, useRef } from "react";
 import { CornerDownRight, MousePointerClick, Volume2, X } from "lucide-react";
 import type { DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
 import { genderArticle, posLabel } from "../lib/format";
+import { playClip, spokenLexeme } from "../lib/pronunciation";
 import styles from "./WordPanel.module.css";
 
 interface Props {
@@ -12,15 +12,6 @@ interface Props {
 }
 
 export function WordPanel({ token, entry, onClose }: Props) {
-  const clipRef = useRef<HTMLAudioElement | null>(null);
-
-  const playClip = useCallback((src: string) => {
-    clipRef.current?.pause();
-    const clip = new Audio(src);
-    clipRef.current = clip;
-    void clip.play();
-  }, []);
-
   if (!token) {
     return (
       <aside className={`island ${styles.panel}`} aria-label="Word details">
@@ -32,9 +23,7 @@ export function WordPanel({ token, entry, onClose }: Props) {
     );
   }
 
-  // An inflected form rarely has a recording of its own; the lemma's is the
-  // next best thing, and it is labelled with the form actually spoken.
-  const spoken = entry?.form?.audio ? entry.form : entry?.lemma?.audio ? entry.lemma : null;
+  const spoken = spokenLexeme(entry);
   const clip = spoken?.audio ?? null;
   // Inflected forms carry no meaning of their own — the lemma holds it.
   const senseSource = entry?.form?.groups.length ? entry.form : entry?.lemma ?? null;

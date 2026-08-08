@@ -1,4 +1,4 @@
-import { BookOpen, Clock, Moon, Sun, Type } from "lucide-react";
+import { BookOpen, Clock, Moon, Sun, Type, Volume2, VolumeX } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
 import type { Theme } from "../hooks/useTheme";
 import { formatTime } from "../lib/format";
@@ -11,9 +11,19 @@ interface Props {
   onSelect: (slug: string) => void;
   theme: Theme;
   onToggleTheme: () => void;
+  autoSpeak: boolean;
+  onToggleAutoSpeak: () => void;
 }
 
-export function Sidebar({ texts, activeSlug, onSelect, theme, onToggleTheme }: Props) {
+export function Sidebar({
+  texts,
+  activeSlug,
+  onSelect,
+  theme,
+  onToggleTheme,
+  autoSpeak,
+  onToggleAutoSpeak,
+}: Props) {
   return (
     <aside className={`island ${styles.sidebar}`}>
       <header className={styles.header}>
@@ -49,9 +59,20 @@ export function Sidebar({ texts, activeSlug, onSelect, theme, onToggleTheme }: P
       </nav>
 
       <footer className={styles.footer}>
-        <button type="button" className={styles.themeButton} onClick={onToggleTheme}>
-          {theme === "dark" ? <Sun size={18} strokeWidth={2} /> : <Moon size={18} strokeWidth={2} />}
+        <button type="button" className={styles.setting} onClick={onToggleTheme}>
+          {theme === "dark" ? <Sun size={19} strokeWidth={2} /> : <Moon size={19} strokeWidth={2} />}
           {theme === "dark" ? "Light" : "Dark"}
+        </button>
+
+        <button
+          type="button"
+          className={styles.setting}
+          onClick={onToggleAutoSpeak}
+          aria-pressed={autoSpeak}
+          title="Play a word's recording when you click it, while the narration is paused"
+        >
+          {autoSpeak ? <Volume2 size={19} strokeWidth={2} /> : <VolumeX size={19} strokeWidth={2} />}
+          Say word
         </button>
       </footer>
     </aside>

@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import type { TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
+import { useAutoSpeak } from "./hooks/useAutoSpeak";
 import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
+import { playClip, pronunciationClip } from "./lib/pronunciation";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
@@ -13,6 +15,7 @@ const NO_PARAGRAPHS: TextDocument["paragraphs"] = [];
 
 export function App() {
   const { theme, toggleTheme } = useTheme();
+  const { autoSpeak, toggleAutoSpeak } = useAutoSpeak();
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
   const [slug, setSlug] = useState<string | null>(null);
@@ -54,17 +57,22 @@ export function App() {
     document?.paragraphs ?? NO_PARAGRAPHS,
   );
 
-  const { seek } = narration;
+  const { seek, isPlaying } = narration;
 
-  // Clicking a word also moves the narration there. Playback state is left
-  // alone: if it was playing it keeps going from the new spot, if it was
-  // paused it stays paused and simply waits there.
+  // Clicking a word always moves the narration there, and never changes
+  // whether it is playing. While it is paused the word's own recording plays,
+  // which would otherwise collide with the narration mid-sentence.
   const selectWord = useCallback(
     (token: WordToken) => {
       setSelectedWord(token);
       if (token.start !== null) seek(token.start);
+
+      if (!isPlaying && autoSpeak) {
+        const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
+        if (clip) playClip(clip.src);
+      }
     },
-    [seek],
+    [seek, isPlaying, autoSpeak, document],
   );
 
   const closePanel = useCallback(() => setSelectedWord(null), []);
@@ -100,6 +108,8 @@ export function App() {
         onSelect={setSlug}
         theme={theme}
         onToggleTheme={toggleTheme}
+        autoSpeak={autoSpeak}
+        onToggleAutoSpeak={toggleAutoSpeak}
       />
 
       <main className={styles.main}>
