@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+Keep it current: when a change invalidates something written here — a command,
+a source of data, one of the invariants below — update this file in the same
+commit. It is only useful while it is true.
+
 ## Commands
 
 ```bash
@@ -102,7 +106,7 @@ colours, spacing, radii and the type scale are tokens there — change the token
 not the component. Both themes must be defined: the light palette on `:root`,
 the dark one under `:root[data-theme="dark"]`.
 
-Two typefaces, deliberately: `--font-serif` (Newsreader) is used *only* for the
+Two typefaces, deliberately: `--font-serif` (PT Serif) is used *only* for the
 German prose; everything else uses `--font-sans` (DM Sans). Nothing in the UI
 goes below `--fs-xs`.
 

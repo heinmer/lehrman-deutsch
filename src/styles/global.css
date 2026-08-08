@@ -1,7 +1,7 @@
 :root {
-  /* Newsreader is reserved for the German prose itself; everything else —
+  /* PT Serif is reserved for the German prose itself; everything else —
      headings, buttons, labels — is set in the sans. */
-  --font-serif: "Newsreader Variable", "Newsreader", Georgia, serif;
+  --font-serif: "PT Serif", Georgia, serif;
   --font-sans: "DM Sans Variable", "DM Sans", system-ui, -apple-system, sans-serif;
 
   /* Type scale. Nothing in the UI goes below --fs-xs. */
