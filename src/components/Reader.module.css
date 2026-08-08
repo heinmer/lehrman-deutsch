@@ -31,12 +31,46 @@
   color: var(--text-soft);
 }
 
+.block {
+  margin-bottom: 1.7rem;
+}
+
 /* The only place the reading serif is used. */
 .paragraph {
-  margin: 0 0 1.7rem;
+  margin: 0;
   font-family: var(--font-serif);
   font-size: var(--fs-reading);
   line-height: 1.95;
+}
+
+/* Sits at the end of the paragraph it belongs to, quiet until wanted. */
+.translateToggle {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  vertical-align: -0.35rem;
+  margin-left: 0.15rem;
+  border-radius: 50%;
+  color: var(--text-soft);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.translateToggle:hover,
+.translateToggle[aria-expanded="true"] {
+  background: var(--surface-inset);
+  color: var(--accent);
+}
+
+.translation {
+  margin: 0.6rem 0 0;
+  padding: 0.85rem 1.1rem;
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent);
+  background: var(--surface-inset);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--text-muted);
 }
 
 .sentence {

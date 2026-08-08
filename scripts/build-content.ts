@@ -27,6 +27,7 @@ import {
 import { synthesize } from "./pipeline/tts.ts";
 import { alignTimings } from "./pipeline/align.ts";
 import { lookup } from "./pipeline/wiktionary.ts";
+import { translateToEnglish, translationProvider } from "./pipeline/translate.ts";
 import { downloadWordAudio } from "./pipeline/media.ts";
 import { ensureDir, exists, log, readJson, writeJson } from "./pipeline/util.ts";
 
@@ -68,6 +69,19 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     log.warn(`${alignMessage} — no timing for: ${alignment.unmatched.slice(0, 8).join(", ")}`);
   } else {
     log.ok(alignMessage);
+  }
+
+  log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
+  let translated = 0;
+  for (const paragraph of paragraphs) {
+    const text = paragraph.sentences.map((s) => s.text).join(" ");
+    paragraph.translation = await translateToEnglish(text);
+    if (paragraph.translation) translated += 1;
+  }
+  if (translated === paragraphs.length) {
+    log.ok(`translated ${translated} paragraphs`);
+  } else {
+    log.warn(`translated ${translated}/${paragraphs.length} paragraphs`);
   }
 
   const vocabulary = collectVocabulary(sentences);

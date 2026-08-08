@@ -47,8 +47,13 @@ falling back to a synthetic voice.
 
 **Dictionary data** (IPA, part of speech, gender, English senses, inflection →
 lemma) comes from English Wiktionary via the Wiktextract dumps on
-[kaikki.org](https://kaikki.org/dictionary/German/). Responses are cached in
+[kaikki.org](https://kaikki.org/dictionary/German/), falling back to German
+Wiktionary for transcriptions it does not carry. Responses are cached in
 `.cache/` so rebuilds stay cheap and polite.
+
+**Paragraph translations** come from MyMemory, which needs no account. Set
+`DEEPL_API_KEY` before running `npm run content` to use DeepL instead — it
+reads German word order and separable verbs more reliably.
 
 ## Adding a text
 

@@ -3,6 +3,9 @@
 .app {
   display: grid;
   grid-template-columns: var(--side-width) minmax(0, 1fr) var(--side-width);
+  /* Without an explicit row the implicit one is sized to content, so a long
+     text pushes the player off screen instead of scrolling inside the reader. */
+  grid-template-rows: minmax(0, 1fr);
   gap: var(--gap);
   padding: var(--gap);
   height: 100%;

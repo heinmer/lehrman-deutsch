@@ -85,7 +85,8 @@ export function tokenize(body: string): Paragraph[] {
     }
 
     if (sentences.length > 0) {
-      paragraphs.push({ id: `p${pIndex}`, sentences });
+      // Translations are filled in by the build step.
+      paragraphs.push({ id: `p${pIndex}`, sentences, translation: null });
     }
   });
 

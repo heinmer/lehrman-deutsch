@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Languages } from "lucide-react";
 import type { Sentence, TextDocument, WordToken } from "../../shared/types";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
@@ -72,6 +73,18 @@ export function Reader({
   onSelectWord,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(new Set());
+
+  const toggleTranslation = (paragraphId: string) => {
+    setOpenTranslations((open) => {
+      const next = new Set(open);
+      if (!next.delete(paragraphId)) next.add(paragraphId);
+      return next;
+    });
+  };
+
+  // A new text starts with everything in German again.
+  useEffect(() => setOpenTranslations(new Set()), [document?.slug]);
 
   // Follow the narration, but only when the spoken sentence has drifted out of
   // view — scrolling on every sentence would fidget under the reader's eyes.
@@ -111,13 +124,34 @@ export function Reader({
           </div>
         </header>
 
-        {document.paragraphs.map((paragraph) => (
-          <p key={paragraph.id} className={styles.paragraph}>
-            {paragraph.sentences.map((sentence) => (
-              <SentenceView key={sentence.id} sentence={sentence} {...shared} />
-            ))}
-          </p>
-        ))}
+        {document.paragraphs.map((paragraph) => {
+          const open = openTranslations.has(paragraph.id);
+          return (
+            <div key={paragraph.id} className={styles.block}>
+              <p className={styles.paragraph}>
+                {paragraph.sentences.map((sentence) => (
+                  <SentenceView key={sentence.id} sentence={sentence} {...shared} />
+                ))}
+                {paragraph.translation && (
+                  <button
+                    type="button"
+                    className={styles.translateToggle}
+                    onClick={() => toggleTranslation(paragraph.id)}
+                    aria-expanded={open}
+                    aria-label={open ? "Hide translation" : "Show translation"}
+                    title={open ? "Hide translation" : "Show translation"}
+                  >
+                    <Languages size={19} strokeWidth={2} />
+                  </button>
+                )}
+              </p>
+
+              {open && paragraph.translation && (
+                <p className={styles.translation}>{paragraph.translation}</p>
+              )}
+            </div>
+          );
+        })}
       </article>
     </div>
   );

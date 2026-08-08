@@ -24,7 +24,7 @@ export class NotFoundError extends Error {}
  */
 export async function fetchWithRetry(
   url: string,
-  { attempts = 5 }: { attempts?: number } = {},
+  { attempts = 5, headers = {} }: { attempts?: number; headers?: Record<string, string> } = {},
 ): Promise<Response> {
   const host = new URL(url).host;
   let lastError = "";
@@ -33,7 +33,9 @@ export async function fetchWithRetry(
     await throttle(host);
 
     try {
-      const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+      const response = await fetch(url, {
+        headers: { "User-Agent": USER_AGENT, ...headers },
+      });
 
       if (response.ok) return response;
       if (response.status === 404) throw new NotFoundError(url);

@@ -51,6 +51,8 @@ export interface Sentence {
 export interface Paragraph {
   id: string;
   sentences: Sentence[];
+  /** English rendering of the whole paragraph; null if translation failed. */
+  translation: string | null;
 }
 
 export interface AudioClip {

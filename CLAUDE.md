@@ -70,6 +70,10 @@ Things that are easy to break:
   which is common for inflected spellings (`bleibt`, `warmen`).
 - **Wikimedia Commons** — native-speaker recordings, downloaded into
   `public/media/words/`. Standard German is preferred over Austrian/Swiss.
+- **Paragraph translations** — DeepL when `DEEPL_API_KEY` is set in the
+  environment, otherwise MyMemory, which needs no credentials. Both are cached
+  per provider, so switching providers re-translates rather than reusing the
+  other one's output.
 
 Lookups try several spellings (as written, lowercase, capitalized) because
 German capitalizes nouns and a sentence-initial word says nothing about its
