@@ -5,9 +5,10 @@
   padding: 3.5rem 2.5rem 4rem;
 }
 
+/* The prose fills the whole centre island rather than sitting in a narrow
+   measure inside it. */
 .article {
-  max-width: var(--reading-width);
-  margin: 0 auto;
+  width: 100%;
 }
 
 .header {
@@ -26,12 +27,14 @@
 
 .meta {
   margin: 0.15rem 0 0;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   color: var(--text-soft);
 }
 
+/* The only place the reading serif is used. */
 .paragraph {
-  margin: 0 0 1.6rem;
+  margin: 0 0 1.7rem;
+  font-family: var(--font-serif);
   font-size: var(--fs-reading);
   line-height: 1.95;
 }

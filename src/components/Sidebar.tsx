@@ -17,7 +17,7 @@ export function Sidebar({ texts, activeSlug, onSelect, theme, onToggleTheme }: P
   return (
     <aside className={`island ${styles.sidebar}`}>
       <header className={styles.header}>
-        <BookOpen size={22} strokeWidth={1.75} className={styles.logo} />
+        <BookOpen size={24} strokeWidth={1.75} className={styles.logo} />
         <h1 className={styles.title}>Texts in German</h1>
       </header>
 

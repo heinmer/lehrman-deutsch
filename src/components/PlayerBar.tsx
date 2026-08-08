@@ -4,7 +4,7 @@ import type { Narration } from "../hooks/useNarration";
 import { formatTime } from "../lib/format";
 import styles from "./PlayerBar.module.css";
 
-const RATES = [0.75, 1, 1.25] as const;
+const RATES = [0.5, 0.75, 1] as const;
 
 export function PlayerBar({ narration }: { narration: Narration }) {
   const { isPlaying, isReady, currentTime, duration, rate } = narration;

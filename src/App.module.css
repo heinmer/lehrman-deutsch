@@ -2,7 +2,7 @@
    or not a word is selected, so opening it never shifts the text. */
 .app {
   display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--panel-width);
+  grid-template-columns: var(--side-width) minmax(0, 1fr) var(--side-width);
   gap: var(--gap);
   padding: var(--gap);
   height: 100%;
@@ -16,7 +16,7 @@
 }
 
 .error {
-  max-width: var(--reading-width);
+  max-width: 34rem;
   margin: 0 auto;
   padding: 6rem 1.5rem;
   font-size: var(--fs-md);
@@ -35,10 +35,9 @@
   border-radius: var(--radius-sm);
 }
 
-@media (max-width: 78rem) {
-  :root {
-    --sidebar-width: 15rem;
-    --panel-width: 20rem;
+@media (max-width: 84rem) {
+  .app {
+    --side-width: 17rem;
   }
 }
 
@@ -46,7 +45,7 @@
    panel, which still keeps its reserved place. */
 @media (max-width: 62rem) {
   .app {
-    grid-template-columns: minmax(0, 1fr) var(--panel-width);
+    grid-template-columns: minmax(0, 1fr) var(--side-width);
   }
 
   .app > :first-child {

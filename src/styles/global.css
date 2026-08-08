@@ -1,15 +1,18 @@
 :root {
+  /* Newsreader is reserved for the German prose itself; everything else —
+     headings, buttons, labels — is set in the sans. */
   --font-serif: "Newsreader Variable", "Newsreader", Georgia, serif;
+  --font-sans: "DM Sans Variable", "DM Sans", system-ui, -apple-system, sans-serif;
 
   /* Type scale. Nothing in the UI goes below --fs-xs. */
-  --fs-xs: 0.95rem;
-  --fs-sm: 1.05rem;
-  --fs-md: 1.15rem;
-  --fs-lg: 1.3rem;
-  --fs-xl: 1.6rem;
-  --fs-2xl: 2rem;
-  --fs-3xl: 2.5rem;
-  --fs-reading: 1.35rem;
+  --fs-xs: 1rem;
+  --fs-sm: 1.1rem;
+  --fs-md: 1.25rem;
+  --fs-lg: 1.4rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.15rem;
+  --fs-3xl: 2.6rem;
+  --fs-reading: 1.4rem;
 
   --radius-lg: 24px;
   --radius-md: 14px;
@@ -17,66 +20,65 @@
   --radius-pill: 999px;
 
   --gap: 1rem;
-  --sidebar-width: 17rem;
-  --panel-width: 23rem;
-  --reading-width: 36rem;
+  /* The two side columns are deliberately the same width. */
+  --side-width: 21rem;
 
-  /* Each section gets its own pastel ground so the islands read as distinct
-     places rather than one surface cut into pieces. */
-  --page: #e9edfa;
-  --surface-sidebar: #dcefe6;
+  /* Muted, dusty pastels: enough colour to tell the sections apart, not
+     enough to buzz. */
+  --page: #eef0f4;
+  --surface-sidebar: #e5eae6;
   --surface-reader: #ffffff;
-  --surface-panel: #f0e6fb;
-  --surface-player: #dfe9fd;
-  --surface-inset: rgb(255 255 255 / 0.55);
+  --surface-panel: #ecebf3;
+  --surface-player: #e7ebf1;
+  --surface-inset: rgb(255 255 255 / 0.62);
   --surface-raised: #ffffff;
 
-  --text: #1d2033;
-  --text-muted: #4f5470;
-  --text-soft: #6f7593;
+  --text: #23262e;
+  --text-muted: #565b68;
+  --text-soft: #767c8a;
 
-  --border: rgb(29 32 51 / 0.09);
-  --border-strong: rgb(29 32 51 / 0.18);
+  --border: rgb(35 38 46 / 0.09);
+  --border-strong: rgb(35 38 46 / 0.17);
 
-  --accent: #5b5bd6;
-  --accent-hover: #4a4ac4;
+  --accent: #5d6ba8;
+  --accent-hover: #4e5c96;
   --accent-contrast: #ffffff;
-  --accent-mint: #2f9c81;
-  --accent-violet: #8b5cf6;
+  --accent-sage: #4f8a75;
+  --accent-plum: #7c6b9e;
 
-  --highlight-word: #ffd97a;
-  --highlight-sentence: #eef2ff;
-  --selected-word: #d9e0ff;
+  --highlight-word: #f3dfa6;
+  --highlight-sentence: #eff1f6;
+  --selected-word: #dfe3ee;
 
-  --shadow-card: 0 1px 2px rgb(29 32 51 / 0.04), 0 10px 30px rgb(29 32 51 / 0.07);
-  --shadow-raised: 0 2px 6px rgb(29 32 51 / 0.1);
+  --shadow-card: 0 1px 2px rgb(35 38 46 / 0.04), 0 10px 28px rgb(35 38 46 / 0.06);
+  --shadow-raised: 0 2px 6px rgb(35 38 46 / 0.09);
 }
 
 :root[data-theme="dark"] {
-  --page: #101119;
-  --surface-sidebar: #16241f;
-  --surface-reader: #1a1c26;
-  --surface-panel: #211a2e;
-  --surface-player: #161d2c;
+  --page: #121319;
+  --surface-sidebar: #1a211d;
+  --surface-reader: #1b1d24;
+  --surface-panel: #201f2a;
+  --surface-player: #191c24;
   --surface-inset: rgb(255 255 255 / 0.05);
   --surface-raised: rgb(255 255 255 / 0.08);
 
-  --text: #eceef8;
-  --text-muted: #b3b8d0;
-  --text-soft: #8b91ad;
+  --text: #e8eaf0;
+  --text-muted: #aeb3c0;
+  --text-soft: #868c9a;
 
   --border: rgb(255 255 255 / 0.1);
-  --border-strong: rgb(255 255 255 / 0.22);
+  --border-strong: rgb(255 255 255 / 0.2);
 
-  --accent: #a5b0ff;
-  --accent-hover: #b9c1ff;
-  --accent-contrast: #16182a;
-  --accent-mint: #6ddcbc;
-  --accent-violet: #c4a5ff;
+  --accent: #98a4d8;
+  --accent-hover: #aab4e4;
+  --accent-contrast: #171922;
+  --accent-sage: #7fc0a9;
+  --accent-plum: #b3a2d4;
 
-  --highlight-word: #7d6520;
-  --highlight-sentence: rgb(255 255 255 / 0.085);
-  --selected-word: rgb(165 176 255 / 0.22);
+  --highlight-word: #6f5c28;
+  --highlight-sentence: rgb(255 255 255 / 0.075);
+  --selected-word: rgb(152 164 216 / 0.22);
 
   --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35);
   --shadow-raised: 0 2px 8px rgb(0 0 0 / 0.35);
@@ -98,8 +100,8 @@ body {
   margin: 0;
   background: var(--page);
   color: var(--text);
-  font-family: var(--font-serif);
-  font-size: 18px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }

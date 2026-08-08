@@ -14,7 +14,7 @@
 }
 
 .logo {
-  color: var(--accent-mint);
+  color: var(--accent-sage);
   flex: none;
 }
 
@@ -65,7 +65,8 @@
 }
 
 .itemTitle {
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
+  font-weight: 500;
   line-height: 1.3;
 }
 
@@ -92,7 +93,7 @@
   gap: 0.5rem;
   padding: 0.5rem 0.9rem;
   border-radius: var(--radius-pill);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   color: var(--text-muted);
   background: var(--surface-inset);
   transition: color 130ms ease, background-color 130ms ease;
