@@ -1,7 +1,8 @@
 .reader {
-  flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 3.5rem 2rem 4rem;
+  background: var(--surface-reader);
+  padding: 3.5rem 2.5rem 4rem;
 }
 
 .article {
@@ -10,64 +11,56 @@
 }
 
 .header {
-  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2.75rem;
 }
 
 .title {
-  margin: 0 0 0.4rem;
-  font-size: 1.9rem;
-  font-weight: 500;
-  line-height: 1.2;
+  margin: 0;
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  line-height: 1.15;
 }
 
 .meta {
-  display: flex;
-  gap: 0.75rem;
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-faint);
-}
-
-.level {
-  color: var(--accent);
+  margin: 0.15rem 0 0;
+  font-size: var(--fs-xs);
+  color: var(--text-soft);
 }
 
 .paragraph {
-  margin: 0 0 1.5rem;
-  font-size: 1.24rem;
-  line-height: 1.85;
+  margin: 0 0 1.6rem;
+  font-size: var(--fs-reading);
+  line-height: 1.95;
 }
 
 .sentence {
-  border-radius: 3px;
-  transition: background-color 120ms ease;
+  border-radius: var(--radius-sm);
+  transition: background-color 140ms ease;
 }
 
 .sentence[data-active="true"] {
   background: var(--highlight-sentence);
-  box-shadow: 0 0 0 3px var(--highlight-sentence);
+  box-shadow: 0 0 0 4px var(--highlight-sentence);
 }
 
-/* Rendered as a button for keyboard access, but it has to flow and wrap
-   exactly like the text around it. */
+/* Keyboard-operable, but it must flow and wrap exactly like plain text. */
 .word {
-  display: inline;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  line-height: inherit;
-  border-radius: 3px;
-  transition: background-color 100ms ease;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 110ms ease;
 }
 
 .word:hover {
   background: var(--selected-word);
-  box-shadow: 0 0 0 2px var(--selected-word);
+  box-shadow: 0 0 0 3px var(--selected-word);
 }
 
 .word[data-active="true"] {
   background: var(--highlight-word);
-  box-shadow: 0 0 0 2px var(--highlight-word);
+  box-shadow: 0 0 0 3px var(--highlight-word);
 }
 
 .word[data-selected="true"] {
@@ -75,5 +68,11 @@
 }
 
 .word[data-selected="true"]:hover {
-  box-shadow: 0 0 0 2px var(--selected-word), inset 0 -2px 0 var(--accent);
+  box-shadow: 0 0 0 3px var(--selected-word), inset 0 -2px 0 var(--accent);
+}
+
+@media (max-width: 62rem) {
+  .reader {
+    padding: 2.5rem 1.75rem 3rem;
+  }
 }

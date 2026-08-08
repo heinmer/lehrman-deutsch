@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { TextDocument, WordToken } from "../../shared/types";
+import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
 interface Props {
@@ -39,18 +40,18 @@ export function Reader({
   }, [activeSentenceId]);
 
   if (!document) {
-    return <div className={styles.reader} ref={scrollRef} />;
+    return <div className={`island ${styles.reader}`} ref={scrollRef} />;
   }
 
   return (
-    <div className={styles.reader} ref={scrollRef}>
+    <div className={`island ${styles.reader}`} ref={scrollRef}>
       <article className={styles.article}>
         <header className={styles.header}>
-          <h2 className={styles.title}>{document.title}</h2>
-          <p className={styles.meta}>
-            <span className={styles.level}>{document.level}</span>
-            {document.topic && <span>{document.topic}</span>}
-          </p>
+          <LevelBadge level={document.level} />
+          <div>
+            <h2 className={styles.title}>{document.title}</h2>
+            {document.topic && <p className={styles.meta}>{document.topic}</p>}
+          </div>
         </header>
 
         {document.paragraphs.map((paragraph) => (
@@ -64,16 +65,26 @@ export function Reader({
               >
                 {sentence.tokens.map((token, index) =>
                   token.kind === "word" ? (
-                    <button
+                    // A span, not a button: Chrome lays buttons out as atomic
+                    // inline boxes, which lets a line break fall between a word
+                    // and the punctuation that follows it.
+                    <span
                       key={token.id}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       className={styles.word}
                       data-active={token.id === activeWordId}
                       data-selected={token.id === selectedWordId}
                       onClick={() => onSelectWord(token)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          onSelectWord(token);
+                        }
+                      }}
                     >
                       {token.text}
-                    </button>
+                    </span>
                   ) : (
                     <span key={`${sentence.id}p${index}`}>{token.text}</span>
                   ),

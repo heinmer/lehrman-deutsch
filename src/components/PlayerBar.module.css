@@ -1,72 +1,140 @@
 .bar {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.75rem 2rem;
-  border-top: 1px solid var(--border);
-  background: var(--bg-panel);
+  gap: 1.4rem;
+  padding: 1rem 1.5rem;
+  background: var(--surface-player);
 }
 
 .play {
   display: grid;
   place-items: center;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 3.25rem;
+  height: 3.25rem;
   flex: none;
   border-radius: 50%;
   background: var(--accent);
   color: var(--accent-contrast);
+  box-shadow: var(--shadow-raised);
+  transition: background-color 130ms ease, transform 130ms ease;
+}
+
+.play:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: scale(1.05);
 }
 
 .play:disabled {
-  opacity: 0.4;
+  opacity: 0.45;
   cursor: default;
-}
-
-.time {
-  font-size: 0.8rem;
-  font-variant-numeric: tabular-nums;
-  color: var(--text-faint);
-  flex: none;
 }
 
 .scrubber {
   flex: 1;
   min-width: 0;
-  height: 3px;
+  height: 1.25rem;
   appearance: none;
-  background: var(--border-strong);
-  border-radius: 2px;
+  background: none;
   cursor: pointer;
+}
+
+.scrubber::-webkit-slider-runnable-track {
+  height: 0.6rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    to right,
+    var(--accent) 0 var(--progress),
+    var(--border-strong) var(--progress) 100%
+  );
+}
+
+.scrubber::-moz-range-track {
+  height: 0.6rem;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(
+    to right,
+    var(--accent) 0 var(--progress),
+    var(--border-strong) var(--progress) 100%
+  );
 }
 
 .scrubber::-webkit-slider-thumb {
   appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.33rem;
   border-radius: 50%;
   background: var(--accent);
+  border: 3px solid var(--surface-player);
+  box-shadow: var(--shadow-raised);
 }
 
 .scrubber::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
-  border: none;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 50%;
   background: var(--accent);
+  border: 3px solid var(--surface-player);
+  box-shadow: var(--shadow-raised);
+}
+
+.scrubber:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Time and speed sat side by side and blurred together, so each gets its own
+   surface and they are pushed apart. */
+.time {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex: none;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.timeNow {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.timeSep {
+  color: var(--text-soft);
+}
+
+.speed {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  padding-left: 1.4rem;
+  border-left: 1px solid var(--border);
+}
+
+.speedIcon {
+  color: var(--text-soft);
 }
 
 .rates {
   display: flex;
-  gap: 0.15rem;
-  flex: none;
+  gap: 0.2rem;
+  padding: 0.2rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
 }
 
 .rate {
-  padding: 0.15rem 0.4rem;
-  font-size: 0.78rem;
-  border-radius: 4px;
-  color: var(--text-faint);
+  padding: 0.28rem 0.65rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  transition: background-color 130ms ease, color 130ms ease;
 }
 
 .rate:hover {
@@ -74,6 +142,19 @@
 }
 
 .rate[aria-pressed="true"] {
-  background: var(--bg-raised);
+  background: var(--surface-raised);
   color: var(--accent);
+  font-weight: 600;
+  box-shadow: var(--shadow-raised);
+}
+
+@media (max-width: 62rem) {
+  .bar {
+    gap: 1rem;
+    padding: 0.85rem 1.1rem;
+  }
+
+  .speed {
+    padding-left: 1rem;
+  }
 }

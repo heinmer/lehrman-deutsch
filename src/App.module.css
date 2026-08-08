@@ -1,44 +1,55 @@
+/* Three islands floating on the page ground. The panel column exists whether
+   or not a word is selected, so opening it never shifts the text. */
 .app {
   display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-  height: 100%;
-}
-
-.app[data-panel-open="true"] {
   grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--panel-width);
+  gap: var(--gap);
+  padding: var(--gap);
+  height: 100%;
 }
 
 .main {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: var(--gap);
   min-width: 0;
-  height: 100%;
 }
 
 .error {
   max-width: var(--reading-width);
   margin: 0 auto;
   padding: 6rem 1.5rem;
+  font-size: var(--fs-md);
 }
 
 .error h1 {
   font-weight: 500;
-  font-size: 1.6rem;
+  font-size: var(--fs-2xl);
 }
 
 .error code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
-  background: var(--bg-panel);
-  padding: 0.1em 0.35em;
-  border-radius: 3px;
+  background: var(--surface-inset);
+  padding: 0.15em 0.4em;
+  border-radius: var(--radius-sm);
 }
 
-/* Below this width the three columns stop fitting, so the word panel floats
-   above the text instead of squeezing it. */
-@media (max-width: 60rem) {
-  .app,
-  .app[data-panel-open="true"] {
-    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+@media (max-width: 78rem) {
+  :root {
+    --sidebar-width: 15rem;
+    --panel-width: 20rem;
+  }
+}
+
+/* Too narrow for three columns: the sidebar collapses to the reader plus the
+   panel, which still keeps its reserved place. */
+@media (max-width: 62rem) {
+  .app {
+    grid-template-columns: minmax(0, 1fr) var(--panel-width);
+  }
+
+  .app > :first-child {
+    display: none;
   }
 }

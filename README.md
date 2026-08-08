@@ -108,7 +108,10 @@ src/
 
 - Word highlighting follows the engine's own timings, so it stays in sync at
   any playback speed.
-- Clicking a word opens the panel; `Esc` closes it. "Play text from here"
-  jumps the narration to that word.
+- Clicking a word opens the panel and moves the narration to that word,
+  without changing whether it is playing. `Esc` closes the panel.
 - Attribution: word recordings and dictionary content come from Wiktionary and
-  Wikimedia Commons, licensed CC BY-SA.
+  Wikimedia Commons, licensed CC BY-SA. The licence asks for attribution when
+  the work is *distributed*; this credit covers the local, personal use the
+  project is built for. If you ever publish this site, put the credit back in
+  the interface as well.

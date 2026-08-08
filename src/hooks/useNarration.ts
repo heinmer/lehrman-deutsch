@@ -16,8 +16,8 @@ export interface Narration {
   activeWordId: string | null;
   activeSentenceId: string | null;
   toggle: () => void;
+  /** Moves the playhead without changing whether audio is playing. */
   seek: (seconds: number) => void;
-  playFrom: (seconds: number) => void;
   changeRate: (rate: number) => void;
 }
 
@@ -153,15 +153,6 @@ export function useNarration(src: string | null, paragraphs: Paragraph[]): Narra
     setCurrentTime(seconds);
   }, []);
 
-  const playFrom = useCallback((seconds: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = seconds;
-    setCurrentTime(seconds);
-    void audio.play();
-    setIsPlaying(true);
-  }, []);
-
   const activeIndex = findActive(timeline, currentTime);
   const active = activeIndex >= 0 ? timeline[activeIndex] : null;
 
@@ -175,7 +166,6 @@ export function useNarration(src: string | null, paragraphs: Paragraph[]): Narra
     activeSentenceId: active?.sentenceId ?? null,
     toggle,
     seek,
-    playFrom,
     changeRate: setRate,
   };
 }

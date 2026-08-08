@@ -54,6 +54,19 @@ export function App() {
     document?.paragraphs ?? NO_PARAGRAPHS,
   );
 
+  const { seek } = narration;
+
+  // Clicking a word also moves the narration there. Playback state is left
+  // alone: if it was playing it keeps going from the new spot, if it was
+  // paused it stays paused and simply waits there.
+  const selectWord = useCallback(
+    (token: WordToken) => {
+      setSelectedWord(token);
+      if (token.start !== null) seek(token.start);
+    },
+    [seek],
+  );
+
   const closePanel = useCallback(() => setSelectedWord(null), []);
 
   useEffect(() => {
@@ -78,10 +91,9 @@ export function App() {
   }
 
   const entry = selectedWord ? document?.dictionary[selectedWord.key] ?? null : null;
-  const selectedStart = selectedWord?.start ?? null;
 
   return (
-    <div className={styles.app} data-panel-open={selectedWord !== null}>
+    <div className={styles.app}>
       <Sidebar
         texts={texts}
         activeSlug={slug}
@@ -96,21 +108,12 @@ export function App() {
           activeWordId={narration.activeWordId}
           activeSentenceId={narration.activeSentenceId}
           selectedWordId={selectedWord?.id ?? null}
-          onSelectWord={setSelectedWord}
+          onSelectWord={selectWord}
         />
-        {document && <PlayerBar narration={narration} />}
+        <PlayerBar narration={narration} />
       </main>
 
-      {selectedWord && (
-        <WordPanel
-          token={selectedWord}
-          entry={entry}
-          onClose={closePanel}
-          onPlayFromWord={
-            selectedStart !== null ? () => narration.playFrom(selectedStart) : null
-          }
-        />
-      )}
+      <WordPanel token={selectedWord} entry={entry} onClose={closePanel} />
     </div>
   );
 }

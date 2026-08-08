@@ -1,17 +1,17 @@
 import { useCallback, useRef } from "react";
+import { CornerDownRight, MousePointerClick, Volume2, X } from "lucide-react";
 import type { DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
 import { genderArticle, posLabel } from "../lib/format";
 import styles from "./WordPanel.module.css";
 
 interface Props {
-  token: WordToken;
+  /** Null when no word is selected — the island stays, holding its place. */
+  token: WordToken | null;
   entry: DictionaryEntry | null;
   onClose: () => void;
-  /** Restarts the narration at this word; null when it has no timing. */
-  onPlayFromWord: (() => void) | null;
 }
 
-export function WordPanel({ token, entry, onClose, onPlayFromWord }: Props) {
+export function WordPanel({ token, entry, onClose }: Props) {
   const clipRef = useRef<HTMLAudioElement | null>(null);
 
   const playClip = useCallback((src: string) => {
@@ -21,57 +21,58 @@ export function WordPanel({ token, entry, onClose, onPlayFromWord }: Props) {
     void clip.play();
   }, []);
 
-  // An inflected form usually has no recording of its own; the lemma's is the
-  // next best thing, and it is labelled as such.
+  if (!token) {
+    return (
+      <aside className={`island ${styles.panel}`} aria-label="Word details">
+        <div className={styles.placeholder}>
+          <MousePointerClick size={30} strokeWidth={1.5} />
+          <p>Click any word to hear it and see what it means.</p>
+        </div>
+      </aside>
+    );
+  }
+
+  // An inflected form rarely has a recording of its own; the lemma's is the
+  // next best thing, and it is labelled with the form actually spoken.
   const spoken = entry?.form?.audio ? entry.form : entry?.lemma?.audio ? entry.lemma : null;
   const clip = spoken?.audio ?? null;
   // Inflected forms carry no meaning of their own — the lemma holds it.
   const senseSource = entry?.form?.groups.length ? entry.form : entry?.lemma ?? null;
+  const spokenDiffers = Boolean(spoken && spoken.word.toLowerCase() !== token.text.toLowerCase());
 
   return (
-    <aside className={styles.panel} aria-label="Word details">
+    <aside className={`island ${styles.panel}`} aria-label="Word details">
       <div className={styles.top}>
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-          <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
-            <path
-              d="M3.5 3.5l9 9M12.5 3.5l-9 9"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <X size={20} strokeWidth={2.25} />
         </button>
       </div>
 
       <div className={styles.body}>
-        <div className={styles.headword}>
-          <h3 className={styles.word}>{token.text}</h3>
-          {clip && spoken && (
-            <button
-              type="button"
-              className={styles.speak}
-              onClick={() => playClip(clip.src)}
-              aria-label={`Play pronunciation of ${spoken.word}`}
-            >
-              <SpeakerIcon />
-            </button>
-          )}
+        <h3 className={styles.word}>{token.text}</h3>
+
+        <div className={styles.pronunciation}>
+          <button
+            type="button"
+            className={styles.speak}
+            onClick={clip ? () => playClip(clip.src) : undefined}
+            disabled={!clip}
+            aria-label={clip ? `Play ${spoken?.word}` : "No recording available"}
+            title={clip ? undefined : "No native recording for this word"}
+          >
+            <Volume2 size={26} strokeWidth={2} />
+          </button>
+
+          <div className={styles.pronunciationText}>
+            {entry?.form?.ipa && <p className={styles.ipa}>{entry.form.ipa}</p>}
+            {spokenDiffers && spoken && (
+              <p className={styles.spokenAs}>
+                <CornerDownRight size={15} strokeWidth={2} />
+                {spoken.word}
+              </p>
+            )}
+          </div>
         </div>
-
-        {entry?.form?.ipa && <p className={styles.ipa}>{entry.form.ipa}</p>}
-
-        {clip && spoken && (
-          <p className={styles.audioNote}>
-            Recorded by a native speaker
-            {spoken.word.toLowerCase() !== token.text.toLowerCase() &&
-              ` — the base form “${spoken.word}”`}
-            {clip.tags.length > 0 && ` (${clip.tags.join(", ")})`}
-          </p>
-        )}
-
-        {entry && !clip && (
-          <p className={styles.audioNote}>No native recording available for this word.</p>
-        )}
 
         {entry?.inflectionOf && (
           <p className={styles.inflection}>
@@ -84,24 +85,6 @@ export function WordPanel({ token, entry, onClose, onPlayFromWord }: Props) {
         ) : (
           <p className={styles.empty}>No dictionary entry found for this word.</p>
         )}
-
-        <div className={styles.actions}>
-          {onPlayFromWord && (
-            <button type="button" className={styles.action} onClick={onPlayFromWord}>
-              Play text from here
-            </button>
-          )}
-          {entry?.form && (
-            <a
-              className={styles.action}
-              href={entry.form.wiktionaryUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Wiktionary
-            </a>
-          )}
-        </div>
       </div>
     </aside>
   );
@@ -122,7 +105,7 @@ function Senses({ lexeme }: { lexeme: LexemeInfo }) {
               {group.senses.map((sense, senseIndex) => (
                 <li key={senseIndex}>
                   {sense.tags.length > 0 && (
-                    <span className={styles.tags}>{sense.tags.join(", ")}</span>
+                    <span className={styles.tags}>{sense.tags.join(" · ")}</span>
                   )}
                   {sense.gloss}
                 </li>
@@ -132,20 +115,5 @@ function Senses({ lexeme }: { lexeme: LexemeInfo }) {
         );
       })}
     </div>
-  );
-}
-
-function SpeakerIcon() {
-  return (
-    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
-      <path d="M7 3L4 5.8H2v4.4h2L7 13z" fill="currentColor" />
-      <path
-        d="M10 5.6a3.2 3.2 0 010 4.8M11.9 3.4a6 6 0 010 9.2"
-        stroke="currentColor"
-        strokeWidth="1.3"
-        fill="none"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }
