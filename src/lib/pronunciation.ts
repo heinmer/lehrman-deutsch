@@ -15,14 +15,12 @@ export function pronunciationClip(entry: DictionaryEntry | null): AudioClip | nu
   return spokenLexeme(entry)?.audio ?? null;
 }
 
-let current: HTMLAudioElement | null = null;
-
-/**
- * Plays a single word recording, replacing whatever was playing. Kept apart
- * from the narration: these are short clips that interrupt each other freely.
- */
-export function playClip(src: string): void {
-  current?.pause();
-  current = new Audio(src);
-  void current.play();
+/** Every recording referenced by a text, for prefetching. */
+export function allClipSources(dictionary: Record<string, DictionaryEntry>): string[] {
+  const sources: string[] = [];
+  for (const entry of Object.values(dictionary)) {
+    if (entry.form?.audio) sources.push(entry.form.audio.src);
+    if (entry.lemma?.audio) sources.push(entry.lemma.audio.src);
+  }
+  return sources;
 }

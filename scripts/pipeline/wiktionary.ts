@@ -111,13 +111,36 @@ function parseRecords(body: string): KaikkiEntry[] {
   return records;
 }
 
+/**
+ * Wiktionary writes transcriptions inconsistently — phonemic `/…/`, phonetic
+ * `[…]`, or bare — so every one is stripped and re-wrapped the same way.
+ */
+function normalizeIpa(raw: string): string | null {
+  const body = raw.trim().replace(/^[/[]+/, "").replace(/[/\]]+$/, "").trim();
+  if (!body) return null;
+  return `/${body}/`;
+}
+
+/** Prefers standard German over regional transcriptions. */
 function pickIpa(records: KaikkiEntry[]): string | null {
+  const candidates: Array<{ ipa: string; rank: number }> = [];
+
   for (const record of records) {
     for (const sound of record.sounds ?? []) {
-      if (sound.ipa) return sound.ipa.replace(/^\[|\]$/g, "");
+      if (!sound.ipa) continue;
+      const ipa = normalizeIpa(sound.ipa);
+      if (!ipa) continue;
+
+      const tags = (sound.tags ?? []).map((t) => t.toLowerCase());
+      const regional = tags.some(
+        (t) => t.includes("austria") || t.includes("switzerland") || t.includes("swiss"),
+      );
+      candidates.push({ ipa, rank: regional ? 1 : 0 });
     }
   }
-  return null;
+
+  candidates.sort((a, b) => a.rank - b.rank);
+  return candidates[0]?.ipa ?? null;
 }
 
 /**

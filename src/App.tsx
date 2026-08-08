@@ -4,7 +4,8 @@ import { fetchTextDocument, fetchTextIndex } from "./lib/api";
 import { useAutoSpeak } from "./hooks/useAutoSpeak";
 import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
-import { playClip, pronunciationClip } from "./lib/pronunciation";
+import { allClipSources, pronunciationClip } from "./lib/pronunciation";
+import { playClip, prefetchClips } from "./lib/clipAudio";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
@@ -56,6 +57,11 @@ export function App() {
     document?.audio.src ?? null,
     document?.paragraphs ?? NO_PARAGRAPHS,
   );
+
+  // Decode the text's recordings ahead of time so a click plays instantly.
+  useEffect(() => {
+    if (document) void prefetchClips(allClipSources(document.dictionary));
+  }, [document]);
 
   const { seek, isPlaying } = narration;
 

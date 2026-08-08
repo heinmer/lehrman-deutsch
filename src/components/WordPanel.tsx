@@ -1,7 +1,8 @@
 import { CornerDownRight, MousePointerClick, Volume2, X } from "lucide-react";
 import type { DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
 import { genderArticle, posLabel } from "../lib/format";
-import { playClip, spokenLexeme } from "../lib/pronunciation";
+import { spokenLexeme } from "../lib/pronunciation";
+import { playClip } from "../lib/clipAudio";
 import styles from "./WordPanel.module.css";
 
 interface Props {
@@ -64,9 +65,19 @@ export function WordPanel({ token, entry, onClose }: Props) {
         </div>
 
         {entry?.inflectionOf && (
-          <p className={styles.inflection}>
-            {entry.inflectionNote || `form of ${entry.inflectionOf}`}
-          </p>
+          <div className={styles.inflection}>
+            <p className={styles.inflectionNote}>
+              {entry.inflectionNote || `form of ${entry.inflectionOf}`}
+            </p>
+            {/* Many inflected spellings have no transcription of their own;
+                the lemma's is shown as the lemma's, never as this word's. */}
+            {entry.lemma?.ipa && (
+              <p className={styles.lemmaLine}>
+                <span className={styles.lemmaWord}>{entry.lemma.word}</span>
+                <span className={styles.lemmaIpa}>{entry.lemma.ipa}</span>
+              </p>
+            )}
+          </div>
         )}
 
         {senseSource ? (
