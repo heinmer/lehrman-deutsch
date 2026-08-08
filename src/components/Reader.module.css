@@ -1,0 +1,79 @@
+.reader {
+  flex: 1;
+  overflow-y: auto;
+  padding: 3.5rem 2rem 4rem;
+}
+
+.article {
+  max-width: var(--reading-width);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+}
+
+.title {
+  margin: 0 0 0.4rem;
+  font-size: 1.9rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.meta {
+  display: flex;
+  gap: 0.75rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.level {
+  color: var(--accent);
+}
+
+.paragraph {
+  margin: 0 0 1.5rem;
+  font-size: 1.24rem;
+  line-height: 1.85;
+}
+
+.sentence {
+  border-radius: 3px;
+  transition: background-color 120ms ease;
+}
+
+.sentence[data-active="true"] {
+  background: var(--highlight-sentence);
+  box-shadow: 0 0 0 3px var(--highlight-sentence);
+}
+
+/* Rendered as a button for keyboard access, but it has to flow and wrap
+   exactly like the text around it. */
+.word {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+  border-radius: 3px;
+  transition: background-color 100ms ease;
+}
+
+.word:hover {
+  background: var(--selected-word);
+  box-shadow: 0 0 0 2px var(--selected-word);
+}
+
+.word[data-active="true"] {
+  background: var(--highlight-word);
+  box-shadow: 0 0 0 2px var(--highlight-word);
+}
+
+.word[data-selected="true"] {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.word[data-selected="true"]:hover {
+  box-shadow: 0 0 0 2px var(--selected-word), inset 0 -2px 0 var(--accent);
+}

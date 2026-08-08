@@ -1,0 +1,80 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-right: 1px solid var(--border);
+  background: var(--bg-panel);
+  overflow-y: auto;
+}
+
+.header {
+  padding: 1.6rem 1.25rem 1rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 0 0.5rem;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-radius: var(--radius);
+  color: var(--text-muted);
+}
+
+.item:hover {
+  background: var(--bg-raised);
+  color: var(--text);
+}
+
+.item[aria-current="true"] {
+  background: var(--bg-raised);
+  color: var(--text);
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+
+.itemTitle {
+  font-size: 1.02rem;
+  line-height: 1.3;
+}
+
+.itemMeta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.level {
+  color: var(--accent);
+}
+
+.footer {
+  padding: 1rem 1.25rem 1.5rem;
+}
+
+.themeButton {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.themeButton:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
