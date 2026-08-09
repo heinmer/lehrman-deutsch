@@ -83,14 +83,15 @@
 
 .failedTitle {
   margin: 0.5rem 0 0;
-  font-size: var(--fs-lg);
+  font-size: var(--fs-xl);
   color: var(--text);
 }
 
 .failedDetail {
   margin: 0;
-  max-width: 28rem;
-  font-size: var(--fs-sm);
+  max-width: 32rem;
+  font-size: var(--fs-md);
+  line-height: 1.6;
   color: var(--text-muted);
 }
 
@@ -110,7 +111,7 @@
   min-height: var(--control-height);
   padding: 0 1.25rem;
   border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--accent-contrast);
   background: var(--accent);
 }

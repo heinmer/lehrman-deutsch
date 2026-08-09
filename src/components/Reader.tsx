@@ -13,8 +13,9 @@ interface Props {
   text: TextDocument | null;
   /**
    * Header illustration for this text, as the index gives it — site-root
-   * relative, null when the text has none. Decorative: it repeats the scene
-   * the text describes and is hidden from screen readers.
+   * relative, null when the text has none or the reader has turned pictures
+   * off. Decorative: it repeats the scene the text describes and is hidden
+   * from screen readers.
    */
   image: string | null;
   /** Set when this text failed to load; the rest of the app keeps working. */
@@ -236,7 +237,7 @@ export function Reader({
               from the list, or try this one again.
             </p>
             <button type="button" className={styles.retry} onClick={onRetry}>
-              <RotateCw size={17} strokeWidth={2} />
+              <RotateCw size={19} strokeWidth={2} />
               Try again
             </button>
           </div>
