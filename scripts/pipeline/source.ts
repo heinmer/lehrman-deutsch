@@ -54,14 +54,15 @@ function normalizeBody(body: string): string {
     .join("\n\n");
 }
 
-export async function loadSourceTexts(): Promise<SourceText[]> {
-  const files = (await fs.readdir(PATHS.source))
+/** The directory is a parameter so the loader can be exercised on fixtures. */
+export async function loadSourceTexts(dir: string = PATHS.source): Promise<SourceText[]> {
+  const files = (await fs.readdir(dir))
     .filter((f) => f.endsWith(".md"))
     .sort();
 
   const texts: SourceText[] = [];
   for (const file of files) {
-    const full = path.join(PATHS.source, file);
+    const full = path.join(dir, file);
     const raw = await fs.readFile(full, "utf8");
     const { meta, body } = parseFrontMatter(raw);
 

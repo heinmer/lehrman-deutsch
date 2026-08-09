@@ -39,9 +39,10 @@ async function translateWithDeepl(text: string, key: string): Promise<string | n
 /**
  * True when a "translation" is really the German back again — MyMemory's
  * corpus matches often echo the source, or a fragment of it, especially for
- * short strings like titles.
+ * short strings like titles. Exported for the tests: it is the guard that
+ * keeps untranslated titles out, and it fails quietly when it is wrong.
  */
-function isEcho(source: string, candidate: string): boolean {
+export function isEcho(source: string, candidate: string): boolean {
   const normalise = (value: string) => value.toLowerCase().replace(/\s+/g, " ").trim();
   const from = normalise(source);
   const to = normalise(candidate);

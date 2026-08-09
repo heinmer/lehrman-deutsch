@@ -23,13 +23,22 @@ body is only worth adding when the reason is not obvious from the diff.
 ```bash
 npm run dev              # Vite dev server on http://localhost:5173
 npm run build            # tsc -b && vite build
-npm run typecheck        # tsc -b --noEmit — the only automated check in the repo
+npm run typecheck        # tsc -b --noEmit
+npm test                 # node --test over tests/ — the pure half of the pipeline
 npm run content          # regenerate audio + dictionary for changed texts (needs internet)
 npm run content:force    # regenerate everything, ignoring the incremental cache
 ```
 
-There is no test runner and no linter. `npm run typecheck` plus the browser
-checks described under *Verifying UI and behaviour* are what stands in for them.
+**The tests cover the pipeline's pure functions only** — `alignTimings`,
+`mp3DurationSec`, the tokenizer, `loadSourceTexts`, `foldGerman`/`slugify`,
+`isEcho`. That is not modesty about coverage: those are the functions whose
+regressions are *silent*, because nothing throws when a span lands on the wrong
+word or a title comes back in German. Anything that talks to the network or to
+the DOM is checked the other way, under *Verifying UI and behaviour*. A new
+pure function in `scripts/pipeline/` is expected to arrive with its cases.
+
+`loadSourceTexts` takes its directory as a parameter, and `isEcho` is exported,
+purely so the tests can reach them; neither is called that way in the build.
 
 `npm run content` is slow the first time a text is built — minutes per text,
 not seconds. Wikimedia rate-limits hard, so `scripts/pipeline/http.ts` starts at
