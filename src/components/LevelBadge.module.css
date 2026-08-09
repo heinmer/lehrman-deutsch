@@ -49,7 +49,7 @@
 }
 
 .badge[data-size="sm"] .label {
-  font-size: 15px;
+  font-size: 1.02rem;
 }
 
 .badge[data-size="md"] {

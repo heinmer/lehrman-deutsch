@@ -316,14 +316,15 @@ Two typefaces, deliberately: `--font-serif` (PT Serif) is used *only* for the
 German prose; everything else uses `--font-sans` (DM Sans). Nothing in the UI
 goes below `--fs-xs`.
 
-**The root is at 90%, and the two kinds of size do not share a unit.**
-Everything structural — gaps, paddings, column widths, control heights — is in
-rem, so `html { font-size: 90% }` in `global.css` shrinks the whole layout the
-way the browser's own 90% zoom does. The type scale is in **px** for exactly
-that reason: scaled by a 14.4px root, a scale in rem would put every heading on
-a fraction of a pixel. So a new spacing value goes in rem and a new font size
-goes in px (a whole one), and a font size written in rem anywhere is a bug —
-`--fs-*` is the only place sizes belong.
+**`html { font-size: 90% }` is the one scale knob**, and it only works because
+every size in the app is in rem — the type scale, gaps, paddings, column
+widths, control heights, radii alike. It shrinks the interface exactly as the
+browser's own 90% zoom does, while staying a *percentage* of whatever default
+the reader has set rather than overriding it. Sizes therefore land on
+fractional pixels (`--fs-reading` renders at 20.16px), which is normal and what
+zoom does anyway; do not "fix" that by writing px, and do not restate the 0.9
+in the token values. Anything new belongs in rem too — a px length is for
+hairlines and shadows only.
 
 ## Adding a text
 
