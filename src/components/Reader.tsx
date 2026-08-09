@@ -113,7 +113,7 @@ export function Reader({
     return (
       <div className={`island ${styles.reader}`} ref={scrollRef}>
         <div className={styles.loading} role="status" aria-label="Loading text">
-          <Loader2 size={34} strokeWidth={2} className={styles.spinner} />
+          <Loader2 size={64} strokeWidth={1.75} className={styles.spinner} />
         </div>
       </div>
     );
