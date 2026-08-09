@@ -124,6 +124,11 @@ Renaming a token means renaming it in the components too; grep for it.
 dark themes need it because a drop shadow has nothing to darken, and the flat
 White and Black themes rely on it entirely, having no shadow at all.
 
+`--border` draws lines; `--track` fills areas that must read as "empty but
+present" — the unplayed part of the scrubber, the ring around a theme dot, a
+disabled button. Keeping them apart is what lets White set `--border` to pure
+black without turning the scrubber into one solid black bar.
+
 `scratchpad/check-contrast.mjs` walks every theme and reports WCAG ratios. Body
 text is kept at AAA (7:1), and it also checks the filled accent buttons against
 the surfaces they sit on — that is what caught the speak button disappearing

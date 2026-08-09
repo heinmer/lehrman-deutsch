@@ -66,7 +66,7 @@
   background: linear-gradient(
     to right,
     var(--accent) 0 var(--progress),
-    var(--border-strong) var(--progress) 100%
+    var(--track) var(--progress) 100%
   );
 }
 
@@ -76,7 +76,7 @@
   background: linear-gradient(
     to right,
     var(--accent) 0 var(--progress),
-    var(--border-strong) var(--progress) 100%
+    var(--track) var(--progress) 100%
   );
 }
 

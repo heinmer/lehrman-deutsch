@@ -27,7 +27,7 @@
   --text-soft: #767c8a;
 
   --border: rgb(35 38 46 / 0.09);
-  --border-strong: rgb(35 38 46 / 0.17);
+  --track: rgb(35 38 46 / 0.17);
 
   --accent: #4d5b98;
   --accent-hover: #3e4c86;
@@ -60,7 +60,7 @@
   --text-soft: #868c9a;
 
   --border: rgb(255 255 255 / 0.1);
-  --border-strong: rgb(255 255 255 / 0.2);
+  --track: rgb(255 255 255 / 0.2);
 
   --accent: #98a4d8;
   --accent-hover: #aab4e4;
@@ -93,7 +93,7 @@
   --text-soft: #7a869e;
 
   --border: rgb(223 230 242 / 0.11);
-  --border-strong: rgb(223 230 242 / 0.21);
+  --track: rgb(223 230 242 / 0.21);
 
   --accent: #7aa2d8;
   --accent-hover: #8fb4e6;
@@ -111,9 +111,10 @@
 
 /**
  * White — one flat white sheet: page and every section share it, so the
- * sections are told apart by their hairline borders alone. Black type, no
- * colour. The few greys that remain are functional, not decorative: something
- * has to mark the selected text, the spoken word and the raised chips.
+ * sections are told apart by their borders alone, drawn in pure black rather
+ * than a tinted hairline. No colour anywhere. The few greys that remain are
+ * functional, not decorative: something has to mark the selected text, the
+ * spoken word, the raised chips and the unplayed part of the scrubber.
  */
 :root[data-theme="white"] {
   color-scheme: light;
@@ -130,8 +131,8 @@
   --text-muted: #3a3a3a;
   --text-soft: #6b6b6b;
 
-  --border: rgb(0 0 0 / 0.14);
-  --border-strong: rgb(0 0 0 / 0.3);
+  --border: #000000;
+  --track: #c4c4c4;
 
   --accent: #000000;
   --accent-hover: #2e2e2e;
@@ -142,7 +143,7 @@
   --highlight-sentence: #f2f2f2;
   --selected-word: #dedede;
 
-  --island-border: rgb(0 0 0 / 0.16);
+  --island-border: #000000;
   --shadow-card: none;
   --shadow-raised: none;
 }
@@ -163,8 +164,8 @@
   --text-muted: #c2c2c2;
   --text-soft: #8f8f8f;
 
-  --border: rgb(255 255 255 / 0.16);
-  --border-strong: rgb(255 255 255 / 0.34);
+  --border: #ffffff;
+  --track: #4d4d4d;
 
   --accent: #ffffff;
   --accent-hover: #d6d6d6;
@@ -175,7 +176,7 @@
   --highlight-sentence: rgb(255 255 255 / 0.09);
   --selected-word: rgb(255 255 255 / 0.2);
 
-  --island-border: rgb(255 255 255 / 0.2);
+  --island-border: #ffffff;
   --shadow-card: none;
   --shadow-raised: none;
 }
