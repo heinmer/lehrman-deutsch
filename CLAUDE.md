@@ -191,14 +191,14 @@ as `/…/` so transcriptions look the same everywhere.
   file: taking it over the file let that half-second of silence drag the
   average down, and every clip came out louder than the target by however much
   silence it carried — which is why words used to jump out over the narration.
-  Its value is deliberately *below* the narrations' own speech (0.099–0.114 RMS
-  by voice): matching them by measurement did not match them by ear, since a
-  clip is heard alone in the silence of a paused narration, where the same
-  level reads as louder. K-weighted, clips now sit ~3.4 LU under the voice
-  reading the text. `MIN_GAIN` caps how far a clip can be turned *down*, so it
-  imposes a ceiling of `TARGET_RMS / MIN_GAIN`; these recordings reach 0.196
-  RMS, and a floor set too high leaves the loudest of them above the target
-  however low the target goes.
+  Its value is set so the two paths measure the same: K-weighted (BS.1770, the
+  LUFS weighting), a clip and the narration land within 0.03 LU of each other.
+  Plain RMS is not enough to tune this by — it called them level while they
+  were still 0.6 LU apart. **Chrome is the reference**; Firefox plays the same
+  numbers at audibly different levels, so calibrate there and check elsewhere.
+  `MIN_GAIN` caps how far a clip can be turned *down*, so it imposes a ceiling
+  of `TARGET_RMS / MIN_GAIN`; these recordings reach 0.196 RMS, and a floor set
+  too high leaves the loudest of them stranded above the target.
 - **Playback rises from silence over 40ms when it starts mid-text**
   (`FADE_MS` in `useNarration`). Words are not separated by silence — in these
   narrations the 40ms before a word's start is on median as loud as the word

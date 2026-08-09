@@ -20,13 +20,13 @@ interface PreparedClip {
 }
 
 /**
- * The loudness a clip is brought to, well under the narrations' own speech
- * (0.099–0.114 RMS by voice). Matching them by measurement did not match them
- * by ear: a clip is heard alone, in the silence of a paused narration, where
- * the same level reads as louder. A word is an aside and should sound like
- * one, so it sits a few decibels below the voice reading the text.
+ * The loudness a clip is brought to: the level at which a word and the voice
+ * reading the text measure the same. Set from the K-weighted loudness of both
+ * paths in Chrome, where they now land within a tenth of a decibel of each
+ * other. Firefox is not the reference — it plays the two paths at visibly
+ * different levels from the same numbers.
  */
-const TARGET_RMS = 0.06;
+const TARGET_RMS = 0.088;
 const MAX_GAIN = 8;
 /**
  * How far a clip may be turned *down*. These recordings run up to 0.196 RMS,
