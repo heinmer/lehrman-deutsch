@@ -193,10 +193,13 @@
 .tags {
   display: inline-block;
   margin-right: 0.45rem;
-  padding: 0.1rem 0.5rem;
-  border-radius: var(--radius-pill);
+  padding: 0.15rem 0.55rem;
+  /* Fixed, not a pill: a pill radius is half the height, so a label that wraps
+     to two lines curves so hard it eats its own padding. */
+  border-radius: 0.75rem;
   background: var(--surface-inset);
   font-size: var(--fs-xs);
+  line-height: 1.45;
   color: var(--text-soft);
   vertical-align: 0.05em;
 }
