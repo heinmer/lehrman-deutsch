@@ -62,7 +62,6 @@ export function Sidebar({
       </nav>
 
       <footer className={styles.footer}>
-        <p className={styles.settingLabel}>Theme</p>
         <ThemePicker themeId={theme.themeId} onSelect={theme.setTheme} />
 
         <div className={styles.settingRow}>

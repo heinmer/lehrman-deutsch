@@ -1,12 +1,26 @@
-/* Same height and shape as the settings button beside it. */
-.row {
+/* The label sits inside the control, above its dots. */
+.box {
   display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem 0.8rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.label {
+  margin: 0 0 0 0.1rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.row {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  min-height: var(--control-height);
-  padding: 0 0.85rem;
-  border-radius: var(--radius-pill);
-  background: var(--surface-inset);
 }
 
 /* Separates the dark themes from the light ones. */
