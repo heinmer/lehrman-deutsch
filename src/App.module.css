@@ -11,9 +11,11 @@
   height: 100%;
 }
 
-/* On a wide screen this wrapper is not there at all: the sidebar is a grid
-   child in its own right. It only becomes something below the breakpoint. */
-.aside {
+/* On a wide screen these wrappers are not there at all: the sidebar and the
+   word panel are grid children in their own right. Each only becomes
+   something below its own breakpoint. */
+.aside,
+.panelHost {
   display: contents;
 }
 
@@ -50,11 +52,24 @@
   border-radius: var(--radius-sm);
 }
 
-/* Only ever rendered while the drawer is open. */
+/* Only ever rendered while the drawer is open. It sits above the word panel,
+   because the drawer is in front of it — Escape reads the same order. */
 .scrim {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 48;
+  background: var(--scrim);
+}
+
+/* The same for the panel, and it exists only where the panel is a drawer too:
+   above 48rem the panel is a column of the layout, so nothing beside it may be
+   covered. Rendered whenever a word is chosen; the breakpoint decides whether
+   it is shown. */
+.panelScrim {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 44;
   background: var(--scrim);
 }
 
@@ -98,14 +113,16 @@
   }
 }
 
-/* A phone. The word panel takes the reader's whole width when a word is
-   chosen, instead of squeezing the prose into a column too narrow to read. */
+/* A phone. The word panel leaves the layout in its turn and becomes a drawer
+   of its own — the same arrangement as the sidebar, scrim included — instead
+   of squeezing the prose into a column too narrow to read. */
 @media (max-width: 48rem) {
   .app {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .app > :last-child {
+  .panelHost {
+    display: block;
     position: fixed;
     top: var(--gap);
     right: var(--gap);
@@ -117,16 +134,24 @@
     transition: transform 220ms ease, visibility 0s linear 220ms;
   }
 
-  .app[data-panel="true"] > :last-child {
+  .panelHost[data-open="true"] {
     visibility: visible;
     transform: none;
     transition: transform 220ms ease;
+  }
+
+  .panelHost > * {
+    height: 100%;
+  }
+
+  .panelScrim {
+    display: block;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .aside,
-  .app > :last-child {
+  .panelHost {
     transition: none;
   }
 }

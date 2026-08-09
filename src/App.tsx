@@ -172,7 +172,7 @@ export function App() {
   const entry = selectedWord ? text?.dictionary[selectedWord.key] ?? null : null;
 
   return (
-    <div className={styles.app} data-drawer={drawerOpen} data-panel={selectedWord !== null}>
+    <div className={styles.app}>
       {/* Nothing at all on wide screens — `display: contents`, so the sidebar
           sits in the grid itself. The drawer only exists below the breakpoint. */}
       <div className={styles.aside} data-open={drawerOpen}>
@@ -191,6 +191,14 @@ export function App() {
       </div>
 
       {drawerOpen && <div className={styles.scrim} onClick={closeDrawer} role="presentation" />}
+
+      {/* The panel's own, for where it is a drawer as well. It is rendered
+          whenever a word is chosen and shown only below that breakpoint —
+          above it the panel is a column in the layout, and a click beside it
+          is a click on the reader. */}
+      {selectedWord && (
+        <div className={styles.panelScrim} onClick={closePanel} role="presentation" />
+      )}
 
       <main className={styles.main}>
         <Reader
@@ -211,15 +219,19 @@ export function App() {
         />
       </main>
 
-      <WordPanel
-        token={selectedWord}
-        entry={entry}
-        onClose={closePanel}
-        onPlayFrom={playFromWord}
-        canPlayFrom={
-          narration.isReady && selectedWord !== null && wordStart(selectedWord.id) !== null
-        }
-      />
+      {/* Like the sidebar's wrapper: nothing at all while the panel is a
+          column of the layout, a drawer over the reader below 48rem. */}
+      <div className={styles.panelHost} data-open={selectedWord !== null}>
+        <WordPanel
+          token={selectedWord}
+          entry={entry}
+          onClose={closePanel}
+          onPlayFrom={playFromWord}
+          canPlayFrom={
+            narration.isReady && selectedWord !== null && wordStart(selectedWord.id) !== null
+          }
+        />
+      </div>
     </div>
   );
 }

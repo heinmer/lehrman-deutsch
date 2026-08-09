@@ -266,9 +266,16 @@ as `/…/` so transcriptions look the same everywhere.
   That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
-  wrapping. Below 48rem the word panel behaves the same way, since a third of
-  a phone is not a column the prose can be read in. The player bar wraps down
-  here too: every
+  wrapping. Below 48rem the word panel becomes a drawer in exactly the same
+  way — its own wrapper, its own scrim, closed by clicking beside it — since a
+  third of a phone is not a column the prose can be read in, and a section
+  covering the reader should not leave the reader clickable underneath it.
+  Both wrappers are `display: contents` above their breakpoint, which is what
+  keeps the two sections ordinary grid children while they are in the layout;
+  neither is addressed by position in the grid, which is how `:last-child`
+  used to find the panel. The drawer's scrim sits *above* the panel (48
+  against 45), because the drawer is in front of it and Escape reads the same
+  order. The player bar wraps down here too: every
   control in it is a fixed width and only the scrubber gives, so without
   wrapping the speed and voice controls hung off the side of the window —
   which `overflow: visible` (below) does nothing to stop.
