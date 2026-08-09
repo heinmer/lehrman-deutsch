@@ -19,7 +19,7 @@
 
 .placeholder p {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   line-height: 1.55;
   max-width: 17rem;
 }
@@ -147,7 +147,7 @@
   align-items: center;
   gap: 0.3rem;
   margin: 0.15rem 0 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--text-soft);
 }
 
@@ -160,7 +160,7 @@
 
 .inflectionNote {
   margin: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--text-muted);
 }
@@ -170,7 +170,7 @@
   align-items: baseline;
   gap: 0.5rem;
   margin: 0.35rem 0 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
 }
 
 .lemmaWord {
@@ -217,7 +217,7 @@
 
 .glosses li {
   margin-bottom: 0.55rem;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   line-height: 1.6;
   color: var(--text);
 }
@@ -235,7 +235,7 @@
      to two lines curves so hard it eats its own padding. */
   border-radius: 0.75rem;
   background: var(--surface-inset);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   line-height: 1.45;
   color: var(--text-soft);
   vertical-align: 0.05em;
