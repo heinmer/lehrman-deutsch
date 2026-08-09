@@ -126,13 +126,32 @@ export function App() {
     play();
   }, [selectedWord, wordStart, seek, play]);
 
+  // Narrow screens have no room for the sidebar in the layout, so it becomes a
+  // drawer over the reader. Wide screens never open or close anything — above
+  // the breakpoint the CSS ignores this entirely.
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const openDrawer = useCallback(() => setDrawerOpen(true), []);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+
+  // Choosing a text is what the drawer was opened for, so it closes behind it.
+  const chooseText = useCallback(
+    (next: string) => {
+      selectText(next);
+      setDrawerOpen(false);
+    },
+    [selectText],
+  );
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closePanel();
+      if (event.key !== "Escape") return;
+      // The drawer is in front of the panel, so it is what Escape means first.
+      if (drawerOpen) setDrawerOpen(false);
+      else closePanel();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [closePanel]);
+  }, [closePanel, drawerOpen]);
 
   // The index is the one thing there is no working around: no list, no route.
   if (indexError) {
@@ -151,19 +170,25 @@ export function App() {
   const entry = selectedWord ? document?.dictionary[selectedWord.key] ?? null : null;
 
   return (
-    <div className={styles.app}>
-      <Sidebar
-        texts={texts}
-        activeSlug={slug}
-        onSelect={selectText}
-        theme={theme}
-        voiceId={voice}
-        autoSpeak={autoSpeak}
-        onToggleAutoSpeak={toggleAutoSpeak}
-        seekOnClick={seekOnClick}
-        onToggleSeekOnClick={toggleSeekOnClick}
-        volume={volume}
-      />
+    <div className={styles.app} data-drawer={drawerOpen} data-panel={selectedWord !== null}>
+      {/* Nothing at all on wide screens — `display: contents`, so the sidebar
+          sits in the grid itself. The drawer only exists below the breakpoint. */}
+      <div className={styles.aside} data-open={drawerOpen}>
+        <Sidebar
+          texts={texts}
+          activeSlug={slug}
+          onSelect={chooseText}
+          theme={theme}
+          voiceId={voice}
+          autoSpeak={autoSpeak}
+          onToggleAutoSpeak={toggleAutoSpeak}
+          seekOnClick={seekOnClick}
+          onToggleSeekOnClick={toggleSeekOnClick}
+          volume={volume}
+        />
+      </div>
+
+      {drawerOpen && <div className={styles.scrim} onClick={closeDrawer} role="presentation" />}
 
       <main className={styles.main}>
         <Reader
@@ -176,7 +201,12 @@ export function App() {
           onSelectWord={selectWord}
           onWarmWord={warmWord}
         />
-        <PlayerBar narration={narration} voiceId={voice} onSelectVoice={setVoice} />
+        <PlayerBar
+          narration={narration}
+          voiceId={voice}
+          onSelectVoice={setVoice}
+          onOpenDrawer={openDrawer}
+        />
       </main>
 
       <WordPanel

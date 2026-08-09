@@ -13,6 +13,31 @@
   --popover-ring: transparent;
 }
 
+/* Opens the drawer. There is no drawer while the sidebar is in the layout, so
+   above the breakpoint this control does not exist. */
+.library {
+  display: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: var(--surface-inset);
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.library:hover {
+  color: var(--accent);
+  background: var(--surface-raised);
+}
+
+@media (max-width: 62rem) {
+  .library {
+    display: grid;
+  }
+}
+
 /* Where the scrubber would be: it is the control the message explains, and it
    is the one part of the bar wide enough to hold a sentence. */
 .failed {

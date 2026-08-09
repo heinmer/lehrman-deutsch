@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Pause, Play, RotateCw, SkipBack } from "lucide-react";
+import { Library, Pause, Play, RotateCw, SkipBack } from "lucide-react";
 import type { Narration } from "../hooks/useNarration";
 import { formatTime } from "../lib/format";
 import { VoicePicker } from "./VoicePicker";
@@ -11,9 +11,11 @@ interface Props {
   narration: Narration;
   voiceId: string;
   onSelectVoice: (id: string) => void;
+  /** Only reachable on narrow screens, where the sidebar is a drawer. */
+  onOpenDrawer: () => void;
 }
 
-export function PlayerBar({ narration, voiceId, onSelectVoice }: Props) {
+export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: Props) {
   const { isPlaying, isReady, error, currentTime, duration, rate } = narration;
 
   const progress = duration > 0 ? Math.min(currentTime / duration, 1) * 100 : 0;
@@ -21,6 +23,19 @@ export function PlayerBar({ narration, voiceId, onSelectVoice }: Props) {
   return (
     // The voice menu opens out of the bar and has to measure itself against it.
     <div className={`island ${styles.bar}`} data-popover-boundary>
+      {/* The way back to the text list and the settings once they have left
+          the layout. The player is the one thing always on screen, so it is
+          where this belongs; CSS hides it wherever the sidebar is visible. */}
+      <button
+        type="button"
+        className={styles.library}
+        onClick={onOpenDrawer}
+        aria-label="Texts and settings"
+        title="Texts and settings"
+      >
+        <Library size={21} strokeWidth={2} />
+      </button>
+
       <button
         type="button"
         className={styles.play}

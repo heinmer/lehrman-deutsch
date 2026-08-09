@@ -11,8 +11,20 @@
   height: 100%;
 }
 
+/* On a wide screen this wrapper is not there at all: the sidebar is a grid
+   child in its own right. It only becomes something below the breakpoint. */
+.aside {
+  display: contents;
+}
+
 .main {
   display: grid;
+  /* Both tracks are explicit for the same reason: an implicit one is sized to
+     its content, so the reader would grow past this column rather than wrap
+     inside it, and the player would be pushed off the bottom. `min-width: 0`
+     on the item is not enough — it stops main outgrowing the page, not the
+     reader outgrowing main. */
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr) auto;
   gap: var(--gap);
   min-width: 0;
@@ -38,20 +50,83 @@
   border-radius: var(--radius-sm);
 }
 
+/* Only ever rendered while the drawer is open. */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--scrim);
+}
+
 @media (max-width: 84rem) {
   .app {
     --side-width: 17rem;
   }
 }
 
-/* Too narrow for three columns: the sidebar collapses to the reader plus the
-   panel, which still keeps its reserved place. */
+/* Too narrow for three columns. The sidebar leaves the layout — but it holds
+   the text list, the theme, the volume and both toggles, so it becomes a
+   drawer rather than disappearing, opened from the player bar. */
 @media (max-width: 62rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
   }
 
-  .app > :first-child {
-    display: none;
+  .aside {
+    display: block;
+    position: fixed;
+    top: var(--gap);
+    bottom: var(--gap);
+    left: var(--gap);
+    width: min(21rem, 86vw);
+    z-index: 50;
+    /* Hidden rather than merely offscreen: a drawer nobody can see must not
+       be somewhere the tab key can go. */
+    visibility: hidden;
+    transform: translateX(calc(-100% - var(--gap)));
+    transition: transform 220ms ease, visibility 0s linear 220ms;
+  }
+
+  .aside[data-open="true"] {
+    visibility: visible;
+    transform: none;
+    transition: transform 220ms ease;
+  }
+
+  .aside > * {
+    height: 100%;
+  }
+}
+
+/* A phone. The word panel takes the reader's whole width when a word is
+   chosen, instead of squeezing the prose into a column too narrow to read. */
+@media (max-width: 48rem) {
+  .app {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app > :last-child {
+    position: fixed;
+    top: var(--gap);
+    right: var(--gap);
+    bottom: var(--gap);
+    width: min(23rem, 88vw);
+    z-index: 45;
+    visibility: hidden;
+    transform: translateX(calc(100% + var(--gap)));
+    transition: transform 220ms ease, visibility 0s linear 220ms;
+  }
+
+  .app[data-panel="true"] > :last-child {
+    visibility: visible;
+    transform: none;
+    transition: transform 220ms ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aside,
+  .app > :last-child {
+    transition: none;
   }
 }
