@@ -20,11 +20,12 @@ interface PreparedClip {
 }
 
 /**
- * The loudness a clip is brought to, measured off the narrations so a word
- * does not jump out louder than the voice reading it: their speech sits
- * between 0.099 and 0.114 RMS depending on the voice.
+ * The loudness a clip is brought to. Measured off the narrations, whose speech
+ * sits between 0.099 and 0.114 RMS depending on the voice, then set a little
+ * under them: a word is an aside, and should not arrive louder than the voice
+ * reading the text.
  */
-const TARGET_RMS = 0.11;
+const TARGET_RMS = 0.095;
 const MAX_GAIN = 8;
 const MIN_GAIN = 0.4;
 const PEAK_CEILING = 0.98;
