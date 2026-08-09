@@ -75,7 +75,9 @@
   height: 3.25rem;
   flex: none;
   border-radius: 50%;
-  background: var(--accent-plum);
+  /* Same accent as the play button: both are "hear this", and a second accent
+     colour was too close to the panel's own ground to stand out. */
+  background: var(--accent);
   color: var(--accent-contrast);
   box-shadow: var(--shadow-raised);
   transition: transform 130ms ease, opacity 130ms ease;
@@ -168,7 +170,7 @@
   font-weight: 600;
   letter-spacing: normal;
   text-transform: none;
-  color: var(--accent-sage);
+  color: var(--accent-secondary);
 }
 
 .glosses {

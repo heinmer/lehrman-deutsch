@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-import { DEFAULT_DARK, DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../lib/themes";
+import { useEffect, useState } from "react";
+import { DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../lib/themes";
 
 const STORAGE_KEY = "theme";
 
@@ -12,8 +12,6 @@ export interface ThemeControls {
   themeId: string;
   theme: ThemeInfo | undefined;
   setTheme: (id: string) => void;
-  /** Flips to the counterpart of the current mode, remembering neither. */
-  toggleMode: () => void;
 }
 
 /**
@@ -28,16 +26,9 @@ export function useTheme(): ThemeControls {
     localStorage.setItem(STORAGE_KEY, themeId);
   }, [themeId]);
 
-  const toggleMode = useCallback(() => {
-    setThemeId((current) =>
-      findTheme(current)?.mode === "dark" ? DEFAULT_LIGHT : DEFAULT_DARK,
-    );
-  }, []);
-
   return {
     themeId,
     theme: findTheme(themeId),
     setTheme: setThemeId,
-    toggleMode,
   };
 }

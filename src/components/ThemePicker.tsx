@@ -1,95 +1,36 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Palette } from "lucide-react";
-import { THEMES, type ThemeInfo } from "../lib/themes";
+import { THEMES } from "../lib/themes";
 import styles from "./ThemePicker.module.css";
 
 interface Props {
   themeId: string;
-  theme: ThemeInfo | undefined;
   onSelect: (id: string) => void;
 }
 
-export function ThemePicker({ themeId, theme, onSelect }: Props) {
-  const [open, setOpen] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return undefined;
-
-    const onPointerDown = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOpen(false);
-    };
-
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [open]);
-
-  const light = THEMES.filter((t) => t.mode === "light");
-  const dark = THEMES.filter((t) => t.mode === "dark");
-
+/** All themes at once, as a row of dots — no menu to open. */
+export function ThemePicker({ themeId, onSelect }: Props) {
   return (
-    <div className={styles.root} ref={rootRef}>
-      <button
-        type="button"
-        className={styles.trigger}
-        onClick={() => setOpen((value) => !value)}
-        aria-expanded={open}
-        aria-label="Choose a theme"
-      >
-        <Palette size={19} strokeWidth={2} />
-        {theme?.name ?? "Theme"}
-      </button>
-
-      {open && (
-        <div className={styles.menu} role="listbox" aria-label="Themes">
-          <Group label="Light" themes={light} themeId={themeId} onSelect={onSelect} />
-          <Group label="Dark" themes={dark} themeId={themeId} onSelect={onSelect} />
-        </div>
-      )}
-    </div>
-  );
-}
-
-interface GroupProps {
-  label: string;
-  themes: ThemeInfo[];
-  themeId: string;
-  onSelect: (id: string) => void;
-}
-
-function Group({ label, themes, themeId, onSelect }: GroupProps) {
-  return (
-    <>
-      <p className={styles.groupLabel}>{label}</p>
-      {themes.map((entry) => (
+    <div className={styles.row} role="radiogroup" aria-label="Theme">
+      {THEMES.map((theme) => (
         <button
-          key={entry.id}
+          key={theme.id}
           type="button"
-          role="option"
-          aria-selected={entry.id === themeId}
-          className={styles.option}
-          onClick={() => onSelect(entry.id)}
+          role="radio"
+          aria-checked={theme.id === themeId}
+          aria-label={theme.name}
+          className={styles.dot}
+          onClick={() => onSelect(theme.id)}
         >
           <span
-            className={styles.swatch}
+            className={styles.disc}
             style={{
-              background: entry.swatch[0],
-              borderColor: entry.swatch[1],
+              background: `linear-gradient(135deg, ${theme.swatch[0]} 0 50%, ${theme.swatch[1]} 50% 100%)`,
             }}
-          >
-            <span className={styles.swatchDot} style={{ background: entry.swatch[2] }} />
+          />
+          <span className={styles.tooltip} aria-hidden="true">
+            {theme.name}
           </span>
-          <span className={styles.optionName}>{entry.name}</span>
-          {entry.id === themeId && <Check size={17} strokeWidth={2.5} />}
         </button>
       ))}
-    </>
+    </div>
   );
 }

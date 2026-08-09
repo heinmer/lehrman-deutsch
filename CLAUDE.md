@@ -111,16 +111,23 @@ every colour. Change the token, not the component — no component names a colou
 directly, which is what makes new themes cheap.
 
 **Adding a theme** means: a full token block in `themes.css` under
-`:root[data-theme="<id>"]`, an entry in `src/lib/themes.ts` (its three swatch
-colours are duplicated there for the picker preview), and the id added to the
+`:root[data-theme="<id>"]`, an entry in `src/lib/themes.ts` (its two swatch
+colours are duplicated there for the picker dot), and the id added to the
 `known` list in the inline script in `index.html`. Miss the last one and the
 theme works until reload, then silently falls back.
 
-Dark themes must set a visible `--island-border`: a drop shadow has nothing to
-darken against a dark page, so without it the cards melt into the background.
-`scratchpad/check-contrast.mjs` walks every theme and reports WCAG ratios —
-body text is kept at AAA (7:1) and the reading island at least 1.08:1 against
-the page ground.
+A theme must define *every* token — a missing one is not inherited from another
+theme, it simply goes unset and the declaration is dropped, which is silent.
+Renaming a token means renaming it in the components too; grep for it.
+
+`--island-border` is what separates the sections when their backgrounds cannot:
+dark themes need it because a drop shadow has nothing to darken, and the flat
+White and Black themes rely on it entirely, having no shadow at all.
+
+`scratchpad/check-contrast.mjs` walks every theme and reports WCAG ratios. Body
+text is kept at AAA (7:1), and it also checks the filled accent buttons against
+the surfaces they sit on — that is what caught the speak button disappearing
+into the panel.
 
 Tailwind was considered and rejected: theming here is pure CSS variables, which
 Tailwind v4 would express the same way, so a rewrite would buy nothing.
