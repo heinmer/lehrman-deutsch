@@ -21,6 +21,14 @@ export interface TextSummary {
   wordCount: number;
   /** Length of the narration per voice id; each voice reads at its own pace. */
   durations: Record<string, number>;
+  /**
+   * Header illustration, site-root-relative ("/media/images/…"), absent when
+   * the text has none. It lives here and not on the document on purpose: it is
+   * source material copied across, not something synthesized from the text, so
+   * it stays out of the source hash and changing a picture never costs a
+   * re-narration. The index is rewritten on every run anyway.
+   */
+  image?: string;
 }
 
 export interface TextIndex {

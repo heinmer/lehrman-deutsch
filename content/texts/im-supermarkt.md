@@ -2,6 +2,7 @@
 title: Im Supermarkt
 level: A1
 topic: Everyday life
+image: der-erste-schnee.png
 ---
 
 Herr Klein geht am Morgen in den Supermarkt. Er nimmt einen Wagen und einen Zettel aus der Tasche. Auf dem Zettel stehen Brot, Milch, Eier und Käse.

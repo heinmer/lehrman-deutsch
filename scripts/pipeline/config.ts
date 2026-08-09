@@ -8,12 +8,16 @@ export const ROOT = path.resolve(here, "..", "..");
 export const PATHS = {
   /** Hand-written source texts (Markdown + front matter). */
   source: path.join(ROOT, "content", "texts"),
+  /** Header illustrations, named by a text's `image:` key. Shared between texts. */
+  sourceImages: path.join(ROOT, "content", "images"),
   /** Generated JSON consumed by the app at runtime. */
   data: path.join(ROOT, "public", "data"),
   dataTexts: path.join(ROOT, "public", "data", "texts"),
   /** Generated audio. */
   mediaTexts: path.join(ROOT, "public", "media", "texts"),
   mediaWords: path.join(ROOT, "public", "media", "words"),
+  /** Header illustrations, copied verbatim from content/images. */
+  mediaImages: path.join(ROOT, "public", "media", "images"),
   /** One audition clip per voice, for the picker. */
   mediaVoices: path.join(ROOT, "public", "media", "voices"),
   /** Network responses, kept out of the app bundle. */

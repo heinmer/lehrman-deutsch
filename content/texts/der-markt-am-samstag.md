@@ -2,6 +2,7 @@
 title: Der Markt am Samstag
 level: A1
 topic: Everyday life
+image: der-erste-schnee.png
 ---
 
 Jeden Samstag gehe ich auf den Markt. Der Markt ist auf dem großen Platz vor der Kirche. Er beginnt um acht Uhr am Morgen.

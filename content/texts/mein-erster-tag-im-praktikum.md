@@ -2,6 +2,7 @@
 title: Mein erster Tag im Praktikum
 level: A2
 topic: Work
+image: der-erste-schnee.png
 ---
 
 Letzten Montag habe ich mein Praktikum in einer kleinen Buchhandlung angefangen. Ich war ziemlich nervös, weil ich vorher noch nie in einem Geschäft gearbeitet habe.

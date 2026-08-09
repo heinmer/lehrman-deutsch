@@ -13,6 +13,8 @@ export interface SourceText {
   topic?: string;
   /** Applies to every voice; the reader chooses the voice, not the text. */
   rate: string;
+  /** File name of the header illustration in content/images; absent when none. */
+  image?: string;
   /** Body with paragraphs separated by blank lines. */
   body: string;
   file: string;
@@ -94,6 +96,11 @@ export async function loadSourceTexts(dir: string = PATHS.source): Promise<Sourc
       title,
       level,
       topic: meta.topic || undefined,
+      // A bare file name, like the slug and for the same reason: it names a
+      // file that is copied under public/, so `image: ../../secret.png` must
+      // not reach outside content/images. That the file exists is the build's
+      // business, not the loader's.
+      image: meta.image ? path.basename(meta.image) : undefined,
       rate,
       body: normalized,
       file: full,

@@ -2,6 +2,7 @@
 title: Ein Tag am See
 level: A1
 topic: Summer
+image: der-erste-schnee.png
 ---
 
 Es ist Sommer. Lena und Tom fahren mit dem Fahrrad zum See. Der Weg ist lang, aber schön. Links und rechts stehen hohe Bäume.

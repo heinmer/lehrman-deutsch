@@ -2,6 +2,7 @@
 title: Das Fahrrad meines Großvaters
 level: B1
 topic: Family
+image: der-erste-schnee.png
 ---
 
 Im Keller meiner Großeltern steht ein altes Fahrrad, das seit fast dreißig Jahren niemand mehr benutzt hat. Es ist dunkelgrün, hat einen Ledersattel und wiegt ungefähr so viel wie ein kleiner Schrank. Mein Großvater ist damit jeden Tag zur Arbeit gefahren, bei Regen genauso wie bei Schnee.

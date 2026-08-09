@@ -69,8 +69,9 @@ symptom. Check for a stray `node` process before blaming the incremental logic.
 
 Two halves that meet at one JSON contract, `shared/types.ts`:
 
-- **Build time** (`scripts/`) — reads Markdown from `content/texts/`, hits the
-  network, writes `public/data/*.json` and `public/media/**`.
+- **Build time** (`scripts/`) — reads Markdown from `content/texts/` and header
+  illustrations from `content/images/`, hits the network, writes
+  `public/data/*.json` and `public/media/**`.
 - **Run time** (`src/`) — a React app that only ever *reads* those files. It
   never calls an external service.
 
@@ -160,7 +161,19 @@ Things that are easy to break:
 - **A slug is never taken at its word.** It names a file under `public/` and a
   segment of a URL, so `slug:` from front matter goes through `slugify` like
   everything else, and two texts landing on the same slug is an error rather
-  than a silent overwrite.
+  than a silent overwrite. `image:` is the same kind of name and gets the same
+  treatment — `path.basename`, so it cannot climb out of `content/images/`.
+- **A picture is not made here, so it is not in the hash.** The header
+  illustration is the one thing a text carries that is neither synthesized nor
+  fetched: `copyImages` copies it across before the texts are built, and its
+  path lands in the *index* (`TextSummary.image`) rather than in the document.
+  Both halves of that are on purpose. In the document it would be part of the
+  source hash, and swapping a picture — or giving a finished text its first one
+  — would re-narrate the text in every voice for nothing; the index is rewritten
+  on every run regardless, so the skip path picks the picture up from the
+  *source* and not from the document it just skipped. The app therefore reads
+  the image from the summary beside the document, which is why `App` looks it
+  up by slug and hands it to `Reader` as a prop.
 - **Changing the document shape means bumping `PIPELINE_VERSION`**
   (`scripts/pipeline/config.ts`). It feeds the source hash, so without a bump
   the incremental build skips existing texts and they keep the old shape while
@@ -484,6 +497,7 @@ and clickable like the body, so it counts as content.
 title: Ein Tag am See
 level: A1
 topic: Summer
+image: ein-tag-am-see.png
 ---
 
 Es ist Sommer. Lena und Tom fahren mit dem Fahrrad zum See.
@@ -498,9 +512,17 @@ Nach einer Stunde kommen sie am See an.
 | `topic` | —                                   | Stored but not displayed anywhere  |
 | `slug`  | file name                           | Output file and URL identifier     |
 | `rate`  | `-10%`                              | Speaking rate, applied to every voice |
+| `image` | —                                   | Header illustration in `content/images/` |
 
 There is no `voice:` key: the voice is the reader's setting, not the text's, so
 every text is narrated by all of `shared/voices.ts`.
+
+`image:` is a bare file name in `content/images/`, which is the one directory
+of source material that is *not* generated — the build copies what is named
+into `public/media/images/` and deletes what nothing names. Several texts may
+share one picture, so the copies are keyed by file name and not by slug. It is
+not in the source hash and not in the document (see the pipeline notes), so
+adding or swapping one is a rerun of seconds rather than of narrations.
 
 The sidebar sorts by level then title, so file names do not set the order.
 

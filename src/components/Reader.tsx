@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { CloudOff, Languages, Loader2, RotateCw } from "lucide-react";
 import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
+import { assetUrl } from "../lib/assets";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
@@ -10,6 +11,12 @@ interface Props {
    * component, and this file does reach for real DOM APIs.
    */
   text: TextDocument | null;
+  /**
+   * Header illustration for this text, as the index gives it — site-root
+   * relative, null when the text has none. Decorative: it repeats the scene
+   * the text describes and is hidden from screen readers.
+   */
+  image: string | null;
   /** Set when this text failed to load; the rest of the app keeps working. */
   failedSlug: string | null;
   onRetry: () => void;
@@ -121,6 +128,7 @@ function SentenceView({
 
 export function Reader({
   text,
+  image,
   failedSlug,
   onRetry,
   activeWordId,
@@ -257,6 +265,8 @@ export function Reader({
       {/* The page is in English; this one element is not. A screen reader
           switches voice on it, and the browser hyphenates it by German rules. */}
       <article className={styles.article} lang="de">
+        {image && <img className={styles.cover} src={assetUrl(image)} alt="" />}
+
         <header className={styles.header}>
           <LevelBadge level={text.level} />
           <div>

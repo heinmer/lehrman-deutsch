@@ -170,6 +170,9 @@ export function App() {
   }
 
   const entry = selectedWord ? text?.dictionary[selectedWord.key] ?? null : null;
+  // The header illustration travels in the index rather than the document (see
+  // TextSummary), so it is looked up here beside the text it belongs to.
+  const image = texts.find((summary) => summary.slug === slug)?.image ?? null;
 
   return (
     <div className={styles.app}>
@@ -203,6 +206,7 @@ export function App() {
       <main className={styles.main}>
         <Reader
           text={text}
+          image={image}
           failedSlug={loadError}
           onRetry={retry}
           activeWordId={narration.activeWordId}

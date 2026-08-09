@@ -11,6 +11,19 @@
   width: 100%;
 }
 
+/* The illustration is cropped to a band rather than shown whole: a header is
+   something the reader scrolls past, and its own proportions would decide how
+   much of the text is pushed off screen. */
+.cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  object-fit: cover;
+  margin-bottom: 2.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--surface-inset);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -193,5 +206,15 @@
 @media (max-width: 62rem) {
   .reader {
     padding: 2.5rem 1.75rem 3rem;
+  }
+}
+
+/* A 3:1 band is a wide screen's proportion: on a phone it comes out a hundred
+   pixels tall and nothing in the picture can be made out. It is given back
+   some height at the width where the reader is the whole window. */
+@media (max-width: 48rem) {
+  .cover {
+    aspect-ratio: 2 / 1;
+    margin-bottom: 1.75rem;
   }
 }

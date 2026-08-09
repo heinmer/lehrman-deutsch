@@ -86,6 +86,49 @@ async function buildVoiceSamples(state: BuildState): Promise<void> {
   }
 }
 
+/** Where a text's header illustration is served from, if it has one. */
+function imagePath(source: SourceText): string | undefined {
+  return source.image ? `/media/images/${source.image}` : undefined;
+}
+
+/**
+ * Copies the header illustrations across and sweeps the ones nothing names.
+ *
+ * They are the one part of a text that is not made here — no network, no
+ * synthesis, just a file — so they are handled outside the per-text build and
+ * outside the source hash: swapping a picture must not cost a re-narration.
+ * Several texts may share one image, which is why they are copied by file name
+ * rather than by slug.
+ */
+async function copyImages(sources: SourceText[]): Promise<void> {
+  await ensureDir(PATHS.mediaImages);
+
+  const wanted = new Set<string>();
+  for (const source of sources) {
+    if (!source.image) continue;
+
+    const from = path.join(PATHS.sourceImages, source.image);
+    if (!(await exists(from))) {
+      throw new Error(
+        `${path.basename(source.file)}: image "${source.image}" is not in content/images`,
+      );
+    }
+    await fs.copyFile(from, path.join(PATHS.mediaImages, source.image));
+    wanted.add(source.image);
+  }
+
+  let removed = 0;
+  for (const file of await fs.readdir(PATHS.mediaImages)) {
+    if (wanted.has(file)) continue;
+    await fs.rm(path.join(PATHS.mediaImages, file));
+    removed += 1;
+  }
+
+  log.ok(
+    `images: ${wanted.size} in use` + (removed > 0 ? `, ${removed} no longer named` : ""),
+  );
+}
+
 /**
  * Reads the text once per voice. The words are the same every time; the
  * timings are not, so each voice gets its own audio file and span table.
@@ -276,6 +319,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     topic: source.topic,
     wordCount,
     durations: durationsOf(narrations),
+    image: imagePath(source),
   };
 }
 
@@ -292,6 +336,9 @@ async function main(): Promise<void> {
   log.step("Voices");
   await buildVoiceSamples(state);
   await writeJson(statePath, state);
+
+  log.step("Images");
+  await copyImages(sources);
 
   const summaries: TextSummary[] = [];
 
@@ -317,6 +364,10 @@ async function main(): Promise<void> {
           topic: existing.topic,
           wordCount: countWords(narrationOrder(existing.heading, existing.paragraphs)),
           durations: durationsOf(existing.narrations),
+          // From the source and not from the document: the picture is not part
+          // of what was skipped, so a text that has just been given one picks
+          // it up without rebuilding.
+          image: imagePath(source),
         });
         continue;
       }

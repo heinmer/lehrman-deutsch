@@ -105,6 +105,30 @@ test("the hash follows the text, its title, its level and its rate", async () =>
   }
 });
 
+test("the illustration is a bare file name, never a path out of content/images", async () => {
+  const [plain] = await load({
+    "a.md": "---\ntitle: T\nimage: schnee.png\n---\n\nEs schneit.\n",
+  });
+  assert.equal(plain.image, "schnee.png");
+
+  const [escaping] = await load({
+    "a.md": "---\ntitle: T\nimage: ../../secret.png\n---\n\nEs schneit.\n",
+  });
+  assert.equal(escaping.image, "secret.png");
+
+  const [none] = await load({ "a.md": "---\ntitle: T\n---\n\nEs schneit.\n" });
+  assert.equal(none.image, undefined);
+});
+
+test("a picture is not part of the hash — swapping one must not re-narrate", async () => {
+  const [without] = await load({ "a.md": "---\ntitle: T\n---\n\nEs schneit.\n" });
+  const [with_] = await load({
+    "a.md": "---\ntitle: T\nimage: schnee.png\n---\n\nEs schneit.\n",
+  });
+
+  assert.equal(with_.hash, without.hash);
+});
+
 test("quotes around a front-matter value are not part of it", async () => {
   const [text] = await load({ "a.md": '---\ntitle: "Ein Tag"\n---\n\nEs schneit.\n' });
 
