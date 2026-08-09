@@ -190,6 +190,16 @@ which is a different job from clearing the page: on the one-sheet themes
 "raised" and that strip land within a hundredth of each other and the selection
 vanishes. Measure the chip against the strip, not against the ground.
 
+`--level-a1` … `--level-c2` are the CEFR badges, one hue each so the sidebar
+can be scanned by colour, plus `--level-contrast` for the letters printed on
+them. They are a *scale*, not six unrelated colours: green → teal → blue →
+violet → amber → red in every theme but Paper, which walks olive → moss → gold
+→ orange → brick → wine because it has no blue to spend. The light themes carry
+the scale in dark fills under a white label; the dark themes invert it, since a
+saturated disc on a dark ground goes muddy. Each fill has to clear
+`--level-contrast` by 4.5:1 — the label is the text — so a new theme's six
+belong in the ratio script before they are believed.
+
 `--border` draws lines; `--track` fills areas that must read as "empty but
 present" — the unplayed part of the scrubber, the ring around a theme dot, a
 disabled button. They were one token until White needed strong section outlines

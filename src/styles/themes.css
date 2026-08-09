@@ -44,6 +44,20 @@
   --accent-contrast: #ffffff;
   --accent-secondary: #43806b;
 
+  /* The CEFR badges. Six hues walking green → teal → blue → violet → amber →
+     red, so the levels read as a rising scale and not just six colours; the
+     label sits on the fill, which is why every fill has to clear
+     `--level-contrast` by 4.5:1. Light themes carry the scale in the fill and
+     write on it in white; the dark themes invert that — pale fills, dark
+     label — because a saturated disc on a dark ground goes muddy. */
+  --level-a1: #2e7d51;
+  --level-a2: #12707f;
+  --level-b1: #3a5fa8;
+  --level-b2: #6b4a9e;
+  --level-c1: #a55a17;
+  --level-c2: #a53535;
+  --level-contrast: #ffffff;
+
   --highlight-word: #f3dfa6;
   --highlight-sentence: #eff1f6;
   --selected-word: #dfe3ee;
@@ -78,6 +92,14 @@
   --accent-hover: #aab4e4;
   --accent-contrast: #171922;
   --accent-secondary: #7fc0a9;
+
+  --level-a1: #7fc79b;
+  --level-a2: #6cc3d0;
+  --level-b1: #93b5ee;
+  --level-b2: #b6a4ef;
+  --level-c1: #e4ad74;
+  --level-c2: #ec9797;
+  --level-contrast: #171922;
 
   --highlight-word: #6f5c28;
   --highlight-sentence: rgb(255 255 255 / 0.075);
@@ -115,6 +137,14 @@
   --accent-hover: #8fb4e6;
   --accent-contrast: #101623;
   --accent-secondary: #79c0b0;
+
+  --level-a1: #7fc79b;
+  --level-a2: #6cc3d0;
+  --level-b1: #93b5ee;
+  --level-b2: #b6a4ef;
+  --level-c1: #e4ad74;
+  --level-c2: #ec9797;
+  --level-contrast: #101623;
 
   --highlight-word: #5c5127;
   --highlight-sentence: rgb(223 230 242 / 0.06);
@@ -158,6 +188,14 @@
   --accent-contrast: #0c1424;
   --accent-secondary: #74c2ab;
 
+  --level-a1: #7fc79b;
+  --level-a2: #6cc3d0;
+  --level-b1: #93b5ee;
+  --level-b2: #b6a4ef;
+  --level-c1: #e4ad74;
+  --level-c2: #ec9797;
+  --level-contrast: #0c1424;
+
   --highlight-word: #394673;
   --highlight-sentence: rgb(198 214 245 / 0.07);
   --selected-word: rgb(139 167 226 / 0.24);
@@ -198,6 +236,18 @@
   --accent-hover: #74351d;
   --accent-contrast: #fdf8ef;
   --accent-secondary: #4f6538;
+
+  /* The level scale with the blue taken out of it, like the rest of Paper:
+     olive → moss → gold → orange → brick → wine. It walks lightness and warmth
+     instead of running round the wheel, which is what keeps six steps apart
+     inside half the hue range. */
+  --level-a1: #4f6538;
+  --level-a2: #68681b;
+  --level-b1: #86610f;
+  --level-b2: #98551a;
+  --level-c1: #8a4126;
+  --level-c2: #7c2f3c;
+  --level-contrast: #fdf8ef;
 
   --highlight-word: #e3cd93;
   --highlight-sentence: #ece3d2;
@@ -244,6 +294,16 @@
   --accent-contrast: #ffffff;
   --accent-secondary: #3f7d68;
 
+  /* A shade deeper than Daylight's: there is no tint under them here, so the
+     discs carry themselves against bare white. */
+  --level-a1: #2b7a4d;
+  --level-a2: #0f6c7b;
+  --level-b1: #3559a2;
+  --level-b2: #654597;
+  --level-c1: #9e5514;
+  --level-c2: #9f3030;
+  --level-contrast: #ffffff;
+
   --highlight-word: #cdd8f3;
   --highlight-sentence: #f4f6fc;
   --selected-word: #dde3f4;
@@ -279,6 +339,14 @@
   --accent-hover: #a6b3e8;
   --accent-contrast: #0b0c11;
   --accent-secondary: #77bda7;
+
+  --level-a1: #7fc79b;
+  --level-a2: #6cc3d0;
+  --level-b1: #93b5ee;
+  --level-b2: #b6a4ef;
+  --level-c1: #e4ad74;
+  --level-c2: #ec9797;
+  --level-contrast: #0b0c11;
 
   --highlight-word: #38406b;
   --highlight-sentence: rgb(219 225 245 / 0.08);

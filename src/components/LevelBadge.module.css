@@ -3,8 +3,29 @@
   display: inline-grid;
   place-items: center;
   flex: none;
-  /* The shape inherits this; the label sits on top of it. */
-  color: var(--accent);
+  /* The shape inherits this; the label sits on top of it. One colour per CEFR
+     level, so the sidebar can be read by hue before the letters are. */
+  color: var(--level-a1);
+}
+
+.badge[data-level="A2"] {
+  color: var(--level-a2);
+}
+
+.badge[data-level="B1"] {
+  color: var(--level-b1);
+}
+
+.badge[data-level="B2"] {
+  color: var(--level-b2);
+}
+
+.badge[data-level="C1"] {
+  color: var(--level-c1);
+}
+
+.badge[data-level="C2"] {
+  color: var(--level-c2);
 }
 
 .shape {
@@ -16,7 +37,7 @@
 
 .label {
   position: relative;
-  color: var(--accent-contrast);
+  color: var(--level-contrast);
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;

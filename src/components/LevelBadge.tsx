@@ -27,7 +27,12 @@ const SHAPE = scallopedPath();
 /** CEFR level on a scalloped badge. */
 export function LevelBadge({ level, size = "md" }: { level: Level; size?: "sm" | "md" }) {
   return (
-    <span className={styles.badge} data-size={size} title={`CEFR level ${level}`}>
+    <span
+      className={styles.badge}
+      data-size={size}
+      data-level={level}
+      title={`CEFR level ${level}`}
+    >
       <svg className={styles.shape} viewBox="0 0 100 100" aria-hidden="true">
         <path d={SHAPE} fill="currentColor" />
       </svg>
