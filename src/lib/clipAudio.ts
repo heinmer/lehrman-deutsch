@@ -20,14 +20,20 @@ interface PreparedClip {
 }
 
 /**
- * The loudness a clip is brought to. Measured off the narrations, whose speech
- * sits between 0.099 and 0.114 RMS depending on the voice, then set a little
- * under them: a word is an aside, and should not arrive louder than the voice
- * reading the text.
+ * The loudness a clip is brought to, well under the narrations' own speech
+ * (0.099–0.114 RMS by voice). Matching them by measurement did not match them
+ * by ear: a clip is heard alone, in the silence of a paused narration, where
+ * the same level reads as louder. A word is an aside and should sound like
+ * one, so it sits a few decibels below the voice reading the text.
  */
-const TARGET_RMS = 0.095;
+const TARGET_RMS = 0.06;
 const MAX_GAIN = 8;
-const MIN_GAIN = 0.4;
+/**
+ * How far a clip may be turned *down*. These recordings run up to 0.196 RMS,
+ * so a floor near the target would leave the loudest fifth of them above it —
+ * the ceiling this imposes is TARGET_RMS / MIN_GAIN.
+ */
+const MIN_GAIN = 0.1;
 const PEAK_CEILING = 0.98;
 /** Silence trimming keeps a little air so the onset is not clipped. */
 const LEAD_IN = 0.015;
