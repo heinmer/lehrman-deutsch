@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Sentence, TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
-import { useAutoSpeak } from "./hooks/useAutoSpeak";
+import { useToggleSetting } from "./hooks/useToggleSetting";
 import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
 import { allClipSources, pronunciationClip } from "./lib/pronunciation";
@@ -16,7 +16,8 @@ const NO_SENTENCES: Sentence[] = [];
 
 export function App() {
   const theme = useTheme();
-  const { autoSpeak, toggleAutoSpeak } = useAutoSpeak();
+  const [autoSpeak, toggleAutoSpeak] = useToggleSetting("auto-speak");
+  const [seekOnClick, toggleSeekOnClick] = useToggleSetting("seek-on-click");
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
   const [slug, setSlug] = useState<string | null>(null);
@@ -71,20 +72,20 @@ export function App() {
 
   const { seek, isPlaying } = narration;
 
-  // Clicking a word always moves the narration there, and never changes
-  // whether it is playing. While it is paused the word's own recording plays,
-  // which would otherwise collide with the narration mid-sentence.
+  // Clicking a word never changes whether the narration is playing. Moving the
+  // playhead to it and speaking the word are each optional; while the
+  // narration runs the clip is suppressed, or it would talk over the sentence.
   const selectWord = useCallback(
     (token: WordToken) => {
       setSelectedWord(token);
-      if (token.start !== null) seek(token.start);
+      if (seekOnClick && token.start !== null) seek(token.start);
 
       if (!isPlaying && autoSpeak) {
         const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
         if (clip) playClip(clip.src);
       }
     },
-    [seek, isPlaying, autoSpeak, document],
+    [seek, isPlaying, autoSpeak, seekOnClick, document],
   );
 
   const closePanel = useCallback(() => setSelectedWord(null), []);
@@ -121,6 +122,8 @@ export function App() {
         theme={theme}
         autoSpeak={autoSpeak}
         onToggleAutoSpeak={toggleAutoSpeak}
+        seekOnClick={seekOnClick}
+        onToggleSeekOnClick={toggleSeekOnClick}
       />
 
       <main className={styles.main}>

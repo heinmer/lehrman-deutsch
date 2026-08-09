@@ -1,16 +1,38 @@
 import { USER_AGENT } from "./config.ts";
 import { log, sleep } from "./util.ts";
 
-/** Minimum gap between requests to the same host, in milliseconds. */
-const HOST_THROTTLE_MS = 350;
+/** Starting gap between requests to the same host, in milliseconds. */
+const BASE_THROTTLE_MS = 350;
+const MAX_THROTTLE_MS = 4000;
 
 const lastRequestAt = new Map<string, number>();
+const hostDelay = new Map<string, number>();
 
 async function throttle(host: string): Promise<void> {
+  const delay = hostDelay.get(host) ?? BASE_THROTTLE_MS;
   const previous = lastRequestAt.get(host) ?? 0;
-  const wait = previous + HOST_THROTTLE_MS - Date.now();
+  const wait = previous + delay - Date.now();
   if (wait > 0) await sleep(wait);
   lastRequestAt.set(host, Date.now());
+}
+
+/**
+ * Back off for the rest of the run once a host rate-limits us. Retrying at the
+ * same pace just collects more 429s: Wikimedia answers those with a ten-second
+ * Retry-After, so pausing briefly between requests is far cheaper than being
+ * turned away.
+ */
+function slowDown(host: string): void {
+  const next = Math.min((hostDelay.get(host) ?? BASE_THROTTLE_MS) * 1.8, MAX_THROTTLE_MS);
+  hostDelay.set(host, next);
+}
+
+/** Ease back towards the base pace while a host keeps saying yes. */
+function speedUp(host: string): void {
+  const current = hostDelay.get(host);
+  if (current && current > BASE_THROTTLE_MS) {
+    hostDelay.set(host, Math.max(current * 0.9, BASE_THROTTLE_MS));
+  }
 }
 
 export class NotFoundError extends Error {}
@@ -37,8 +59,13 @@ export async function fetchWithRetry(
         headers: { "User-Agent": USER_AGENT, ...headers },
       });
 
-      if (response.ok) return response;
+      if (response.ok) {
+        speedUp(host);
+        return response;
+      }
       if (response.status === 404) throw new NotFoundError(url);
+
+      if (response.status === 429) slowDown(host);
 
       const retryAfter = Number(response.headers.get("retry-after"));
       const backoff = Number.isFinite(retryAfter) && retryAfter > 0

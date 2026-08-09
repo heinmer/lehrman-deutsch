@@ -1,4 +1,4 @@
-import { BookOpen, Clock, Type, Volume2, VolumeX } from "lucide-react";
+import { BookOpen, Clock, LocateFixed, LocateOff, Type, Volume2, VolumeX } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
 import type { ThemeControls } from "../hooks/useTheme";
 import { formatTime } from "../lib/format";
@@ -13,6 +13,8 @@ interface Props {
   theme: ThemeControls;
   autoSpeak: boolean;
   onToggleAutoSpeak: () => void;
+  seekOnClick: boolean;
+  onToggleSeekOnClick: () => void;
 }
 
 export function Sidebar({
@@ -22,9 +24,11 @@ export function Sidebar({
   theme,
   autoSpeak,
   onToggleAutoSpeak,
+  seekOnClick,
+  onToggleSeekOnClick,
 }: Props) {
   return (
-    <aside className={`island ${styles.sidebar}`}>
+    <aside className={`island ${styles.sidebar}`} data-tooltip-boundary>
       <header className={styles.header}>
         <BookOpen size={24} strokeWidth={1.75} className={styles.logo} />
         <h1 className={styles.title}>Texts in German</h1>
@@ -65,10 +69,27 @@ export function Sidebar({
           className={styles.setting}
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
-          title="Play a word's recording when you click it, while the narration is paused"
         >
-          {autoSpeak ? <Volume2 size={19} strokeWidth={2} /> : <VolumeX size={19} strokeWidth={2} />}
+          {autoSpeak ? (
+            <Volume2 size={19} strokeWidth={2} />
+          ) : (
+            <VolumeX size={19} strokeWidth={2} />
+          )}
           Say word
+        </button>
+
+        <button
+          type="button"
+          className={styles.setting}
+          onClick={onToggleSeekOnClick}
+          aria-pressed={seekOnClick}
+        >
+          {seekOnClick ? (
+            <LocateFixed size={19} strokeWidth={2} />
+          ) : (
+            <LocateOff size={19} strokeWidth={2} />
+          )}
+          Jump to word
         </button>
       </footer>
     </aside>

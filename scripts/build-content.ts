@@ -175,6 +175,11 @@ async function main(): Promise<void> {
     await writeJson(statePath, state);
   }
 
+  // Easiest first, so the sidebar reads as a course rather than a directory.
+  summaries.sort(
+    (a, b) => a.level.localeCompare(b.level) || a.title.localeCompare(b.title, "de"),
+  );
+
   const index: TextIndex = {
     generatedAt: new Date().toISOString(),
     texts: summaries,
