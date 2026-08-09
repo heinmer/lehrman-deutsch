@@ -133,6 +133,66 @@ async function narrate(
   return narrations;
 }
 
+/**
+ * Deletes what no source text accounts for any more.
+ *
+ * Removing a Markdown file used to leave its JSON, its narrations and its hash
+ * behind for good: the index stopped listing it, so nothing was visibly wrong
+ * while `dist` quietly carried a text that no longer exists. Voices were
+ * already cleaned up this way; texts were not.
+ *
+ * Word recordings are shared between texts, so they are kept as long as *any*
+ * surviving document still names them.
+ */
+async function pruneRemovedTexts(slugs: Set<string>, state: BuildState): Promise<void> {
+  const removed: string[] = [];
+
+  for (const file of await fs.readdir(PATHS.dataTexts)) {
+    if (!file.endsWith(".json")) continue;
+    if (slugs.has(path.basename(file, ".json"))) continue;
+    await fs.rm(path.join(PATHS.dataTexts, file));
+    removed.push(path.basename(file, ".json"));
+  }
+
+  for (const dir of await fs.readdir(PATHS.mediaTexts)) {
+    if (slugs.has(dir)) continue;
+    await fs.rm(path.join(PATHS.mediaTexts, dir), { recursive: true, force: true });
+  }
+
+  for (const slug of Object.keys(state.hashes)) {
+    if (!slugs.has(slug)) delete state.hashes[slug];
+  }
+
+  // Whatever the surviving documents still point at, by file name.
+  const wanted = new Set<string>();
+  for (const slug of slugs) {
+    const document = await readJson<TextDocument>(
+      path.join(PATHS.dataTexts, `${slug}.json`),
+    );
+    for (const entry of Object.values(document?.dictionary ?? {})) {
+      for (const clip of [entry.form?.audio, entry.lemma?.audio]) {
+        if (clip) wanted.add(path.basename(clip.src));
+      }
+    }
+  }
+
+  let orphanedClips = 0;
+  if (await exists(PATHS.mediaWords)) {
+    for (const file of await fs.readdir(PATHS.mediaWords)) {
+      if (wanted.has(file)) continue;
+      await fs.rm(path.join(PATHS.mediaWords, file));
+      orphanedClips += 1;
+    }
+  }
+
+  if (removed.length > 0) {
+    log.ok(`removed ${removed.join(", ")} — no source text any more`);
+  }
+  if (orphanedClips > 0) {
+    log.ok(`removed ${orphanedClips} word recording(s) nothing refers to`);
+  }
+}
+
 async function buildText(source: SourceText): Promise<TextSummary> {
   log.step(`${source.title} (${source.slug})`);
 
@@ -251,6 +311,9 @@ async function main(): Promise<void> {
     state.hashes[source.slug] = source.hash;
     await writeJson(statePath, state);
   }
+
+  await pruneRemovedTexts(new Set(sources.map((source) => source.slug)), state);
+  await writeJson(statePath, state);
 
   // Easiest first, so the sidebar reads as a course rather than a directory.
   summaries.sort(

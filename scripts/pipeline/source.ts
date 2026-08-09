@@ -75,8 +75,22 @@ export async function loadSourceTexts(dir: string = PATHS.source): Promise<Sourc
       throw new Error(`${file}: no body text`);
     }
 
+    // Always through slugify, never taken at its word: the slug names a file
+    // under public/ and a segment of a URL, and `slug: ../../x` in front
+    // matter would write outside the output directory.
+    const slug = slugify(meta.slug || path.basename(file, ".md"));
+    if (!slug) {
+      throw new Error(`${file}: slug "${meta.slug}" has nothing usable in it`);
+    }
+    const clash = texts.find((text) => text.slug === slug);
+    if (clash) {
+      throw new Error(
+        `${file}: slug "${slug}" is already taken by ${path.basename(clash.file)}`,
+      );
+    }
+
     texts.push({
-      slug: meta.slug || slugify(path.basename(file, ".md")),
+      slug,
       title,
       level,
       topic: meta.topic || undefined,
