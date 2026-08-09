@@ -25,9 +25,15 @@
   line-height: 1.15;
 }
 
+.titleTranslation {
+  margin: 0.3rem 0 0;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
 .meta {
-  margin: 0.15rem 0 0;
-  font-size: var(--fs-sm);
+  margin: 0.3rem 0 0;
+  font-size: var(--fs-xs);
   color: var(--text-soft);
 }
 

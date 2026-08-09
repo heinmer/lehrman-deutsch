@@ -40,3 +40,10 @@ export const USER_AGENT =
 
 /** Wiktextract dumps of English Wiktionary's German entries. */
 export const KAIKKI_BASE = "https://kaikki.org/dictionary/German/meaning";
+
+/**
+ * Bump whenever the shape of a generated document changes. It feeds the source
+ * hash, so a format change rebuilds every text instead of leaving old files
+ * missing the new fields.
+ */
+export const PIPELINE_VERSION = 2;

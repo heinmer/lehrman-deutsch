@@ -115,6 +115,8 @@ export interface TextDocument {
   };
   /** The German title, narrated and clickable like the body. */
   heading: Sentence;
+  /** English rendering of the title, shown beneath it. */
+  titleTranslation: string | null;
   paragraphs: Paragraph[];
   /** Keyed by WordToken.key. */
   dictionary: Record<string, DictionaryEntry>;

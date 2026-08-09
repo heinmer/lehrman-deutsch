@@ -120,6 +120,9 @@ export function Reader({
             <h2 className={styles.title}>
               <SentenceView sentence={document.heading} {...shared} />
             </h2>
+            {document.titleTranslation && (
+              <p className={styles.titleTranslation}>{document.titleTranslation}</p>
+            )}
             {document.topic && <p className={styles.meta}>{document.topic}</p>}
           </div>
         </header>

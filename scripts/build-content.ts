@@ -72,6 +72,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
   }
 
   log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
+  const titleTranslation = await translateToEnglish(source.title);
   let translated = 0;
   for (const paragraph of paragraphs) {
     const text = paragraph.sentences.map((s) => s.text).join(" ");
@@ -121,6 +122,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
       voice: source.voice,
     },
     heading,
+    titleTranslation,
     paragraphs,
     dictionary,
   };
