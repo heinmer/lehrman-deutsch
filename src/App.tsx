@@ -77,7 +77,7 @@ export function App() {
       setSelectedWord(token);
 
       const start = wordStart(token.id);
-      if (seekOnClick && start !== null) seek(start);
+      if (seekOnClick && start !== null) seek(start, { fade: true });
 
       if (!isPlaying && autoSpeak) {
         const clip = pronunciationClip(document?.dictionary[token.key] ?? null);

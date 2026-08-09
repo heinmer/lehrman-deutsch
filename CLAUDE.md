@@ -179,6 +179,21 @@ as `/…/` so transcriptions look the same everywhere.
   with ~0.5s of silence before the word, so each is decoded up front, scaled
   towards a common loudness and started at the first real sound. The prefetch
   is also what makes a click instant — playing must not trigger a fetch.
+  `TARGET_RMS` is measured **over the stretch that is played**, not the whole
+  file: taking it over the file let that half-second of silence drag the
+  average down, and every clip came out louder than the target by however much
+  silence it carried — which is why words used to jump out over the narration.
+  Its value is the narrations' own speech level (0.099–0.114 RMS by voice), so
+  the two paths match; re-measure it if the voices change.
+- **Playback rises from silence over 40ms when it starts mid-text**
+  (`FADE_MS` in `useNarration`). Words are not separated by silence — in these
+  narrations the 40ms before a word's start is on median as loud as the word
+  itself — so a jump to a word boundary always catches a little of the word
+  before. The ramp turns that into an attack. It is *not* a timing correction:
+  word timings stay exactly as the engine reported them. The ramp runs on
+  play, on resume, and on a seek that passes `{ fade: true }` while playing —
+  the scrubber deliberately does not, or a drag would duck the volume on every
+  event.
 - **One volume setting, two playback paths.** The sidebar's volume control
   (`useVolumeSetting`) feeds the narration element's `volume` *and*
   `setClipVolume` in `clipAudio.ts`, where it multiplies each clip's own

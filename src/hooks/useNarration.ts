@@ -18,8 +18,11 @@ export interface Narration {
   toggle: () => void;
   /** Starts playback, whether or not it was already running. */
   play: () => void;
-  /** Moves the playhead without changing whether audio is playing. */
-  seek: (seconds: number) => void;
+  /**
+   * Moves the playhead without changing whether audio is playing. `fade` is
+   * for jumps that land on a word: see the ramp below.
+   */
+  seek: (seconds: number, options?: { fade?: boolean }) => void;
   changeRate: (rate: number) => void;
   /**
    * Where a word begins in the voice currently playing, or null when this
@@ -64,6 +67,20 @@ function findActive(timeline: TimedWord[], time: number): number {
 
 const NO_SENTENCES: Sentence[] = [];
 const NO_SPANS: Record<string, Span> = {};
+
+/**
+ * How long playback takes to rise from silence when it starts somewhere in the
+ * middle of the text.
+ *
+ * Words are not separated by silence: in the narrations, the 40ms before a
+ * word's start is on median as loud as the word itself, because the previous
+ * word's last sound runs into it. Beginning exactly at the boundary therefore
+ * always catches a little of the word before, at full level, where it reads as
+ * a stray syllable. Rising over this ramp turns it into an attack instead. The
+ * timings themselves stay exactly as the engine reported them.
+ */
+const FADE_MS = 40;
+const FADE_STEP_MS = 5;
 
 /**
  * Drives the narration of one text in one voice, and reports which word is
@@ -117,6 +134,36 @@ export function useNarration(
   const resumeRef = useRef<{ wordId: string | null; playing: boolean } | null>(null);
   const slugRef = useRef<string | null>(null);
 
+  // The level to end a fade on, read live so changing the volume mid-ramp is
+  // not undone when the ramp finishes.
+  const volumeRef = useRef(volume);
+  const fadeRef = useRef<number | null>(null);
+
+  const stopFade = useCallback(() => {
+    if (fadeRef.current !== null) {
+      window.clearInterval(fadeRef.current);
+      fadeRef.current = null;
+    }
+  }, []);
+
+  const fadeIn = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    stopFade();
+    const startedAt = performance.now();
+    audio.volume = 0;
+
+    fadeRef.current = window.setInterval(() => {
+      const current = audioRef.current;
+      if (!current) return stopFade();
+
+      const progress = Math.min((performance.now() - startedAt) / FADE_MS, 1);
+      current.volume = volumeRef.current * progress;
+      if (progress >= 1) stopFade();
+    }, FADE_STEP_MS);
+  }, [stopFade]);
+
   useEffect(() => {
     if (!track) return undefined;
 
@@ -144,6 +191,7 @@ export function useNarration(
         setCurrentTime(start);
       }
       if (resume.playing) {
+        fadeIn();
         void audio.play();
         setIsPlaying(true);
       }
@@ -158,6 +206,7 @@ export function useNarration(
 
     return () => {
       resumeRef.current = { wordId: activeWordRef.current, playing: playingRef.current };
+      stopFade();
       audio.pause();
       audio.removeEventListener("loadedmetadata", onLoaded);
       audio.removeEventListener("ended", onEnded);
@@ -179,7 +228,9 @@ export function useNarration(
   }, [rate]);
 
   useEffect(() => {
-    if (audioRef.current) audioRef.current.volume = volume;
+    volumeRef.current = volume;
+    // A ramp in progress is heading for this level already; let it get there.
+    if (audioRef.current && fadeRef.current === null) audioRef.current.volume = volume;
   }, [volume]);
 
   useEffect(() => {
@@ -202,31 +253,43 @@ export function useNarration(
     };
   }, [isPlaying]);
 
+  // Resuming also starts mid-word, so it gets the same ramp as a jump does.
   const toggle = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
+      fadeIn();
       void audio.play();
       setIsPlaying(true);
     } else {
+      stopFade();
+      audio.volume = volumeRef.current;
       audio.pause();
       setIsPlaying(false);
     }
-  }, []);
+  }, [fadeIn, stopFade]);
 
   const play = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
+    fadeIn();
     void audio.play();
     setIsPlaying(true);
-  }, []);
+  }, [fadeIn]);
 
-  const seek = useCallback((seconds: number) => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.currentTime = seconds;
-    setCurrentTime(seconds);
-  }, []);
+  const seek = useCallback(
+    (seconds: number, options?: { fade?: boolean }) => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      audio.currentTime = seconds;
+      setCurrentTime(seconds);
+      // Only while it is running: a paused seek is heard when play is pressed,
+      // which fades on its own, and the scrubber would otherwise ramp on every
+      // event of a drag.
+      if (options?.fade && !audio.paused) fadeIn();
+    },
+    [fadeIn],
+  );
 
   const wordStart = useCallback(
     (wordId: string) => spans[wordId]?.[0] ?? null,
