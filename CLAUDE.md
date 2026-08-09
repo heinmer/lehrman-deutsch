@@ -212,9 +212,14 @@ as `/…/` so transcriptions look the same everywhere.
   text failing to load is reported *in the reader's place* with a Try again
   button, because the list, the settings and any narration already playing are
   all still good — replacing the window over one bad fetch threw away a working
-  session. A failed reading is reported the same way, in the scrubber's place
-  (`useNarration` listens for the element's `error`); before that, an
-  unreachable mp3 left every control disabled and silent about why. Both
+  session. A failed reading is reported the same way, in place of the scrubber
+  it explains (`useNarration` listens for the element's `error`); before that,
+  an unreachable mp3 left every control disabled and silent about why. It takes
+  a **whole row** of the bar rather than a slot between the controls — they are
+  all fixed widths and only it gave, so the sentence came out as "This rea…" at
+  every width there is. That is what `data-failed` on the bar is for: a child
+  cannot ask its parent to wrap, and above the phone breakpoint the bar does
+  not. Both
   failures are remembered **against the attempt that produced them**, so asking
   again clears them without anything being reset by hand.
 - **The build writes a `.br` and a `.gz` beside every compressible file.**
