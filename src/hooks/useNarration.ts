@@ -11,6 +11,13 @@ interface TimedWord {
 export interface Narration {
   isPlaying: boolean;
   isReady: boolean;
+  /**
+   * Set when the audio file itself could not be loaded. Without it a missing
+   * or unreachable recording leaves every control disabled and says nothing.
+   */
+  error: string | null;
+  /** Tries the same file again, after a failure. */
+  reload: () => void;
   currentTime: number;
   duration: number;
   rate: number;
@@ -110,6 +117,13 @@ export function useNarration(
   const [duration, setDuration] = useState(0);
   const [rate, setRate] = useState(1);
 
+  // A failure belongs to the file and the attempt that hit it, so choosing
+  // another voice or asking again clears it without anything having to be
+  // reset by hand.
+  const [attempt, setAttempt] = useState(0);
+  const [failure, setFailure] = useState<{ src: string; attempt: number } | null>(null);
+  const reload = useCallback(() => setAttempt((value) => value + 1), []);
+
   const track = useMemo(() => {
     if (!document) return null;
     // Data built before this voice existed still has to play something.
@@ -193,17 +207,22 @@ export function useNarration(
       }
       if (resume.playing) {
         fadeIn();
-        void audio.play();
         setIsPlaying(true);
+        audio.play().catch(() => setIsPlaying(false));
       }
     };
     const onEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
     };
+    const onError = () => {
+      setFailure({ src: track.src, attempt });
+      setIsPlaying(false);
+    };
 
     audio.addEventListener("loadedmetadata", onLoaded);
     audio.addEventListener("ended", onEnded);
+    audio.addEventListener("error", onError);
 
     return () => {
       resumeRef.current = { wordId: activeWordRef.current, playing: playingRef.current };
@@ -211,6 +230,7 @@ export function useNarration(
       audio.pause();
       audio.removeEventListener("loadedmetadata", onLoaded);
       audio.removeEventListener("ended", onEnded);
+      audio.removeEventListener("error", onError);
       audioRef.current = null;
       setIsPlaying(false);
       setIsReady(false);
@@ -220,9 +240,10 @@ export function useNarration(
     // `rate` and `volume` are applied through their own effects; re-creating
     // the element on either would interrupt playback. They are read here only
     // so a text loaded later starts out with the current settings. The slug is
-    // likewise only read, never a reason to reload.
+    // likewise only read, never a reason to reload. `attempt` is: bumping it
+    // is what asking for the file again means.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [track?.src]);
+  }, [track?.src, attempt]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = rate;
@@ -254,29 +275,35 @@ export function useNarration(
     };
   }, [isPlaying]);
 
+  /**
+   * `play()` returns a promise that rejects when the browser refuses — an
+   * autoplay policy, a file that never loaded. Dropping it left the button
+   * showing "playing" over silence, and an unhandled rejection in the console.
+   */
+  const start = useCallback((audio: HTMLAudioElement) => {
+    fadeIn();
+    setIsPlaying(true);
+    audio.play().catch(() => setIsPlaying(false));
+  }, [fadeIn]);
+
   // Resuming also starts mid-word, so it gets the same ramp as a jump does.
   const toggle = useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     if (audio.paused) {
-      fadeIn();
-      void audio.play();
-      setIsPlaying(true);
+      start(audio);
     } else {
       stopFade();
       audio.volume = volumeRef.current;
       audio.pause();
       setIsPlaying(false);
     }
-  }, [fadeIn, stopFade]);
+  }, [start, stopFade]);
 
   const play = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio) return;
-    fadeIn();
-    void audio.play();
-    setIsPlaying(true);
-  }, [fadeIn]);
+    if (audio) start(audio);
+  }, [start]);
 
   const seek = useCallback(
     (seconds: number, options?: { fade?: boolean }) => {
@@ -308,6 +335,11 @@ export function useNarration(
   return {
     isPlaying,
     isReady,
+    error:
+      failure && failure.src === track?.src && failure.attempt === attempt
+        ? "This reading could not be loaded."
+        : null,
+    reload,
     currentTime,
     duration,
     rate,

@@ -13,6 +13,40 @@
   --popover-ring: transparent;
 }
 
+/* Where the scrubber would be: it is the control the message explains, and it
+   is the one part of the bar wide enough to hold a sentence. */
+.failed {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.failed > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
+  color: var(--accent);
+  font-size: var(--fs-xs);
+}
+
+.retry:hover {
+  background: var(--surface-raised);
+}
+
 .play {
   display: grid;
   place-items: center;

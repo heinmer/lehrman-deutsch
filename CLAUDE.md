@@ -168,6 +168,16 @@ as `/…/` so transcriptions look the same everywhere.
 
 ### App behaviour worth knowing
 
+- **Only the index is a fatal error.** Without it there is no list and no
+  route, so it keeps the full-window "Nothing to read yet" screen. A single
+  text failing to load is reported *in the reader's place* with a Try again
+  button, because the list, the settings and any narration already playing are
+  all still good — replacing the window over one bad fetch threw away a working
+  session. A failed reading is reported the same way, in the scrubber's place
+  (`useNarration` listens for the element's `error`); before that, an
+  unreachable mp3 left every control disabled and silent about why. Both
+  failures are remembered **against the attempt that produced them**, so asking
+  again clears them without anything being reset by hand.
 - **The text being read is the URL, not state.** `useSlugRoute` keeps it in
   the hash (`#/der-erste-schnee`), so a text can be linked to and Back means
   something. A hash and not a path because the site is static: a path route

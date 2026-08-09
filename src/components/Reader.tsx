@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Languages, Loader2 } from "lucide-react";
+import { CloudOff, Languages, Loader2, RotateCw } from "lucide-react";
 import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
 interface Props {
   document: TextDocument | null;
+  /** Set when this text failed to load; the rest of the app keeps working. */
+  failedSlug: string | null;
+  onRetry: () => void;
   activeWordId: string | null;
   activeSentenceId: string | null;
   selectedWordId: string | null;
@@ -96,6 +99,8 @@ function SentenceView({
 
 export function Reader({
   document,
+  failedSlug,
+  onRetry,
   activeWordId,
   activeSentenceId,
   selectedWordId,
@@ -145,9 +150,26 @@ export function Reader({
   if (!document) {
     return (
       <div className={`island ${styles.reader}`} ref={scrollRef}>
-        <div className={styles.loading} role="status" aria-label="Loading text">
-          <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />
-        </div>
+        {failedSlug ? (
+          // In the reader's place, not the whole window's: the text list, the
+          // settings and any narration already playing are all still good.
+          <div className={styles.failed} role="alert">
+            <CloudOff size={52} strokeWidth={1.4} />
+            <p className={styles.failedTitle}>This text would not load.</p>
+            <p className={styles.failedDetail}>
+              <code>{failedSlug}</code> could not be fetched. Pick another text
+              from the list, or try this one again.
+            </p>
+            <button type="button" className={styles.retry} onClick={onRetry}>
+              <RotateCw size={17} strokeWidth={2} />
+              Try again
+            </button>
+          </div>
+        ) : (
+          <div className={styles.loading} role="status" aria-label="Loading text">
+            <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />
+          </div>
+        )}
       </div>
     );
   }

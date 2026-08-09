@@ -55,6 +55,57 @@
   }
 }
 
+/* Takes the reader's place, never the window's — the text list and the
+   settings beside it are still perfectly good. */
+.failed {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.75rem;
+  height: 100%;
+  padding: 0 2rem;
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.failedTitle {
+  margin: 0.5rem 0 0;
+  font-size: var(--fs-lg);
+  color: var(--text);
+}
+
+.failedDetail {
+  margin: 0;
+  max-width: 28rem;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.failedDetail code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+}
+
+.retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  min-height: var(--control-height);
+  padding: 0 1.25rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--accent-contrast);
+  background: var(--accent);
+}
+
+.retry:hover {
+  background: var(--accent-hover);
+}
+
 .block {
   margin-bottom: 1.7rem;
 }

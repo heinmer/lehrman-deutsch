@@ -27,7 +27,9 @@ export function App() {
   useEffect(() => setClipVolume(volume.effective), [volume.effective]);
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  // Only the index is fatal: without it there is no list, no route and nothing
+  // to offer. One text failing to load is not a reason to take the rest away.
+  const [indexError, setIndexError] = useState<string | null>(null);
 
   // The text being read lives in the URL, so it can be linked to and the back
   // button means something.
@@ -44,10 +46,18 @@ export function App() {
   const [selection, setSelection] = useState<{ slug: string; token: WordToken } | null>(null);
   const selectedWord = selection?.slug === slug ? selection.token : null;
 
+  // Asking again is a new attempt at the same slug, which is what clears the
+  // failure — the error is remembered against the attempt that produced it.
+  const [attempt, setAttempt] = useState(0);
+  const [failure, setFailure] = useState<{ slug: string; attempt: number } | null>(null);
+  const loadError =
+    !document && failure?.slug === slug && failure.attempt === attempt ? slug : null;
+  const retry = useCallback(() => setAttempt((value) => value + 1), []);
+
   useEffect(() => {
     fetchTextIndex()
       .then((index) => setTexts(index.texts))
-      .catch((cause: unknown) => setError((cause as Error).message));
+      .catch((cause: unknown) => setIndexError((cause as Error).message));
   }, []);
 
   useEffect(() => {
@@ -59,14 +69,14 @@ export function App() {
       .then((document) => {
         if (!cancelled) setLoaded({ slug, document });
       })
-      .catch((cause: unknown) => {
-        if (!cancelled) setError((cause as Error).message);
+      .catch(() => {
+        if (!cancelled) setFailure({ slug, attempt });
       });
 
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, attempt]);
 
   const narration = useNarration(document, voice, volume.effective);
 
@@ -114,11 +124,12 @@ export function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [closePanel]);
 
-  if (error) {
+  // The index is the one thing there is no working around: no list, no route.
+  if (indexError) {
     return (
       <div className={styles.error}>
         <h1>Nothing to read yet</h1>
-        <p>{error}</p>
+        <p>{indexError}</p>
         <p>
           Run <code>npm run content</code> to generate the audio and dictionary
           data, then reload this page.
@@ -147,6 +158,8 @@ export function App() {
       <main className={styles.main}>
         <Reader
           document={document}
+          failedSlug={loadError}
+          onRetry={retry}
           activeWordId={narration.activeWordId}
           activeSentenceId={narration.activeSentenceId}
           selectedWordId={selectedWord?.id ?? null}
