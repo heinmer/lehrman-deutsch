@@ -78,11 +78,9 @@
   transition: background-color 130ms ease, transform 130ms ease;
 }
 
-/* The same swell as the player's play button and the speak button above it —
-   all three are "hear this", and they should answer the pointer alike. */
 .playFrom:hover:not(:disabled) {
   background: var(--accent-hover);
-  transform: scale(1.05);
+  transform: translateY(-1px);
 }
 
 .playFrom:disabled {
@@ -123,7 +121,7 @@
 }
 
 .speak:hover:not(:disabled) {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .speak:disabled {
