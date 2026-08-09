@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { Gauge, Pause, Play, SkipBack } from "lucide-react";
+import { Pause, Play, SkipBack } from "lucide-react";
 import type { Narration } from "../hooks/useNarration";
 import { formatTime } from "../lib/format";
 import { VoicePicker } from "./VoicePicker";
@@ -70,7 +70,6 @@ export function PlayerBar({ narration, voiceId, onSelectVoice }: Props) {
       </div>
 
       <div className={styles.speed}>
-        <Gauge size={17} strokeWidth={2} className={styles.speedIcon} />
         <div className={styles.rates} role="group" aria-label="Playback speed">
           {RATES.map((value) => (
             <button
@@ -84,7 +83,9 @@ export function PlayerBar({ narration, voiceId, onSelectVoice }: Props) {
             </button>
           ))}
         </div>
+      </div>
 
+      <div className={styles.voice}>
         <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
       </div>
     </div>

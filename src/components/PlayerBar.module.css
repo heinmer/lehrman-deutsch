@@ -136,19 +136,16 @@
   color: var(--text-soft);
 }
 
-/* Speed and voice belong together — both are how the text gets read to you —
-   so one rule separates the pair from the time. */
-.speed {
+/* Time, speed and voice each get a rule of their own: three settings in a row
+   blur together otherwise, and the speed strip carries no label to hold it
+   apart from what follows. */
+.speed,
+.voice {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
   flex: none;
   padding-left: 1.4rem;
   border-left: 1px solid var(--border);
-}
-
-.speedIcon {
-  color: var(--text-soft);
 }
 
 .rates {
@@ -187,7 +184,8 @@
     padding: 0.85rem 1.1rem;
   }
 
-  .speed {
+  .speed,
+  .voice {
     padding-left: 1rem;
   }
 }
