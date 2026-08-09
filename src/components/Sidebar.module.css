@@ -93,12 +93,10 @@
   gap: 0.5rem;
   flex: none;
   padding: 1rem 1.1rem 1.25rem;
-  /* Lifts the footer — and the theme menu opening out of it — above the text
-     list and its dividing rule. */
+  /* Lifts the footer — and the theme menu opening out of it — above the
+     text list. */
   position: relative;
   z-index: 2;
-  /* Edge-to-edge rule marking where the texts end and the settings begin. */
-  border-top: 1px solid var(--border);
 }
 
 /* The settings themselves use the shared .control class in global.css. */
