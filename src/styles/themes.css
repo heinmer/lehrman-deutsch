@@ -112,11 +112,10 @@
 }
 
 /**
- * White — one flat white sheet with nothing drawn around the sections at all:
- * page, sidebar, reader, panel and player share the same white and no border
- * separates them. No colour anywhere. The few greys that remain are functional,
- * not decorative: something has to mark the selected text, the spoken word, the
- * raised chips and the unplayed part of the scrubber.
+ * White — the page and every section share one flat white, with nothing drawn
+ * between them. What sits *on* that white is not monochrome: body text is a
+ * very dark grey rather than pure black, and the accents keep the blue of the
+ * other themes, so buttons and badges read as controls instead of ink blots.
  */
 :root[data-theme="white"] {
   color-scheme: light;
@@ -126,34 +125,34 @@
   --surface-reader: #ffffff;
   --surface-panel: #ffffff;
   --surface-player: #ffffff;
-  --surface-inset: rgb(0 0 0 / 0.055);
-  --surface-raised: #f2f2f2;
+  --surface-inset: rgb(26 32 56 / 0.055);
+  --surface-raised: #f3f4f8;
 
-  --text: #000000;
-  --text-muted: #3a3a3a;
-  --text-soft: #6b6b6b;
+  --text: #1c1d22;
+  --text-muted: #494c57;
+  --text-soft: #73778a;
 
-  /* Only ever an internal divider now — the tooltip outline, the rule between
-     the scrubber and the speed control. Kept quiet so it does not read as a
-     stray mark on an otherwise empty sheet. */
-  --border: #d6d6d6;
-  --track: #c4c4c4;
+  /* Only ever an internal divider — the tooltip outline, the rule between the
+     scrubber and the speed control. */
+  --border: #dcdee6;
+  --track: #c6c9d4;
 
-  --accent: #000000;
-  --accent-hover: #2e2e2e;
+  --accent: #44559f;
+  --accent-hover: #37478b;
   --accent-contrast: #ffffff;
-  --accent-secondary: #000000;
+  --accent-secondary: #3f7d68;
 
-  --highlight-word: #cccccc;
-  --highlight-sentence: #f2f2f2;
-  --selected-word: #dedede;
+  --highlight-word: #cdd8f3;
+  --highlight-sentence: #f4f6fc;
+  --selected-word: #dde3f4;
 
   --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
 
-/* Black — the same flat sheet, inverted. */
+/* Black — the same flat sheet inverted, with the same softening: off-white
+   text on true black, and the blue kept for anything interactive. */
 :root[data-theme="black"] {
   color-scheme: dark;
 
@@ -162,24 +161,24 @@
   --surface-reader: #000000;
   --surface-panel: #000000;
   --surface-player: #000000;
-  --surface-inset: rgb(255 255 255 / 0.08);
-  --surface-raised: #1c1c1c;
+  --surface-inset: rgb(219 225 245 / 0.08);
+  --surface-raised: #16181f;
 
-  --text: #ffffff;
-  --text-muted: #c2c2c2;
-  --text-soft: #8f8f8f;
+  --text: #e7e9f0;
+  --text-muted: #a8abb8;
+  --text-soft: #7b7f8e;
 
-  --border: #333333;
-  --track: #4d4d4d;
+  --border: #2b2d36;
+  --track: #474b59;
 
-  --accent: #ffffff;
-  --accent-hover: #d6d6d6;
-  --accent-contrast: #000000;
-  --accent-secondary: #ffffff;
+  --accent: #93a2dd;
+  --accent-hover: #a6b3e8;
+  --accent-contrast: #0b0c11;
+  --accent-secondary: #77bda7;
 
-  --highlight-word: #4a4a4a;
-  --highlight-sentence: rgb(255 255 255 / 0.09);
-  --selected-word: rgb(255 255 255 / 0.2);
+  --highlight-word: #38406b;
+  --highlight-sentence: rgb(219 225 245 / 0.08);
+  --selected-word: rgb(147 162 221 / 0.24);
 
   --island-border: transparent;
   --shadow-card: none;
