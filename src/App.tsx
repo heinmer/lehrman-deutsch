@@ -40,8 +40,10 @@ export function App() {
   // while that is still the text on screen. Deriving them costs a comparison
   // and saves clearing them by hand every time the choice changes — which is
   // the same thing, done later and one render too late.
-  const [loaded, setLoaded] = useState<{ slug: string; document: TextDocument } | null>(null);
-  const document = loaded?.slug === slug ? loaded.document : null;
+  const [loaded, setLoaded] = useState<{ slug: string; text: TextDocument } | null>(null);
+  // Not named `document`: it would shadow the global one for the whole
+  // component, and this file already reaches for `window`.
+  const text = loaded?.slug === slug ? loaded.text : null;
 
   const [selection, setSelection] = useState<{ slug: string; token: WordToken } | null>(null);
   const selectedWord = selection?.slug === slug ? selection.token : null;
@@ -51,7 +53,7 @@ export function App() {
   const [attempt, setAttempt] = useState(0);
   const [failure, setFailure] = useState<{ slug: string; attempt: number } | null>(null);
   const loadError =
-    !document && failure?.slug === slug && failure.attempt === attempt ? slug : null;
+    !text && failure?.slug === slug && failure.attempt === attempt ? slug : null;
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 
   useEffect(() => {
@@ -66,8 +68,8 @@ export function App() {
     let cancelled = false;
 
     fetchTextDocument(slug)
-      .then((document) => {
-        if (!cancelled) setLoaded({ slug, document });
+      .then((loadedText) => {
+        if (!cancelled) setLoaded({ slug, text: loadedText });
       })
       .catch(() => {
         if (!cancelled) setFailure({ slug, attempt });
@@ -78,7 +80,7 @@ export function App() {
     };
   }, [slug, attempt]);
 
-  const narration = useNarration(document, voice, volume.effective);
+  const narration = useNarration(text, voice, volume.effective);
 
   // Recordings are warmed one at a time as the reader reaches a word (see
   // clipAudio); this only tells the cache that the ones still arriving belong
@@ -98,21 +100,21 @@ export function App() {
       if (seekOnClick && start !== null) seek(start, { fade: true });
 
       if (!isPlaying && autoSpeak) {
-        const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
+        const clip = pronunciationClip(text?.dictionary[token.key] ?? null);
         if (clip) playClip(clip.src);
       }
     },
-    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, document, slug],
+    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, text, slug],
   );
 
   // Reaching a word is a good guess that it is about to be clicked, and a
   // fetch started now is finished by the time the click lands.
   const warmWord = useCallback(
     (token: WordToken) => {
-      const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
+      const clip = pronunciationClip(text?.dictionary[token.key] ?? null);
       if (clip) warmClip(clip.src);
     },
-    [document],
+    [text],
   );
 
   const closePanel = useCallback(() => setSelection(null), []);
@@ -167,7 +169,7 @@ export function App() {
     );
   }
 
-  const entry = selectedWord ? document?.dictionary[selectedWord.key] ?? null : null;
+  const entry = selectedWord ? text?.dictionary[selectedWord.key] ?? null : null;
 
   return (
     <div className={styles.app} data-drawer={drawerOpen} data-panel={selectedWord !== null}>
@@ -192,7 +194,7 @@ export function App() {
 
       <main className={styles.main}>
         <Reader
-          document={document}
+          text={text}
           failedSlug={loadError}
           onRetry={retry}
           activeWordId={narration.activeWordId}

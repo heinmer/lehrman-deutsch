@@ -5,7 +5,11 @@ import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
 interface Props {
-  document: TextDocument | null;
+  /**
+   * Not named `document`: as a prop it shadowed the global one throughout the
+   * component, and this file does reach for real DOM APIs.
+   */
+  text: TextDocument | null;
   /** Set when this text failed to load; the rest of the app keeps working. */
   failedSlug: string | null;
   onRetry: () => void;
@@ -116,7 +120,7 @@ function SentenceView({
 }
 
 export function Reader({
-  document,
+  text,
   failedSlug,
   onRetry,
   activeWordId,
@@ -132,10 +136,10 @@ export function Reader({
   // A new text starts with everything in German again. Adjusted while
   // rendering rather than in an effect, so the first frame of the new text is
   // already closed up instead of briefly showing the last one's translations.
-  const [shownSlug, setShownSlug] = useState(document?.slug);
+  const [shownSlug, setShownSlug] = useState(text?.slug);
   const [focusedWordId, setFocusedWordId] = useState<string | null>(null);
-  if (document?.slug !== shownSlug) {
-    setShownSlug(document?.slug);
+  if (text?.slug !== shownSlug) {
+    setShownSlug(text?.slug);
     setOpenTranslations(NONE_OPEN);
     setTitleOpen(false);
     setFocusedWordId(null);
@@ -144,7 +148,7 @@ export function Reader({
   // The word the tab key lands on: wherever the reader last was, or the very
   // first word of the text.
   const firstWordId =
-    document?.heading.tokens.find((token) => token.kind === "word")?.id ?? null;
+    text?.heading.tokens.find((token) => token.kind === "word")?.id ?? null;
   const tabbableId = focusedWordId ?? firstWordId;
 
   const onFocusWord = useCallback((token: WordToken) => setFocusedWordId(token.id), []);
@@ -210,7 +214,7 @@ export function Reader({
     }
   }, [activeSentenceId]);
 
-  if (!document) {
+  if (!text) {
     return (
       <div className={`island ${styles.reader}`} ref={scrollRef}>
         {failedSlug ? (
@@ -254,14 +258,14 @@ export function Reader({
           switches voice on it, and the browser hyphenates it by German rules. */}
       <article className={styles.article} lang="de">
         <header className={styles.header}>
-          <LevelBadge level={document.level} />
+          <LevelBadge level={text.level} />
           <div>
             <h2 className={styles.title}>
               <SentenceView
-                sentence={document.heading}
+                sentence={text.heading}
                 trailingSpace={false}
                 trailing={
-                  document.titleTranslation && (
+                  text.titleTranslation && (
                     <button
                       type="button"
                       className={styles.translateToggle}
@@ -277,15 +281,15 @@ export function Reader({
                 {...shared}
               />
             </h2>
-            {titleOpen && document.titleTranslation && (
+            {titleOpen && text.titleTranslation && (
               <p className={styles.titleTranslation} lang="en">
-                {document.titleTranslation}
+                {text.titleTranslation}
               </p>
             )}
           </div>
         </header>
 
-        {document.paragraphs.map((paragraph) => {
+        {text.paragraphs.map((paragraph) => {
           const open = openTranslations.has(paragraph.id);
           return (
             <div key={paragraph.id} className={styles.block}>
