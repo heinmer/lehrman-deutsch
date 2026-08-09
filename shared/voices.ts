@@ -15,7 +15,11 @@ export interface VoiceInfo {
   name: string;
   /**
    * What this voice says when the reader auditions it. Each one mentions
-   * something true about how it reads, since that is the thing being chosen.
+   * something true about how it reads, since that is the thing being chosen,
+   * and each opens differently so four of them in a row do not blur together.
+   *
+   * Kept to a single sentence: the engine's pause at a full stop is long
+   * enough that the clip sounds finished, and then starts talking again.
    */
   sample: string;
 }
@@ -25,22 +29,22 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-ConradNeural",
     name: "Conrad",
-    sample: "Guten Tag, ich bin Conrad. Ich lese ruhig und deutlich.",
+    sample: "Ich bin Conrad und lese Ihnen die Texte ruhig und deutlich vor.",
   },
   {
     id: "de-DE-SeraphinaMultilingualNeural",
     name: "Seraphina",
-    sample: "Hallo, ich bin Seraphina. So klingt meine Stimme.",
+    sample: "Mein Name ist Seraphina und auch schwierige Wörter spreche ich sauber aus.",
   },
   {
     id: "de-DE-FlorianMultilingualNeural",
     name: "Florian",
-    sample: "Hallo, ich bin Florian. Bei mir geht es zügiger voran.",
+    sample: "Hier spricht Florian, mit etwas mehr Tempo als die anderen drei.",
   },
   {
     id: "de-DE-KillianNeural",
     name: "Killian",
-    sample: "Guten Tag, ich bin Killian. Ich lasse mir Zeit.",
+    sample: "Bei mir, dem Killian, bekommt jeder einzelne Satz ein wenig mehr Zeit.",
   },
 ];
 
