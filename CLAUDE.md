@@ -24,6 +24,7 @@ body is only worth adding when the reason is not obvious from the diff.
 npm run dev              # Vite dev server on http://localhost:5173
 npm run build            # tsc -b && vite build
 npm run typecheck        # tsc -b --noEmit
+npm run lint             # eslint, type-aware; react-hooks is the point of it
 npm test                 # node --test over tests/ — the pure half of the pipeline
 npm run content          # regenerate audio + dictionary for changed texts (needs internet)
 npm run content:force    # regenerate everything, ignoring the incremental cache
@@ -39,6 +40,15 @@ pure function in `scripts/pipeline/` is expected to arrive with its cases.
 
 `loadSourceTexts` takes its directory as a parameter, and `isEcho` is exported,
 purely so the tests can reach them; neither is called that way in the build.
+
+**The linter earns its keep on two rules.** `react-hooks/exhaustive-deps` is
+the one `useNarration` argues with, and its disable comment there was inert
+until there was a linter to disable anything. `react-hooks/set-state-in-effect`
+is the one that shapes the code: state that has to be dropped when the text
+changes is **derived from the text it belongs to** rather than cleared in an
+effect — `App` keeps `{ slug, document }` and `{ slug, token }` together and
+compares, `Reader` adjusts while rendering. Reaching for `useEffect` to reset
+state is the thing to notice; it also costs a frame of the old text.
 
 `npm run content` is slow the first time a text is built — minutes per text,
 not seconds. Wikimedia rate-limits hard, so `scripts/pipeline/http.ts` starts at

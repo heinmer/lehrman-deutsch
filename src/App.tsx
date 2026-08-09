@@ -27,9 +27,17 @@ export function App() {
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
   const [slug, setSlug] = useState<string | null>(null);
-  const [document, setDocument] = useState<TextDocument | null>(null);
-  const [selectedWord, setSelectedWord] = useState<WordToken | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Both of these are stored with the text they belong to and read back only
+  // while that is still the text on screen. Deriving them costs a comparison
+  // and saves clearing them by hand every time the choice changes — which is
+  // the same thing, done later and one render too late.
+  const [loaded, setLoaded] = useState<{ slug: string; document: TextDocument } | null>(null);
+  const document = loaded?.slug === slug ? loaded.document : null;
+
+  const [selection, setSelection] = useState<{ slug: string; token: WordToken } | null>(null);
+  const selectedWord = selection?.slug === slug ? selection.token : null;
 
   useEffect(() => {
     fetchTextIndex()
@@ -44,12 +52,10 @@ export function App() {
     if (!slug) return undefined;
 
     let cancelled = false;
-    setDocument(null);
-    setSelectedWord(null);
 
     fetchTextDocument(slug)
-      .then((loaded) => {
-        if (!cancelled) setDocument(loaded);
+      .then((document) => {
+        if (!cancelled) setLoaded({ slug, document });
       })
       .catch((cause: unknown) => {
         if (!cancelled) setError((cause as Error).message);
@@ -74,7 +80,7 @@ export function App() {
   // narration runs the clip is suppressed, or it would talk over the sentence.
   const selectWord = useCallback(
     (token: WordToken) => {
-      setSelectedWord(token);
+      if (slug) setSelection({ slug, token });
 
       const start = wordStart(token.id);
       if (seekOnClick && start !== null) seek(start, { fade: true });
@@ -84,10 +90,10 @@ export function App() {
         if (clip) playClip(clip.src);
       }
     },
-    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, document],
+    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, document, slug],
   );
 
-  const closePanel = useCallback(() => setSelectedWord(null), []);
+  const closePanel = useCallback(() => setSelection(null), []);
 
   // Unlike clicking a word, this one is a request to hear the text: it starts
   // playback even from a standstill.

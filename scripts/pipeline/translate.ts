@@ -99,7 +99,7 @@ export async function translateToEnglish(text: string): Promise<string | null> {
     return fs.readFile(cacheFile, "utf8");
   }
 
-  let translated: string | null = null;
+  let translated: string | null;
   try {
     translated = key
       ? await translateWithDeepl(text, key)

@@ -29,6 +29,9 @@ interface SentenceProps {
   trailing?: ReactNode;
 }
 
+/** Shared so that resetting to "nothing open" is not a new object each time. */
+const NONE_OPEN: ReadonlySet<string> = new Set();
+
 /** One sentence, every word clickable — used for the title and body alike. */
 function SentenceView({
   sentence,
@@ -99,8 +102,18 @@ export function Reader({
   onSelectWord,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(new Set());
+  const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(NONE_OPEN);
   const [titleOpen, setTitleOpen] = useState(false);
+
+  // A new text starts with everything in German again. Adjusted while
+  // rendering rather than in an effect, so the first frame of the new text is
+  // already closed up instead of briefly showing the last one's translations.
+  const [shownSlug, setShownSlug] = useState(document?.slug);
+  if (document?.slug !== shownSlug) {
+    setShownSlug(document?.slug);
+    setOpenTranslations(NONE_OPEN);
+    setTitleOpen(false);
+  }
 
   const toggleTranslation = (paragraphId: string) => {
     setOpenTranslations((open) => {
@@ -109,12 +122,6 @@ export function Reader({
       return next;
     });
   };
-
-  // A new text starts with everything in German again.
-  useEffect(() => {
-    setOpenTranslations(new Set());
-    setTitleOpen(false);
-  }, [document?.slug]);
 
   // Follow the narration, but only when the spoken sentence has drifted out of
   // view — scrolling on every sentence would fidget under the reader's eyes.
