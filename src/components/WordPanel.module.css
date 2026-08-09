@@ -34,8 +34,8 @@
 .close {
   display: grid;
   place-items: center;
-  width: 2.4rem;
-  height: 2.4rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   color: var(--text-muted);
   transition: background-color 130ms ease, color 130ms ease;

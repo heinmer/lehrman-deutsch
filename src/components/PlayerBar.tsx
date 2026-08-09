@@ -34,7 +34,7 @@ export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: P
         aria-label="Texts and settings"
         title="Texts and settings"
       >
-        <Library size={21} strokeWidth={2} />
+        <Library size={24} strokeWidth={2} />
       </button>
 
       <button

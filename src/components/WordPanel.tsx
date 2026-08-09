@@ -38,7 +38,7 @@ export function WordPanel({ token, entry, onClose, onPlayFrom, canPlayFrom }: Pr
     <aside className={`island ${styles.panel}`} aria-label="Word details">
       <div className={styles.top}>
         <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-          <X size={20} strokeWidth={2.25} />
+          <X size={24} strokeWidth={2.25} />
         </button>
       </div>
 
