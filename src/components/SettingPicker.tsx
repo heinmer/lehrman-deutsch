@@ -1,4 +1,11 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+  type ReactNode,
+} from "react";
 import { ChevronDown } from "lucide-react";
 import styles from "./SettingPicker.module.css";
 
@@ -98,6 +105,38 @@ export function SettingPicker({
     };
   }, [open, trigger]);
 
+  // A list of options answers to the arrow keys, or it is a list only to the
+  // eye. Home and End go to the ends; Escape is handled above.
+  const onMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const step =
+      event.key === "ArrowDown" ? 1 : event.key === "ArrowUp" ? -1 : 0;
+    if (step === 0 && event.key !== "Home" && event.key !== "End") return;
+
+    const items = [...(menuRef.current?.querySelectorAll<HTMLElement>('[role="option"]') ?? [])];
+    if (items.length === 0) return;
+
+    const here = items.indexOf(document.activeElement as HTMLElement);
+    const target =
+      event.key === "Home"
+        ? items[0]
+        : event.key === "End"
+          ? items[items.length - 1]
+          : // Wraps, so the end of a short list is never a dead end.
+            items[(here + step + items.length) % items.length];
+
+    event.preventDefault();
+    target.focus();
+  };
+
+  // Opened from the keyboard, the menu should be where the keyboard is. Not in
+  // hover mode: there the pointer arriving would steal focus from elsewhere.
+  useEffect(() => {
+    if (!open || trigger === "hover") return;
+    const items = menuRef.current?.querySelectorAll<HTMLElement>('[role="option"]');
+    const chosen = [...(items ?? [])].find((item) => item.ariaSelected === "true");
+    (chosen ?? items?.[0])?.focus();
+  }, [open, trigger]);
+
   // The menu is a child of the root, so travelling into it never leaves the
   // hover area — and the anchor's padding bridges the gap above the control.
   const hover =
@@ -128,7 +167,13 @@ export function SettingPicker({
 
       {open && (
         <div className={styles.anchor} data-align={align}>
-          <div className={styles.menu} ref={menuRef} role="listbox" aria-label={name}>
+          <div
+            className={styles.menu}
+            ref={menuRef}
+            role="listbox"
+            aria-label={name}
+            onKeyDown={onMenuKeyDown}
+          >
             {options.map((option) => {
               const choose = () => {
                 onSelect(option.id);

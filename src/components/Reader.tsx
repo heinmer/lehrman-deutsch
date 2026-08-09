@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { CloudOff, Languages, Loader2, RotateCw } from "lucide-react";
 import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
 import { LevelBadge } from "./LevelBadge";
@@ -27,6 +27,10 @@ interface SentenceProps {
   selectedWordId: string | null;
   onSelectWord: (token: WordToken) => void;
   onWarmWord: (token: WordToken) => void;
+  /** The word currently in the tab order — see the roving tabindex below. */
+  tabbableId: string | null;
+  onFocusWord: (token: WordToken) => void;
+  onWordKeyDown: (event: KeyboardEvent<HTMLElement>, token: WordToken) => void;
   /** False for the last sentence, so nothing can break before what follows. */
   trailingSpace?: boolean;
   /**
@@ -49,6 +53,9 @@ function SentenceView({
   selectedWordId,
   onSelectWord,
   onWarmWord,
+  tabbableId,
+  onFocusWord,
+  onWordKeyDown,
   trailingSpace = true,
   trailing,
 }: SentenceProps) {
@@ -60,19 +67,21 @@ function SentenceView({
       <span
         key={token.id}
         role="button"
-        tabIndex={0}
+        // One word at a time is in the tab order; the arrow keys walk the
+        // rest. Every word being a tab stop meant a 250-word text was 250
+        // presses deep before the keyboard reached the player.
+        tabIndex={token.id === tabbableId ? 0 : -1}
+        data-word
         className={styles.word}
         data-active={token.id === activeWordId}
         data-selected={token.id === selectedWordId}
         onClick={() => onSelectWord(token)}
         onPointerEnter={() => onWarmWord(token)}
-        onFocus={() => onWarmWord(token)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            onSelectWord(token);
-          }
+        onFocus={() => {
+          onWarmWord(token);
+          onFocusWord(token);
         }}
+        onKeyDown={(event) => onWordKeyDown(event, token)}
       >
         {token.text}
       </span>
@@ -124,11 +133,55 @@ export function Reader({
   // rendering rather than in an effect, so the first frame of the new text is
   // already closed up instead of briefly showing the last one's translations.
   const [shownSlug, setShownSlug] = useState(document?.slug);
+  const [focusedWordId, setFocusedWordId] = useState<string | null>(null);
   if (document?.slug !== shownSlug) {
     setShownSlug(document?.slug);
     setOpenTranslations(NONE_OPEN);
     setTitleOpen(false);
+    setFocusedWordId(null);
   }
+
+  // The word the tab key lands on: wherever the reader last was, or the very
+  // first word of the text.
+  const firstWordId =
+    document?.heading.tokens.find((token) => token.kind === "word")?.id ?? null;
+  const tabbableId = focusedWordId ?? firstWordId;
+
+  const onFocusWord = useCallback((token: WordToken) => setFocusedWordId(token.id), []);
+
+  /** Arrow keys walk the text; Enter and Space choose the word under focus. */
+  const onWordKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLElement>, token: WordToken) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onSelectWord(token);
+        return;
+      }
+
+      const step =
+        event.key === "ArrowRight" || event.key === "ArrowDown"
+          ? 1
+          : event.key === "ArrowLeft" || event.key === "ArrowUp"
+            ? -1
+            : 0;
+      if (step === 0 && event.key !== "Home" && event.key !== "End") return;
+
+      const words = [...(scrollRef.current?.querySelectorAll<HTMLElement>("[data-word]") ?? [])];
+      const here = words.indexOf(event.currentTarget);
+      const target =
+        event.key === "Home"
+          ? words[0]
+          : event.key === "End"
+            ? words[words.length - 1]
+            : words[here + step];
+
+      if (target) {
+        event.preventDefault();
+        target.focus();
+      }
+    },
+    [onSelectWord],
+  );
 
   const toggleTranslation = (paragraphId: string) => {
     setOpenTranslations((open) => {
@@ -184,11 +237,22 @@ export function Reader({
     );
   }
 
-  const shared = { activeWordId, activeSentenceId, selectedWordId, onSelectWord, onWarmWord };
+  const shared = {
+    activeWordId,
+    activeSentenceId,
+    selectedWordId,
+    onSelectWord,
+    onWarmWord,
+    tabbableId,
+    onFocusWord,
+    onWordKeyDown,
+  };
 
   return (
     <div className={`island ${styles.reader}`} ref={scrollRef}>
-      <article className={styles.article}>
+      {/* The page is in English; this one element is not. A screen reader
+          switches voice on it, and the browser hyphenates it by German rules. */}
+      <article className={styles.article} lang="de">
         <header className={styles.header}>
           <LevelBadge level={document.level} />
           <div>
@@ -214,7 +278,9 @@ export function Reader({
               />
             </h2>
             {titleOpen && document.titleTranslation && (
-              <p className={styles.titleTranslation}>{document.titleTranslation}</p>
+              <p className={styles.titleTranslation} lang="en">
+                {document.titleTranslation}
+              </p>
             )}
           </div>
         </header>
@@ -253,7 +319,9 @@ export function Reader({
               </p>
 
               {open && paragraph.translation && (
-                <p className={styles.translation}>{paragraph.translation}</p>
+                <p className={styles.translation} lang="en">
+                  {paragraph.translation}
+                </p>
               )}
             </div>
           );
