@@ -10,7 +10,7 @@
   padding: 0.25rem 0.55rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
-  background: var(--surface-raised);
+  background: var(--surface-overlay);
   color: var(--text);
   font-size: var(--fs-xs);
   line-height: 1.4;

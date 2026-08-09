@@ -21,6 +21,16 @@
   --surface-player: #e8eefa;
   --surface-inset: rgb(35 38 46 / 0.055);
   --surface-raised: #ffffff;
+  /* Anything that floats over the page — the theme menu, the volume slider,
+     a tooltip — and must therefore be opaque; `--surface-raised` is allowed
+     to be translucent, which would let the text show through. */
+  --surface-overlay: #ffffff;
+  /* The chosen option inside a segmented strip — currently the playback speed.
+     It has to clear `--surface-inset`, the strip behind it, which is a
+     different job from clearing the page: the one-sheet themes cannot simply
+     reuse `--surface-raised` here, because on their ground "raised" and the
+     strip land on top of each other. */
+  --surface-selected: #ffffff;
 
   --text: #23262e;
   --text-muted: #565b68;
@@ -54,6 +64,8 @@
   --surface-player: #1a1d26;
   --surface-inset: rgb(255 255 255 / 0.05);
   --surface-raised: rgb(255 255 255 / 0.08);
+  --surface-overlay: #272b37;
+  --surface-selected: rgb(255 255 255 / 0.08);
 
   --text: #e8eaf0;
   --text-muted: #aeb3c0;
@@ -89,6 +101,8 @@
   --surface-player: #1f293b;
   --surface-inset: rgb(223 230 242 / 0.055);
   --surface-raised: rgb(223 230 242 / 0.1);
+  --surface-overlay: #243047;
+  --surface-selected: rgb(223 230 242 / 0.1);
 
   --text: #dfe6f2;
   --text-muted: #a3aec4;
@@ -112,6 +126,89 @@
 }
 
 /**
+ * Ink — one deep navy sheet, page and sections alike, with nothing drawn
+ * between them. Dusk is navy in layers; this is navy as a single ground, so a
+ * long text has no seams running through it. The blue is desaturated enough
+ * that white-ish type on it stays comfortable rather than glowing.
+ */
+:root[data-theme="ink"] {
+  color-scheme: dark;
+
+  --page: #101a2e;
+  --surface-sidebar: #101a2e;
+  --surface-reader: #101a2e;
+  --surface-panel: #101a2e;
+  --surface-player: #101a2e;
+  --surface-inset: rgb(198 214 245 / 0.08);
+  /* A clear step above the inset strip, not just above the page: with no drop
+     shadow to help, this alone is what marks the selected playback speed. */
+  --surface-raised: #283a63;
+  --surface-overlay: #283a63;
+  --surface-selected: #283a63;
+
+  --text: #dfe6f4;
+  --text-muted: #a8b4cd;
+  --text-soft: #7f8ca7;
+
+  --border: #2c3a56;
+  --track: #4b5b7d;
+
+  --accent: #8ba7e2;
+  --accent-hover: #9fb8ec;
+  --accent-contrast: #0c1424;
+  --accent-secondary: #74c2ab;
+
+  --highlight-word: #394673;
+  --highlight-sentence: rgb(198 214 245 / 0.07);
+  --selected-word: rgb(139 167 226 / 0.24);
+
+  --island-border: transparent;
+  --shadow-card: none;
+  --shadow-raised: none;
+}
+
+/**
+ * Paper — a newsprint sheet: one warm off-white ground with the blue filtered
+ * out of it, the way a reading lamp or a night-shift filter leaves a page.
+ * Because the whole palette is warm, the accents are warm too — brick and
+ * olive instead of the blue and green the other themes keep. Cool accents on
+ * this ground are exactly the thing the theme exists to avoid.
+ */
+:root[data-theme="paper"] {
+  color-scheme: light;
+
+  --page: #f3ece0;
+  --surface-sidebar: #f3ece0;
+  --surface-reader: #f3ece0;
+  --surface-panel: #f3ece0;
+  --surface-player: #f3ece0;
+  --surface-inset: rgb(61 47 28 / 0.06);
+  --surface-raised: #e9e0cf;
+  --surface-overlay: #e9e0cf;
+  --surface-selected: #fdf9f1;
+
+  --text: #2a2620;
+  --text-muted: #57503f;
+  --text-soft: #7f7767;
+
+  --border: #ddd2be;
+  --track: #bfb29a;
+
+  --accent: #8a4126;
+  --accent-hover: #74351d;
+  --accent-contrast: #fdf8ef;
+  --accent-secondary: #4f6538;
+
+  --highlight-word: #e3cd93;
+  --highlight-sentence: #ece3d2;
+  --selected-word: #e0d3ba;
+
+  --island-border: transparent;
+  --shadow-card: none;
+  --shadow-raised: none;
+}
+
+/**
  * White — the page and every section share one flat white, with nothing drawn
  * between them. What sits *on* that white is not monochrome: body text is a
  * very dark grey rather than pure black, and the accents keep the blue of the
@@ -125,8 +222,13 @@
   --surface-reader: #ffffff;
   --surface-panel: #ffffff;
   --surface-player: #ffffff;
-  --surface-inset: rgb(26 32 56 / 0.055);
+  /* A touch stronger than the other light themes: on a white ground nothing
+     can be lifted above the page, so the strips and pills have to come down
+     to meet what sits on them. */
+  --surface-inset: rgb(26 32 56 / 0.08);
   --surface-raised: #f3f4f8;
+  --surface-overlay: #f3f4f8;
+  --surface-selected: #ffffff;
 
   --text: #1c1d22;
   --text-muted: #494c57;
@@ -163,6 +265,8 @@
   --surface-player: #000000;
   --surface-inset: rgb(219 225 245 / 0.08);
   --surface-raised: #16181f;
+  --surface-overlay: #16181f;
+  --surface-selected: #262933;
 
   --text: #e7e9f0;
   --text-muted: #a8abb8;

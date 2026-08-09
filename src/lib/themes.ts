@@ -19,8 +19,10 @@ export interface ThemeInfo {
 export const THEMES: readonly ThemeInfo[] = [
   { id: "midnight", name: "Midnight", mode: "dark", swatch: ["#0a0b11", "#98a4d8"] },
   { id: "dusk", name: "Dusk", mode: "dark", swatch: ["#080b14", "#7aa2d8"] },
+  { id: "ink", name: "Ink", mode: "dark", swatch: ["#101a2e", "#8ba7e2"] },
   { id: "black", name: "Black", mode: "dark", swatch: ["#000000", "#93a2dd"] },
   { id: "daylight", name: "Daylight", mode: "light", swatch: ["#d7dce6", "#4d5b98"] },
+  { id: "paper", name: "Paper", mode: "light", swatch: ["#f3ece0", "#8a4126"] },
   { id: "white", name: "White", mode: "light", swatch: ["#ffffff", "#44559f"] },
 ];
 

@@ -163,8 +163,10 @@
   color: var(--text);
 }
 
+/* Marked by lifting it out of the inset strip, so the colour has to clear the
+   strip rather than the page — that is what `--surface-selected` is for. */
 .rate[aria-pressed="true"] {
-  background: var(--surface-raised);
+  background: var(--surface-selected);
   color: var(--accent);
   font-weight: 600;
   box-shadow: var(--shadow-raised);

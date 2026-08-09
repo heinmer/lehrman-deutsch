@@ -8,7 +8,7 @@
       // Applied before first paint so the page never flashes the wrong theme.
       // Keep the ids in step with src/styles/themes.css.
       (() => {
-        const known = ["daylight", "white", "midnight", "dusk", "black"];
+        const known = ["daylight", "paper", "white", "midnight", "dusk", "ink", "black"];
         const stored = localStorage.getItem("theme");
         const fallback = matchMedia("(prefers-color-scheme: dark)").matches
           ? "midnight"
