@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { AudioLines, Volume2 } from "lucide-react";
-import { VOICES, findVoice, voiceSampleSrc } from "../../shared/voices";
+import { VOICES, voiceSampleSrc } from "../../shared/voices";
 import { playClip, prefetchClips } from "../lib/clipAudio";
 import { SettingPicker, type PickerOption } from "./SettingPicker";
 import styles from "./VoicePicker.module.css";
@@ -47,9 +47,7 @@ export function VoicePicker({ voiceId, onSelect }: Props) {
 
   return (
     <SettingPicker
-      // The pill names the voice rather than the setting: with four of them,
-      // which one is speaking is the thing worth showing.
-      label={findVoice(voiceId)?.name ?? "Voice"}
+      label="Voice"
       name="Narration voice"
       leading={<AudioLines size={19} strokeWidth={2} />}
       options={options}

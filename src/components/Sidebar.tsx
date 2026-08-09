@@ -86,19 +86,6 @@ export function Sidebar({
           onSelect={theme.setTheme}
         />
 
-        <button
-          type="button"
-          className="control"
-          onClick={onToggleAutoSpeak}
-          aria-pressed={autoSpeak}
-        >
-          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
-              setting is off", so the pressed state carries the difference —
-              the control already recolours itself. */}
-          <Megaphone size={19} strokeWidth={2} />
-          Say word
-        </button>
-
         {/* Held together so the round volume control keeps this line company
             rather than wrapping onto one of its own. */}
         <div className={styles.settingRow}>
@@ -107,17 +94,30 @@ export function Sidebar({
           <button
             type="button"
             className="control"
-            onClick={onToggleSeekOnClick}
-            aria-pressed={seekOnClick}
+            onClick={onToggleAutoSpeak}
+            aria-pressed={autoSpeak}
           >
-            {seekOnClick ? (
-              <LocateFixed size={19} strokeWidth={2} />
-            ) : (
-              <LocateOff size={19} strokeWidth={2} />
-            )}
-            Jump to word
+            {/* MegaphoneOff exists, but reads as "silenced" rather than "this
+                setting is off", so the pressed state carries the difference —
+                the control already recolours itself. */}
+            <Megaphone size={19} strokeWidth={2} />
+            Say word
           </button>
         </div>
+
+        <button
+          type="button"
+          className="control"
+          onClick={onToggleSeekOnClick}
+          aria-pressed={seekOnClick}
+        >
+          {seekOnClick ? (
+            <LocateFixed size={19} strokeWidth={2} />
+          ) : (
+            <LocateOff size={19} strokeWidth={2} />
+          )}
+          Jump to word
+        </button>
       </footer>
     </aside>
   );
