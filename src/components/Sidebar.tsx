@@ -5,6 +5,7 @@ import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
 import { ThemePicker } from "./ThemePicker";
+import { VoicePicker } from "./VoicePicker";
 import { VolumeControl } from "./VolumeControl";
 import styles from "./Sidebar.module.css";
 
@@ -13,6 +14,8 @@ interface Props {
   activeSlug: string | null;
   onSelect: (slug: string) => void;
   theme: ThemeControls;
+  voiceId: string;
+  onSelectVoice: (id: string) => void;
   autoSpeak: boolean;
   onToggleAutoSpeak: () => void;
   seekOnClick: boolean;
@@ -20,11 +23,18 @@ interface Props {
   volume: VolumeSetting;
 }
 
+/** How long this text runs in the chosen voice; each reads at its own pace. */
+function durationOf(text: TextSummary, voiceId: string): number {
+  return text.durations[voiceId] ?? Object.values(text.durations)[0] ?? 0;
+}
+
 export function Sidebar({
   texts,
   activeSlug,
   onSelect,
   theme,
+  voiceId,
+  onSelectVoice,
   autoSpeak,
   onToggleAutoSpeak,
   seekOnClick,
@@ -57,7 +67,7 @@ export function Sidebar({
                 </span>
                 <span className={styles.metaPart}>
                   <Clock size={14} strokeWidth={2} />
-                  {formatTime(text.durationSec)}
+                  {formatTime(durationOf(text, voiceId))}
                 </span>
               </span>
             </span>
@@ -71,6 +81,8 @@ export function Sidebar({
           theme={theme.theme}
           onSelect={theme.setTheme}
         />
+
+        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
 
         <button
           type="button"

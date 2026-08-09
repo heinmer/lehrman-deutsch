@@ -26,8 +26,8 @@ Generated output lands in `public/` and is not meant to be edited by hand:
 
 ```
 public/data/index.json          list of texts for the sidebar
-public/data/texts/<slug>.json   tokens, timings, dictionary
-public/media/texts/<slug>.mp3   full narration
+public/data/texts/<slug>.json   tokens, per-voice timings, dictionary
+public/media/texts/<slug>/*.mp3 full narration, one file per voice
 public/media/words/*.mp3        native-speaker word recordings
 ```
 
@@ -37,6 +37,11 @@ public/media/words/*.mp3        native-speaker word recordings
 (`msedge-tts`). Alongside the audio, the engine reports the exact millisecond
 each word is spoken — which is what drives the highlighting. No API key is
 needed.
+
+Every text is read by all four voices in `shared/voices.ts`, and the sidebar
+picks between them. Each reading has its own file and its own word timings, so
+switching voice mid-text keeps your place in the words rather than in the
+seconds.
 
 **Individual words** are *not* synthesised. They are recordings made by native
 German speakers, taken from Wiktionary's pronunciation files on Wikimedia
@@ -80,14 +85,13 @@ Optional front-matter keys:
 | `slug`  | file name                          | URL/file identifier                |
 | `level` | `A1`                               | CEFR level shown in the sidebar    |
 | `topic` | —                                  | Kept in the data; not shown in the UI |
-| `voice` | `de-DE-SeraphinaMultilingualNeural` | Any Edge German voice              |
 | `rate`  | `-10%`                             | Speaking rate, e.g. `-25%`, `+5%`  |
 
 Only changed texts are rebuilt. Use `npm run content:force` to redo everything.
 
-Other German voices worth trying: `de-DE-KatjaNeural`,
-`de-DE-ConradNeural`, `de-DE-FlorianMultilingualNeural`,
-`de-DE-AmalaNeural`.
+The voice is chosen in the app, not in the text. To change which voices exist,
+edit `shared/voices.ts` and rerun `npm run content` — other German voices worth
+trying are `de-DE-KatjaNeural` and `de-DE-AmalaNeural`.
 
 ## Layout
 

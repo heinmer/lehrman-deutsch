@@ -56,8 +56,21 @@ them; change the pipeline or the source Markdown and rerun `npm run content`.
 words → download recordings → write JSON. Per-stage modules live in
 `scripts/pipeline/`.
 
+Every text is narrated once per voice (`shared/voices.ts`), so a build does
+`VOICES.length` syntheses per text. The words are shared; the timings are not.
+**Adding a voice** is one entry in that file plus a rerun — the picker, the
+sidebar's durations and the pipeline all read the same list, and the ids are in
+the source hash so the rerun is not optional. Read its own `aligned` line
+before trusting it.
+
 Things that are easy to break:
 
+- **Timings belong to a voice, not to a word.** `WordToken` carries no
+  `start`/`end`; each `NarrationTrack` holds a `spans` table keyed by word id
+  *and* sentence id. Nothing may reintroduce a timing onto the token — that is
+  the field that made a second voice impossible. `alignTimings` is pure for the
+  same reason: it is called once per voice on the same `Sentence[]`, so it must
+  not touch them.
 - **Narration order is the contract for alignment.** `alignTimings` takes one
   flat `Sentence[]` that must be in the order the engine speaks it — title
   first, then body — because it walks tokens and TTS boundaries together with a
@@ -68,7 +81,10 @@ Things that are easy to break:
   boundary is consumed piece by piece and the aligner resynchronises within a
   small lookahead window. Word timings are what drives highlighting, so a
   regression here is silent — watch the `aligned N/M` line in the build log; it
-  should stay at 100%.
+  should stay at 100%. There is now one such line **per voice**, and they do
+  not stand or fall together: the older non-multilingual voices report
+  boundaries differently from the multilingual ones, so a new voice has to be
+  read on its own line.
 - **Comparisons fold German spelling.** The engine is inconsistent about `ß`
   vs `ss`, so both sides go through `foldGerman` (`scripts/pipeline/util.ts`)
   before matching.
@@ -79,7 +95,8 @@ Things that are easy to break:
   (`scripts/pipeline/config.ts`). It feeds the source hash, so without a bump
   the incremental build skips existing texts and they keep the old shape while
   the app expects the new one. Bumping it re-synthesises every narration, which
-  costs a few minutes — that is the intended trade.
+  costs a few minutes — that is the intended trade. Editing the voice roster
+  needs no bump: the ids are in the hash too.
 
 ### Dictionary sources
 
@@ -107,6 +124,13 @@ as `/…/` so transcriptions look the same everywhere.
 
 ### App behaviour worth knowing
 
+- **Switching voice carries the position by word, not by time.** Second 40 of
+  Seraphina is a different word than second 40 of Florian, so `useNarration`
+  remembers the active *word id* in its teardown and, once the new file has its
+  metadata, seeks to that word's start in the new voice and resumes if it was
+  playing. The anchor is only honoured when the slug is unchanged — switching
+  text starts at the beginning, and its word ids would mean nothing in another
+  document anyway.
 - **`seek` never changes play state.** Clicking a word and the restart button
   both rely on this: playing stays playing from the new position, paused stays
   paused. Do not "helpfully" call `play()` in either path. The word panel's
@@ -116,6 +140,10 @@ as `/…/` so transcriptions look the same everywhere.
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
   click independently — "Say word" (speak it) and "Jump to word" (move the
   playhead); both live in `useToggleSetting` and persist.
+- **The sidebar's dropdowns are one component.** `SettingPicker` owns the pill,
+  the outside-click and Escape handling, and the menu that opens *upwards* —
+  the sidebar sits at the bottom of the window. Theme and voice differ only in
+  the options they hand it; a third setting should not grow a third popover.
 - **Word recordings go through the Web Audio API** (`src/lib/clipAudio.ts`),
   not `new Audio()`. They are volunteer contributions varying ~7x in loudness
   with ~0.5s of silence before the word, so each is decoded up front, scaled
@@ -254,8 +282,10 @@ Nach einer Stunde kommen sie am See an.
 | `level` | `A1`                                | Sorts the sidebar; shown on a badge |
 | `topic` | —                                   | Stored but not displayed anywhere  |
 | `slug`  | file name                           | Output file and URL identifier     |
-| `voice` | `de-DE-SeraphinaMultilingualNeural` | Any Edge German voice              |
-| `rate`  | `-10%`                              | Speaking rate                      |
+| `rate`  | `-10%`                              | Speaking rate, applied to every voice |
+
+There is no `voice:` key: the voice is the reader's setting, not the text's, so
+every text is narrated by all of `shared/voices.ts`.
 
 The sidebar sorts by level then title, so file names do not set the order.
 

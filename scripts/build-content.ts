@@ -11,10 +11,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import type {
   DictionaryEntry,
+  NarrationTrack,
+  Sentence,
   TextDocument,
   TextIndex,
   TextSummary,
 } from "../shared/types.ts";
+import { VOICES } from "../shared/voices.ts";
 import { PATHS } from "./pipeline/config.ts";
 import { loadSourceTexts, type SourceText } from "./pipeline/source.ts";
 import {
@@ -40,6 +43,60 @@ interface BuildState {
 
 const statePath = path.join(PATHS.cache, "build-state.json");
 
+/** Narration length per voice, which is what the sidebar shows. */
+function durationsOf(narrations: Record<string, NarrationTrack>): Record<string, number> {
+  return Object.fromEntries(
+    Object.values(narrations).map((track) => [track.voice, track.durationSec]),
+  );
+}
+
+/**
+ * Reads the text once per voice. The words are the same every time; the
+ * timings are not, so each voice gets its own audio file and span table.
+ */
+async function narrate(
+  source: SourceText,
+  sentences: Sentence[],
+): Promise<Record<string, NarrationTrack>> {
+  const directory = path.join(PATHS.mediaTexts, source.slug);
+  // Start clean, or a voice dropped from the roster leaves its file behind.
+  await fs.rm(directory, { recursive: true, force: true });
+  await ensureDir(directory);
+
+  const narrations: Record<string, NarrationTrack> = {};
+
+  for (const voice of VOICES) {
+    const spoken = await synthesize(
+      `${source.title}\n\n${source.body}`,
+      voice.id,
+      source.rate,
+    );
+    await fs.writeFile(path.join(directory, `${voice.id}.mp3`), spoken.audio);
+
+    const alignment = alignTimings(sentences, spoken.words);
+    const percent = alignment.total > 0 ? (alignment.matched / alignment.total) * 100 : 100;
+    const message =
+      `${voice.name}: ${(spoken.audio.length / 1024).toFixed(0)} KB, ` +
+      `${spoken.durationSec.toFixed(1)}s, ` +
+      `aligned ${alignment.matched}/${alignment.total} words (${percent.toFixed(0)}%)`;
+
+    if (alignment.unmatched.length > 0) {
+      log.warn(`${message} — no timing for: ${alignment.unmatched.slice(0, 8).join(", ")}`);
+    } else {
+      log.ok(message);
+    }
+
+    narrations[voice.id] = {
+      voice: voice.id,
+      src: `/media/texts/${source.slug}/${voice.id}.mp3`,
+      durationSec: spoken.durationSec,
+      spans: alignment.spans,
+    };
+  }
+
+  return narrations;
+}
+
 async function buildText(source: SourceText): Promise<TextSummary> {
   log.step(`${source.title} (${source.slug})`);
 
@@ -50,26 +107,8 @@ async function buildText(source: SourceText): Promise<TextSummary> {
   const wordCount = countWords(sentences);
   log.info(`${paragraphs.length} paragraphs, ${wordCount} words (title included)`);
 
-  log.info(`synthesizing with ${source.voice} at rate ${source.rate}...`);
-  const narration = await synthesize(
-    `${source.title}\n\n${source.body}`,
-    source.voice,
-    source.rate,
-  );
-
-  await ensureDir(PATHS.mediaTexts);
-  const audioName = `${source.slug}.mp3`;
-  await fs.writeFile(path.join(PATHS.mediaTexts, audioName), narration.audio);
-  log.ok(`audio ${(narration.audio.length / 1024).toFixed(0)} KB, ${narration.durationSec.toFixed(1)}s`);
-
-  const alignment = alignTimings(sentences, narration.words);
-  const percent = alignment.total > 0 ? (alignment.matched / alignment.total) * 100 : 100;
-  const alignMessage = `aligned ${alignment.matched}/${alignment.total} words (${percent.toFixed(0)}%)`;
-  if (alignment.unmatched.length > 0) {
-    log.warn(`${alignMessage} — no timing for: ${alignment.unmatched.slice(0, 8).join(", ")}`);
-  } else {
-    log.ok(alignMessage);
-  }
+  log.info(`synthesizing ${VOICES.length} voices at rate ${source.rate}...`);
+  const narrations = await narrate(source, sentences);
 
   log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
   const titleTranslation = await translateToEnglish(source.title);
@@ -116,11 +155,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     title: source.title,
     level: source.level,
     topic: source.topic,
-    audio: {
-      src: `/media/texts/${audioName}`,
-      durationSec: narration.durationSec,
-      voice: source.voice,
-    },
+    narrations,
     heading,
     titleTranslation,
     paragraphs,
@@ -135,7 +170,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     level: source.level,
     topic: source.topic,
     wordCount,
-    durationSec: narration.durationSec,
+    durations: durationsOf(narrations),
   };
 }
 
@@ -166,7 +201,7 @@ async function main(): Promise<void> {
           level: existing.level,
           topic: existing.topic,
           wordCount: countWords([existing.heading, ...flattenSentences(existing.paragraphs)]),
-          durationSec: existing.audio.durationSec,
+          durations: durationsOf(existing.narrations),
         });
         continue;
       }

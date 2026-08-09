@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 import type { Level } from "../../shared/types.ts";
-import { DEFAULT_RATE, DEFAULT_VOICE, PATHS, PIPELINE_VERSION } from "./config.ts";
+import { VOICES } from "../../shared/voices.ts";
+import { DEFAULT_RATE, PATHS, PIPELINE_VERSION } from "./config.ts";
 import { slugify } from "./util.ts";
 
 export interface SourceText {
@@ -10,7 +11,7 @@ export interface SourceText {
   title: string;
   level: Level;
   topic?: string;
-  voice: string;
+  /** Applies to every voice; the reader chooses the voice, not the text. */
   rate: string;
   /** Body with paragraphs separated by blank lines. */
   body: string;
@@ -66,7 +67,6 @@ export async function loadSourceTexts(): Promise<SourceText[]> {
 
     const title = meta.title ?? path.basename(file, ".md");
     const level = LEVELS.includes(meta.level) ? (meta.level as Level) : "A1";
-    const voice = meta.voice || DEFAULT_VOICE;
     const rate = meta.rate || DEFAULT_RATE;
     const normalized = normalizeBody(body);
 
@@ -79,13 +79,17 @@ export async function loadSourceTexts(): Promise<SourceText[]> {
       title,
       level,
       topic: meta.topic || undefined,
-      voice,
       rate,
       body: normalized,
       file: full,
+      // The voice roster is part of the hash, so adding a voice rebuilds the
+      // narrations without anyone having to remember PIPELINE_VERSION.
       hash: crypto
         .createHash("sha1")
-        .update(`v${PIPELINE_VERSION} ${normalized} ${voice} ${rate} ${title} ${level}`)
+        .update(
+          `v${PIPELINE_VERSION} ${normalized} ${VOICES.map((v) => v.id).join(",")} ` +
+            `${rate} ${title} ${level}`,
+        )
         .digest("hex")
         .slice(0, 12),
     });

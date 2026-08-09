@@ -16,8 +16,8 @@ export function wordKey(surface: string): string {
 }
 
 /**
- * Splits the body into paragraphs -> sentences -> tokens.
- * Timings are left null; the aligner fills them in from TTS boundaries.
+ * Splits the body into paragraphs -> sentences -> tokens. Timings are not part
+ * of this: the aligner derives them per voice and keeps them beside the text.
  */
 /** Tokenizes a single line — used for the title, which is narrated too. */
 export function tokenizeLine(text: string, id: string): Sentence {
@@ -31,8 +31,6 @@ export function tokenizeLine(text: string, id: string): Sentence {
         id: `${id}w${wordIndex}`,
         text: part.segment,
         key: wordKey(part.segment),
-        start: null,
-        end: null,
       });
       wordIndex += 1;
     } else {
@@ -40,7 +38,7 @@ export function tokenizeLine(text: string, id: string): Sentence {
     }
   }
 
-  return { id, text: text.trim(), start: null, end: null, tokens };
+  return { id, text: text.trim(), tokens };
 }
 
 export function tokenize(body: string): Paragraph[] {
@@ -66,8 +64,6 @@ export function tokenize(body: string): Paragraph[] {
             id: `p${pIndex}s${sIndex}w${wIndex}`,
             text: part.segment,
             key: wordKey(part.segment),
-            start: null,
-            end: null,
           });
           wIndex += 1;
         } else {
@@ -75,13 +71,7 @@ export function tokenize(body: string): Paragraph[] {
         }
       }
 
-      sentences.push({
-        id: `p${pIndex}s${sIndex}`,
-        text: sentenceText,
-        start: null,
-        end: null,
-        tokens,
-      });
+      sentences.push({ id: `p${pIndex}s${sIndex}`, text: sentenceText, tokens });
     }
 
     if (sentences.length > 0) {

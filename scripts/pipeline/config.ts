@@ -19,13 +19,6 @@ export const PATHS = {
 } as const;
 
 /**
- * Default narration voice. The multilingual neural voices read German with
- * natural prosody and, unlike the older ones, keep clean word boundaries.
- * Override per text with `voice:` in the front matter.
- */
-export const DEFAULT_VOICE = "de-DE-SeraphinaMultilingualNeural";
-
-/**
  * Slightly slower than default: this is reading practice, not an audiobook.
  * Front matter key: `rate:` (e.g. "-15%").
  */
@@ -46,4 +39,4 @@ export const KAIKKI_BASE = "https://kaikki.org/dictionary/German/meaning";
  * hash, so a format change rebuilds every text instead of leaving old files
  * missing the new fields.
  */
-export const PIPELINE_VERSION = 3;
+export const PIPELINE_VERSION = 4;

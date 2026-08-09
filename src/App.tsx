@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { Sentence, TextDocument, TextSummary, WordToken } from "../shared/types";
+import { useCallback, useEffect, useState } from "react";
+import type { TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
 import { useToggleSetting } from "./hooks/useToggleSetting";
+import { useVoiceSetting } from "./hooks/useVoiceSetting";
 import { useVolumeSetting } from "./hooks/useVolumeSetting";
 import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
@@ -13,10 +14,9 @@ import { PlayerBar } from "./components/PlayerBar";
 import { WordPanel } from "./components/WordPanel";
 import styles from "./App.module.css";
 
-const NO_SENTENCES: Sentence[] = [];
-
 export function App() {
   const theme = useTheme();
+  const [voice, setVoice] = useVoiceSetting();
   const [autoSpeak, toggleAutoSpeak] = useToggleSetting("auto-speak");
   const [seekOnClick, toggleSeekOnClick] = useToggleSetting("seek-on-click");
   const volume = useVolumeSetting();
@@ -60,27 +60,14 @@ export function App() {
     };
   }, [slug]);
 
-  // Narration order: the title is spoken first, then the body.
-  const sentences = useMemo(
-    () =>
-      document
-        ? [document.heading, ...document.paragraphs.flatMap((p) => p.sentences)]
-        : NO_SENTENCES,
-    [document],
-  );
-
-  const narration = useNarration(
-    document?.audio.src ?? null,
-    sentences,
-    volume.effective,
-  );
+  const narration = useNarration(document, voice, volume.effective);
 
   // Decode the text's recordings ahead of time so a click plays instantly.
   useEffect(() => {
     if (document) void prefetchClips(allClipSources(document.dictionary));
   }, [document]);
 
-  const { seek, play, isPlaying } = narration;
+  const { seek, play, isPlaying, wordStart } = narration;
 
   // Clicking a word never changes whether the narration is playing. Moving the
   // playhead to it and speaking the word are each optional; while the
@@ -88,14 +75,16 @@ export function App() {
   const selectWord = useCallback(
     (token: WordToken) => {
       setSelectedWord(token);
-      if (seekOnClick && token.start !== null) seek(token.start);
+
+      const start = wordStart(token.id);
+      if (seekOnClick && start !== null) seek(start);
 
       if (!isPlaying && autoSpeak) {
         const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
         if (clip) playClip(clip.src);
       }
     },
-    [seek, isPlaying, autoSpeak, seekOnClick, document],
+    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, document],
   );
 
   const closePanel = useCallback(() => setSelectedWord(null), []);
@@ -103,10 +92,11 @@ export function App() {
   // Unlike clicking a word, this one is a request to hear the text: it starts
   // playback even from a standstill.
   const playFromWord = useCallback(() => {
-    if (selectedWord?.start === null || selectedWord === null) return;
-    seek(selectedWord.start);
+    const start = selectedWord ? wordStart(selectedWord.id) : null;
+    if (start === null) return;
+    seek(start);
     play();
-  }, [selectedWord, seek, play]);
+  }, [selectedWord, wordStart, seek, play]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -138,6 +128,8 @@ export function App() {
         activeSlug={slug}
         onSelect={setSlug}
         theme={theme}
+        voiceId={voice}
+        onSelectVoice={setVoice}
         autoSpeak={autoSpeak}
         onToggleAutoSpeak={toggleAutoSpeak}
         seekOnClick={seekOnClick}
@@ -161,7 +153,9 @@ export function App() {
         entry={entry}
         onClose={closePanel}
         onPlayFrom={playFromWord}
-        canPlayFrom={narration.isReady && selectedWord?.start !== null}
+        canPlayFrom={
+          narration.isReady && selectedWord !== null && wordStart(selectedWord.id) !== null
+        }
       />
     </div>
   );

@@ -12,7 +12,8 @@ export interface TextSummary {
   level: Level;
   topic?: string;
   wordCount: number;
-  durationSec: number;
+  /** Length of the narration per voice id; each voice reads at its own pace. */
+  durations: Record<string, number>;
 }
 
 export interface TextIndex {
@@ -28,9 +29,6 @@ export interface WordToken {
   text: string;
   /** Dictionary lookup key: lowercased, punctuation stripped. */
   key: string;
-  /** Playback window in seconds; null when the aligner found no match. */
-  start: number | null;
-  end: number | null;
 }
 
 export interface PunctToken {
@@ -43,9 +41,28 @@ export type Token = WordToken | PunctToken;
 export interface Sentence {
   id: string;
   text: string;
-  start: number | null;
-  end: number | null;
   tokens: Token[];
+}
+
+/** Playback window in seconds, rounded to the millisecond. */
+export type Span = [start: number, end: number];
+
+/**
+ * One reading of the whole text. Timings live here rather than on the tokens
+ * because every voice speaks the same words at its own pace: the text is
+ * stored once, the timings once per voice.
+ */
+export interface NarrationTrack {
+  /** Voice id from shared/voices.ts. */
+  voice: string;
+  /** Path relative to the site root. */
+  src: string;
+  durationSec: number;
+  /**
+   * Spans keyed by WordToken.id and Sentence.id. A word the engine never
+   * reported and whose neighbours could not bracket it is simply absent.
+   */
+  spans: Record<string, Span>;
 }
 
 export interface Paragraph {
@@ -108,11 +125,8 @@ export interface TextDocument {
   title: string;
   level: Level;
   topic?: string;
-  audio: {
-    src: string;
-    durationSec: number;
-    voice: string;
-  };
+  /** One track per voice id; the reader picks which one plays. */
+  narrations: Record<string, NarrationTrack>;
   /** The German title, narrated and clickable like the body. */
   heading: Sentence;
   /** English rendering of the title, shown beneath it. */

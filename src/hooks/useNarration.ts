@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Sentence } from "../../shared/types";
+import type { Sentence, Span, TextDocument } from "../../shared/types";
 
 interface TimedWord {
   wordId: string;
@@ -21,18 +21,24 @@ export interface Narration {
   /** Moves the playhead without changing whether audio is playing. */
   seek: (seconds: number) => void;
   changeRate: (rate: number) => void;
+  /**
+   * Where a word begins in the voice currently playing, or null when this
+   * reading has no timing for it.
+   */
+  wordStart: (wordId: string) => number | null;
 }
 
-function buildTimeline(sentences: Sentence[]): TimedWord[] {
+function buildTimeline(
+  sentences: Sentence[],
+  spans: Record<string, Span>,
+): TimedWord[] {
   const timeline: TimedWord[] = [];
   for (const sentence of sentences) {
     for (const token of sentence.tokens) {
-      if (token.kind === "word" && token.start !== null) {
-        timeline.push({
-          wordId: token.id,
-          sentenceId: sentence.id,
-          start: token.start,
-        });
+      if (token.kind !== "word") continue;
+      const span = spans[token.id];
+      if (span) {
+        timeline.push({ wordId: token.id, sentenceId: sentence.id, start: span[0] });
       }
     }
   }
@@ -56,16 +62,25 @@ function findActive(timeline: TimedWord[], time: number): number {
   return result;
 }
 
+const NO_SENTENCES: Sentence[] = [];
+const NO_SPANS: Record<string, Span> = {};
+
 /**
- * Drives the single narration file and reports which word is being spoken.
+ * Drives the narration of one text in one voice, and reports which word is
+ * being spoken.
  *
  * Position is polled with requestAnimationFrame rather than the audio
  * element's `timeupdate` event, which only fires about four times a second —
  * far too coarse to follow individual words.
+ *
+ * Changing the voice swaps the audio file underneath. Since no two voices
+ * reach a given word at the same second, the position is carried across by
+ * word rather than by time: the reader keeps their place in the text, and
+ * playback that was running stays running.
  */
 export function useNarration(
-  src: string | null,
-  sentences: Sentence[],
+  document: TextDocument | null,
+  voice: string,
   volume = 1,
 ): Narration {
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -77,12 +92,42 @@ export function useNarration(
   const [duration, setDuration] = useState(0);
   const [rate, setRate] = useState(1);
 
-  const timeline = useMemo(() => buildTimeline(sentences), [sentences]);
+  const track = useMemo(() => {
+    if (!document) return null;
+    // Data built before this voice existed still has to play something.
+    return document.narrations[voice] ?? Object.values(document.narrations)[0] ?? null;
+  }, [document, voice]);
+
+  // Narration order: the title is spoken first, then the body.
+  const sentences = useMemo(
+    () =>
+      document
+        ? [document.heading, ...document.paragraphs.flatMap((p) => p.sentences)]
+        : NO_SENTENCES,
+    [document],
+  );
+
+  const spans = track?.spans ?? NO_SPANS;
+  const timeline = useMemo(() => buildTimeline(sentences, spans), [sentences, spans]);
+
+  // Read in the teardown below, which runs before the state of the render that
+  // caused it has been applied anywhere else.
+  const activeWordRef = useRef<string | null>(null);
+  const playingRef = useRef(false);
+  const resumeRef = useRef<{ wordId: string | null; playing: boolean } | null>(null);
+  const slugRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!src) return undefined;
+    if (!track) return undefined;
 
-    const audio = new Audio(src);
+    // Same text, new voice: pick the reading up where it was. A different text
+    // starts at the beginning, and its word ids mean nothing here anyway.
+    const slug = document?.slug ?? null;
+    const resume = slugRef.current === slug ? resumeRef.current : null;
+    slugRef.current = slug;
+    resumeRef.current = null;
+
+    const audio = new Audio(track.src);
     audio.preload = "auto";
     audio.playbackRate = rate;
     audio.volume = volume;
@@ -91,6 +136,17 @@ export function useNarration(
     const onLoaded = () => {
       setDuration(audio.duration);
       setIsReady(true);
+
+      if (!resume) return;
+      const start = resume.wordId ? track.spans[resume.wordId]?.[0] ?? null : null;
+      if (start !== null) {
+        audio.currentTime = start;
+        setCurrentTime(start);
+      }
+      if (resume.playing) {
+        void audio.play();
+        setIsPlaying(true);
+      }
     };
     const onEnded = () => {
       setIsPlaying(false);
@@ -101,6 +157,7 @@ export function useNarration(
     audio.addEventListener("ended", onEnded);
 
     return () => {
+      resumeRef.current = { wordId: activeWordRef.current, playing: playingRef.current };
       audio.pause();
       audio.removeEventListener("loadedmetadata", onLoaded);
       audio.removeEventListener("ended", onEnded);
@@ -112,9 +169,10 @@ export function useNarration(
     };
     // `rate` and `volume` are applied through their own effects; re-creating
     // the element on either would interrupt playback. They are read here only
-    // so a text loaded later starts out with the current settings.
+    // so a text loaded later starts out with the current settings. The slug is
+    // likewise only read, never a reason to reload.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [src]);
+  }, [track?.src]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = rate;
@@ -170,8 +228,18 @@ export function useNarration(
     setCurrentTime(seconds);
   }, []);
 
+  const wordStart = useCallback(
+    (wordId: string) => spans[wordId]?.[0] ?? null,
+    [spans],
+  );
+
   const activeIndex = findActive(timeline, currentTime);
   const active = activeIndex >= 0 ? timeline[activeIndex] : null;
+
+  useEffect(() => {
+    activeWordRef.current = active?.wordId ?? null;
+    playingRef.current = isPlaying;
+  });
 
   return {
     isPlaying,
@@ -185,5 +253,6 @@ export function useNarration(
     play,
     seek,
     changeRate: setRate,
+    wordStart,
   };
 }
