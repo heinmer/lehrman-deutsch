@@ -78,13 +78,13 @@ export function Sidebar({
       </nav>
 
       <footer className={styles.footer}>
-        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
-
         <ThemePicker
           themeId={theme.themeId}
           theme={theme.theme}
           onSelect={theme.setTheme}
         />
+
+        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
 
         {/* Held together so the round volume control keeps this line company
             rather than wrapping onto one of its own. */}
@@ -94,29 +94,29 @@ export function Sidebar({
           <button
             type="button"
             className="control"
-            onClick={onToggleAutoSpeak}
-            aria-pressed={autoSpeak}
+            onClick={onToggleSeekOnClick}
+            aria-pressed={seekOnClick}
           >
-            {/* MegaphoneOff exists, but reads as "silenced" rather than "this
-                setting is off", so the pressed state carries the difference —
-                the control already recolours itself. */}
-            <Megaphone size={19} strokeWidth={2} />
-            Say word
+            {seekOnClick ? (
+              <LocateFixed size={19} strokeWidth={2} />
+            ) : (
+              <LocateOff size={19} strokeWidth={2} />
+            )}
+            Jump to word
           </button>
         </div>
 
         <button
           type="button"
           className="control"
-          onClick={onToggleSeekOnClick}
-          aria-pressed={seekOnClick}
+          onClick={onToggleAutoSpeak}
+          aria-pressed={autoSpeak}
         >
-          {seekOnClick ? (
-            <LocateFixed size={19} strokeWidth={2} />
-          ) : (
-            <LocateOff size={19} strokeWidth={2} />
-          )}
-          Jump to word
+          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
+              setting is off", so the pressed state carries the difference —
+              the control already recolours itself. */}
+          <Megaphone size={19} strokeWidth={2} />
+          Say word
         </button>
       </footer>
     </aside>
