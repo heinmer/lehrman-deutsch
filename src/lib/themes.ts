@@ -9,17 +9,19 @@
 export interface ThemeInfo {
   id: string;
   name: string;
+  /** Groups the picker, which draws a divider where this changes. */
+  mode: "light" | "dark";
   /** [page ground, accent] — the two halves of the preview dot. */
   swatch: [string, string];
 }
 
-/** Light themes first, then dark; the picker shows them in this order. */
+/** Dark themes first, then light; the picker shows them in this order. */
 export const THEMES: readonly ThemeInfo[] = [
-  { id: "daylight", name: "Daylight", swatch: ["#d7dce6", "#4d5b98"] },
-  { id: "white", name: "White", swatch: ["#ffffff", "#000000"] },
-  { id: "midnight", name: "Midnight", swatch: ["#0a0b11", "#98a4d8"] },
-  { id: "dusk", name: "Dusk", swatch: ["#080b14", "#7aa2d8"] },
-  { id: "black", name: "Black", swatch: ["#000000", "#ffffff"] },
+  { id: "midnight", name: "Midnight", mode: "dark", swatch: ["#0a0b11", "#98a4d8"] },
+  { id: "dusk", name: "Dusk", mode: "dark", swatch: ["#080b14", "#7aa2d8"] },
+  { id: "black", name: "Black", mode: "dark", swatch: ["#000000", "#ffffff"] },
+  { id: "daylight", name: "Daylight", mode: "light", swatch: ["#d7dce6", "#4d5b98"] },
+  { id: "white", name: "White", mode: "light", swatch: ["#ffffff", "#000000"] },
 ];
 
 export const DEFAULT_LIGHT = "daylight";

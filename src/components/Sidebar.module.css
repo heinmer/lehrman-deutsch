@@ -93,8 +93,9 @@
 .setting {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.9rem;
+  gap: 0.55rem;
+  min-height: var(--control-height);
+  padding: 0 1.05rem;
   border-radius: var(--radius-pill);
   font-size: var(--fs-sm);
   color: var(--text-muted);
