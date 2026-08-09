@@ -62,35 +62,38 @@ export function Sidebar({
       </nav>
 
       <footer className={styles.footer}>
+        <p className={styles.settingLabel}>Theme</p>
         <ThemePicker themeId={theme.themeId} onSelect={theme.setTheme} />
 
-        <button
-          type="button"
-          className={styles.setting}
-          onClick={onToggleAutoSpeak}
-          aria-pressed={autoSpeak}
-        >
-          {autoSpeak ? (
-            <Volume2 size={19} strokeWidth={2} />
-          ) : (
-            <VolumeX size={19} strokeWidth={2} />
-          )}
-          Say word
-        </button>
+        <div className={styles.settingRow}>
+          <button
+            type="button"
+            className={styles.setting}
+            onClick={onToggleAutoSpeak}
+            aria-pressed={autoSpeak}
+          >
+            {autoSpeak ? (
+              <Volume2 size={19} strokeWidth={2} />
+            ) : (
+              <VolumeX size={19} strokeWidth={2} />
+            )}
+            Say word
+          </button>
 
-        <button
-          type="button"
-          className={styles.setting}
-          onClick={onToggleSeekOnClick}
-          aria-pressed={seekOnClick}
-        >
-          {seekOnClick ? (
-            <LocateFixed size={19} strokeWidth={2} />
-          ) : (
-            <LocateOff size={19} strokeWidth={2} />
-          )}
-          Jump to word
-        </button>
+          <button
+            type="button"
+            className={styles.setting}
+            onClick={onToggleSeekOnClick}
+            aria-pressed={seekOnClick}
+          >
+            {seekOnClick ? (
+              <LocateFixed size={19} strokeWidth={2} />
+            ) : (
+              <LocateOff size={19} strokeWidth={2} />
+            )}
+            Jump to word
+          </button>
+        </div>
       </footer>
     </aside>
   );

@@ -25,6 +25,8 @@
   line-height: 1.2;
 }
 
+/* Takes whatever height is left above the settings and scrolls inside it, so
+   the divider stays put however many texts there are. */
 .list {
   display: flex;
   flex-direction: column;
@@ -32,7 +34,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 0.7rem;
+  padding: 0 0.7rem 1rem;
 }
 
 .item {
@@ -85,9 +87,28 @@
 
 .footer {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.55rem;
+  flex: none;
+  padding: 1rem 1.1rem 1.25rem;
+  /* Edge-to-edge rule marking where the texts end and the settings begin. */
+  border-top: 1px solid var(--border);
+}
+
+.settingLabel {
+  margin: 0 0 0.1rem 0.15rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.settingRow {
+  display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  padding: 0.9rem 1.1rem 1.25rem;
 }
 
 .setting {
