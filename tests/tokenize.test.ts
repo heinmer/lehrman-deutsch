@@ -1,14 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { Sentence, WordToken } from "../shared/types.ts";
+import { narrationOrder } from "../shared/narration.ts";
+import type { Paragraph, Sentence, WordToken } from "../shared/types.ts";
 import {
   collectVocabulary,
   countWords,
-  flattenSentences,
   tokenize,
   tokenizeLine,
   wordKey,
 } from "../scripts/pipeline/tokenize.ts";
+
+/** The body's sentences, in order — what the vocabulary is collected over. */
+function bodySentences(paragraphs: Paragraph[]): Sentence[] {
+  return paragraphs.flatMap((paragraph) => paragraph.sentences);
+}
 
 test("a lookup key drops case and the punctuation around a word", () => {
   assert.equal(wordKey("Der"), "der");
@@ -46,11 +51,21 @@ test("only words are counted, and the title counts as content", () => {
   const paragraphs = tokenize("Anna geht heim. Tom bleibt.");
 
   assert.equal(countWords([heading]), 4);
-  assert.equal(countWords([heading, ...flattenSentences(paragraphs)]), 9);
+  assert.equal(countWords(narrationOrder(heading, paragraphs)), 9);
+});
+
+test("narration order is the title, then the body, in one flat list", () => {
+  const heading = tokenizeLine("Der See", "h0");
+  const paragraphs = tokenize("Anna schwimmt. Tom liest.\n\nEs regnet.");
+
+  assert.deepEqual(
+    narrationOrder(heading, paragraphs).map((sentence) => sentence.id),
+    ["h0", "p0s0", "p0s1", "p1s0"],
+  );
 });
 
 test("a mid-sentence spelling beats the capital a sentence start forces", () => {
-  const sentences = flattenSentences(tokenize("Sie geht. Dort steht sie."));
+  const sentences = bodySentences(tokenize("Sie geht. Dort steht sie."));
   const vocabulary = collectVocabulary(sentences);
 
   // Both spellings share one key; the one that says something wins.
@@ -58,14 +73,14 @@ test("a mid-sentence spelling beats the capital a sentence start forces", () => 
 });
 
 test("a word only ever seen first in a sentence keeps that spelling", () => {
-  const sentences = flattenSentences(tokenize("Anna geht heim."));
+  const sentences = bodySentences(tokenize("Anna geht heim."));
   const vocabulary = collectVocabulary(sentences);
 
   assert.equal(vocabulary.get("anna"), "Anna");
 });
 
 test("the vocabulary is one entry per distinct key", () => {
-  const sentences = flattenSentences(tokenize("Der Mann und der Hund."));
+  const sentences = bodySentences(tokenize("Der Mann und der Hund."));
   const vocabulary = collectVocabulary(sentences);
 
   assert.deepEqual([...vocabulary.keys()].sort(), ["der", "hund", "mann", "und"]);

@@ -3,7 +3,14 @@
  * The pipeline writes these shapes into public/data; the app only ever reads them.
  */
 
-export type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+/**
+ * The CEFR scale, easiest first — the order the sidebar sorts by. It is a
+ * value and not only a type because the pipeline has to check a hand-written
+ * front-matter string against it, and two lists would drift.
+ */
+export const LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
+
+export type Level = (typeof LEVELS)[number];
 
 /** One entry in public/data/index.json — everything the sidebar needs. */
 export interface TextSummary {

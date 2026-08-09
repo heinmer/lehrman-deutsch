@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
-import type { Level } from "../../shared/types.ts";
+import { LEVELS, type Level } from "../../shared/types.ts";
 import { VOICES } from "../../shared/voices.ts";
 import { DEFAULT_RATE, PATHS, PIPELINE_VERSION } from "./config.ts";
 import { slugify } from "./util.ts";
@@ -19,8 +19,6 @@ export interface SourceText {
   /** Changes whenever the text or its narration settings change. */
   hash: string;
 }
-
-const LEVELS: readonly string[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 
 /**
  * Minimal front-matter parser: a `---` fenced block of `key: value` lines.
@@ -67,7 +65,9 @@ export async function loadSourceTexts(dir: string = PATHS.source): Promise<Sourc
     const { meta, body } = parseFrontMatter(raw);
 
     const title = meta.title ?? path.basename(file, ".md");
-    const level = LEVELS.includes(meta.level) ? (meta.level as Level) : "A1";
+    const level = (LEVELS as readonly string[]).includes(meta.level)
+      ? (meta.level as Level)
+      : "A1";
     const rate = meta.rate || DEFAULT_RATE;
     const normalized = normalizeBody(body);
 

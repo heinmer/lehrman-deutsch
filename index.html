@@ -6,14 +6,18 @@
     <title>Texts in German</title>
     <script>
       // Applied before first paint so the page never flashes the wrong theme.
-      // Keep the ids in step with src/styles/themes.css.
+      // The placeholder below is filled in from shared/themes.ts by a Vite
+      // plugin: this script cannot import, and a second copy of the roster
+      // went stale.
       (() => {
-        const known = ["daylight", "paper", "white", "midnight", "dusk", "ink", "black"];
+        const themes = __THEMES__;
         const stored = localStorage.getItem("theme");
         const fallback = matchMedia("(prefers-color-scheme: dark)").matches
-          ? "midnight"
-          : "daylight";
-        document.documentElement.dataset.theme = known.includes(stored) ? stored : fallback;
+          ? themes.dark
+          : themes.light;
+        document.documentElement.dataset.theme = themes.known.includes(stored)
+          ? stored
+          : fallback;
       })();
     </script>
   </head>

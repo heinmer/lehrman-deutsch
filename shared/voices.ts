@@ -58,3 +58,13 @@ export function findVoice(id: string): VoiceInfo | undefined {
 export function voiceSampleSrc(id: string): string {
   return `/media/voices/${id}.mp3`;
 }
+
+/**
+ * Whatever a document holds for this voice — its narration, its length —
+ * falling back to any other voice's. Data built before a voice joined the
+ * roster still has to play something and still has to show a duration, and
+ * both places used to spell that fallback out for themselves.
+ */
+export function forVoice<T>(byVoice: Record<string, T>, id: string): T | null {
+  return byVoice[id] ?? Object.values(byVoice)[0] ?? null;
+}

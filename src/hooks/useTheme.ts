@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../lib/themes";
+import { DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../../shared/themes";
 
 const STORAGE_KEY = "theme";
 

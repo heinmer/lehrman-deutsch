@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { narrationOrder } from "../../shared/narration";
 import type { Sentence, Span, TextDocument } from "../../shared/types";
+import { forVoice } from "../../shared/voices";
 import { assetUrl } from "../lib/assets";
 
 interface TimedWord {
@@ -124,18 +126,13 @@ export function useNarration(
   const [failure, setFailure] = useState<{ src: string; attempt: number } | null>(null);
   const reload = useCallback(() => setAttempt((value) => value + 1), []);
 
-  const track = useMemo(() => {
-    if (!document) return null;
-    // Data built before this voice existed still has to play something.
-    return document.narrations[voice] ?? Object.values(document.narrations)[0] ?? null;
-  }, [document, voice]);
+  const track = useMemo(
+    () => (document ? forVoice(document.narrations, voice) : null),
+    [document, voice],
+  );
 
-  // Narration order: the title is spoken first, then the body.
   const sentences = useMemo(
-    () =>
-      document
-        ? [document.heading, ...document.paragraphs.flatMap((p) => p.sentences)]
-        : NO_SENTENCES,
+    () => (document ? narrationOrder(document.heading, document.paragraphs) : NO_SENTENCES),
     [document],
   );
 

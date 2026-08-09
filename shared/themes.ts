@@ -1,9 +1,15 @@
 /**
- * The theme roster for the picker.
+ * The theme roster.
  *
  * Colours themselves live in src/styles/themes.css; the two swatch values here
- * only paint the preview dot, and must be kept in step with that file. The ids
- * are also repeated in the inline script in index.html.
+ * only paint the preview dot, and must be kept in step with that file.
+ *
+ * It sits in shared/ because it is read twice: by the picker at run time, and
+ * by `vite.config.ts` at build time, which writes the ids into the inline
+ * script in index.html. That script has to know them before the bundle loads —
+ * it is what applies the stored theme before first paint — and it used to
+ * carry its own hand-copied list, which worked until reload after a theme was
+ * added and then silently fell back.
  */
 
 export interface ThemeInfo {

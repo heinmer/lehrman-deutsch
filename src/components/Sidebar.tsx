@@ -1,5 +1,6 @@
 import { BookOpen, Clock, LocateFixed, LocateOff, Megaphone, Type } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
+import { forVoice } from "../../shared/voices";
 import type { ThemeControls } from "../hooks/useTheme";
 import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
@@ -24,7 +25,7 @@ interface Props {
 
 /** How long this text runs in the chosen voice; each reads at its own pace. */
 function durationOf(text: TextSummary, voiceId: string): number {
-  return text.durations[voiceId] ?? Object.values(text.durations)[0] ?? 0;
+  return forVoice(text.durations, voiceId) ?? 0;
 }
 
 export function Sidebar({

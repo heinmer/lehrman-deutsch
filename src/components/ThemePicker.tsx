@@ -1,4 +1,4 @@
-import { THEMES, type ThemeInfo } from "../lib/themes";
+import { THEMES, type ThemeInfo } from "../../shared/themes";
 import { SettingPicker, type PickerOption } from "./SettingPicker";
 import styles from "./ThemePicker.module.css";
 

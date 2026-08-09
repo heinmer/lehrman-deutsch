@@ -83,10 +83,6 @@ export function tokenize(body: string): Paragraph[] {
   return paragraphs;
 }
 
-export function flattenSentences(paragraphs: Paragraph[]): Sentence[] {
-  return paragraphs.flatMap((p) => p.sentences);
-}
-
 export function countWords(sentences: Sentence[]): number {
   return sentences.reduce(
     (total, s) => total + s.tokens.filter((t) => t.kind === "word").length,

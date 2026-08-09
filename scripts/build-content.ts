@@ -20,10 +20,10 @@ import type {
 import { VOICES } from "../shared/voices.ts";
 import { DEFAULT_RATE, PATHS } from "./pipeline/config.ts";
 import { loadSourceTexts, type SourceText } from "./pipeline/source.ts";
+import { narrationOrder } from "../shared/narration.ts";
 import {
   collectVocabulary,
   countWords,
-  flattenSentences,
   tokenize,
   tokenizeLine,
 } from "./pipeline/tokenize.ts";
@@ -138,8 +138,7 @@ async function buildText(source: SourceText): Promise<TextSummary> {
 
   const heading = tokenizeLine(source.title, "h0");
   const paragraphs = tokenize(source.body);
-  // Narration order: the title is read first, then the body.
-  const sentences = [heading, ...flattenSentences(paragraphs)];
+  const sentences = narrationOrder(heading, paragraphs);
   const wordCount = countWords(sentences);
   log.info(`${paragraphs.length} paragraphs, ${wordCount} words (title included)`);
 
@@ -241,7 +240,7 @@ async function main(): Promise<void> {
           title: existing.title,
           level: existing.level,
           topic: existing.topic,
-          wordCount: countWords([existing.heading, ...flattenSentences(existing.paragraphs)]),
+          wordCount: countWords(narrationOrder(existing.heading, existing.paragraphs)),
           durations: durationsOf(existing.narrations),
         });
         continue;
