@@ -83,11 +83,13 @@ export async function loadSourceTexts(): Promise<SourceText[]> {
       body: normalized,
       file: full,
       // The voice roster is part of the hash, so adding a voice rebuilds the
-      // narrations without anyone having to remember PIPELINE_VERSION.
+      // narrations without anyone having to remember PIPELINE_VERSION. Sorted,
+      // because which voices exist matters and their order in the picker
+      // does not.
       hash: crypto
         .createHash("sha1")
         .update(
-          `v${PIPELINE_VERSION} ${normalized} ${VOICES.map((v) => v.id).join(",")} ` +
+          `v${PIPELINE_VERSION} ${normalized} ${VOICES.map((v) => v.id).sort().join(",")} ` +
             `${rate} ${title} ${level}`,
         )
         .digest("hex")

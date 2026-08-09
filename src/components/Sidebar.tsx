@@ -42,7 +42,9 @@ export function Sidebar({
   volume,
 }: Props) {
   return (
-    <aside className={`island ${styles.sidebar}`} data-tooltip-boundary>
+    // The sidebar clips its overflow, so anything floating inside it — the
+    // tooltips, the pickers' menus — measures itself against this.
+    <aside className={`island ${styles.sidebar}`} data-popover-boundary>
       <header className={styles.header}>
         <BookOpen size={24} strokeWidth={1.75} className={styles.logo} />
         <h1 className={styles.title}>Texts in German</h1>
@@ -76,13 +78,13 @@ export function Sidebar({
       </nav>
 
       <footer className={styles.footer}>
+        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
+
         <ThemePicker
           themeId={theme.themeId}
           theme={theme.theme}
           onSelect={theme.setTheme}
         />
-
-        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
 
         <button
           type="button"

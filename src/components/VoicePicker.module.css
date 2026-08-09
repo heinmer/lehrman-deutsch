@@ -1,0 +1,18 @@
+/* Quiet until wanted: the row is for choosing, this is for listening first. */
+.preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  margin: -0.35rem 0;
+  border-radius: 50%;
+  color: var(--text-soft);
+  background: var(--surface-inset);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.preview:hover {
+  color: var(--accent);
+  background: var(--surface-raised);
+}

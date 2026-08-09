@@ -28,6 +28,7 @@ Generated output lands in `public/` and is not meant to be edited by hand:
 public/data/index.json          list of texts for the sidebar
 public/data/texts/<slug>.json   tokens, per-voice timings, dictionary
 public/media/texts/<slug>/*.mp3 full narration, one file per voice
+public/media/voices/*.mp3       one clip per voice, for the picker
 public/media/words/*.mp3        native-speaker word recordings
 ```
 

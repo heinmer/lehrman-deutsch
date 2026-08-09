@@ -18,7 +18,7 @@ import type {
   TextSummary,
 } from "../shared/types.ts";
 import { VOICES } from "../shared/voices.ts";
-import { PATHS } from "./pipeline/config.ts";
+import { DEFAULT_RATE, PATHS } from "./pipeline/config.ts";
 import { loadSourceTexts, type SourceText } from "./pipeline/source.ts";
 import {
   collectVocabulary,
@@ -39,6 +39,8 @@ const force = process.argv.includes("--force");
 interface BuildState {
   /** slug -> source hash of the last successful build. */
   hashes: Record<string, string>;
+  /** voice id -> the sample it was last recorded from, rate included. */
+  samples?: Record<string, string>;
 }
 
 const statePath = path.join(PATHS.cache, "build-state.json");
@@ -48,6 +50,40 @@ function durationsOf(narrations: Record<string, NarrationTrack>): Record<string,
   return Object.fromEntries(
     Object.values(narrations).map((track) => [track.voice, track.durationSec]),
   );
+}
+
+/**
+ * One clip per voice, saying who it is — what the picker plays when the reader
+ * auditions a voice before committing a whole text to it. Cheap enough to keep
+ * beside the texts, and skipped entirely while the sample is unchanged.
+ */
+async function buildVoiceSamples(state: BuildState): Promise<void> {
+  await ensureDir(PATHS.mediaVoices);
+  state.samples ??= {};
+
+  // Voices that left the roster should not leave their clip behind.
+  const wanted = new Set(VOICES.map((voice) => `${voice.id}.mp3`));
+  for (const file of await fs.readdir(PATHS.mediaVoices)) {
+    if (!wanted.has(file)) await fs.rm(path.join(PATHS.mediaVoices, file));
+  }
+
+  const recorded: string[] = [];
+  for (const voice of VOICES) {
+    const file = path.join(PATHS.mediaVoices, `${voice.id}.mp3`);
+    const stamp = `${DEFAULT_RATE} ${voice.sample}`;
+    if (!force && state.samples[voice.id] === stamp && (await exists(file))) continue;
+
+    const spoken = await synthesize(voice.sample, voice.id, DEFAULT_RATE);
+    await fs.writeFile(file, spoken.audio);
+    state.samples[voice.id] = stamp;
+    recorded.push(voice.name);
+  }
+
+  if (recorded.length > 0) {
+    log.ok(`voice samples: recorded ${recorded.join(", ")}`);
+  } else {
+    log.info(`voice samples: ${VOICES.length} unchanged`);
+  }
 }
 
 /**
@@ -183,6 +219,11 @@ async function main(): Promise<void> {
   }
 
   const state = (await readJson<BuildState>(statePath)) ?? { hashes: {} };
+
+  log.step("Voices");
+  await buildVoiceSamples(state);
+  await writeJson(statePath, state);
+
   const summaries: TextSummary[] = [];
 
   for (const source of sources) {

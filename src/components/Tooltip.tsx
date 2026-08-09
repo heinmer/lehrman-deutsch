@@ -15,7 +15,7 @@ const EDGE_MARGIN = 8;
  * It is centred on its trigger and only nudged sideways by the amount needed
  * to fit — so a short label near an edge still sits centred, while a long one
  * slides just far enough to stay readable. The boundary is the nearest ancestor
- * marked with `data-tooltip-boundary`, falling back to the viewport.
+ * marked with `data-popover-boundary`, falling back to the viewport.
  */
 export function Tooltip({ label, children }: Props) {
   const wrapRef = useRef<HTMLSpanElement>(null);
@@ -31,7 +31,7 @@ export function Tooltip({ label, children }: Props) {
     const trigger = wrap.getBoundingClientRect();
     const width = tip.offsetWidth;
 
-    const boundaryEl = wrap.closest<HTMLElement>("[data-tooltip-boundary]");
+    const boundaryEl = wrap.closest<HTMLElement>("[data-popover-boundary]");
     const bounds = boundaryEl?.getBoundingClientRect() ?? {
       left: 0,
       right: window.innerWidth,

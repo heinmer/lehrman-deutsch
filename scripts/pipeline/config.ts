@@ -14,6 +14,8 @@ export const PATHS = {
   /** Generated audio. */
   mediaTexts: path.join(ROOT, "public", "media", "texts"),
   mediaWords: path.join(ROOT, "public", "media", "words"),
+  /** One audition clip per voice, for the picker. */
+  mediaVoices: path.join(ROOT, "public", "media", "voices"),
   /** Network responses, kept out of the app bundle. */
   cache: path.join(ROOT, ".cache"),
 } as const;

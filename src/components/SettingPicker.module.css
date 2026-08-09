@@ -30,8 +30,8 @@
   box-shadow: var(--shadow-card);
 }
 
-/* The sidebar clips whatever leaves it, so a pill sitting near its right edge
-   has to hang its menu from that edge instead. */
+/* Flipped by SettingPicker when hanging from the left edge would put the menu
+   outside the boundary. */
 .menu[data-align="end"] {
   left: auto;
   right: 0;
@@ -47,6 +47,8 @@
   font-size: var(--fs-sm);
   color: var(--text-muted);
   text-align: left;
+  /* No longer a button, so it has to ask for the pointer itself. */
+  cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
 }
 
@@ -61,12 +63,10 @@
 }
 
 /* Pushed to the far edge, so the labels stay in one column. */
-.meta {
+.action {
+  display: inline-flex;
   margin-left: auto;
   padding-left: 0.75rem;
-  font-size: var(--fs-xs);
-  font-weight: 400;
-  color: var(--text-soft);
 }
 
 .divider {

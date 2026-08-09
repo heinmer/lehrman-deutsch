@@ -36,7 +36,15 @@ not seconds. Wikimedia rate-limits hard, so `scripts/pipeline/http.ts` starts at
 one request per host per 350ms and **backs off further for the rest of the run**
 once a host answers 429, easing back only while it keeps saying yes. Run it in
 the background and keep working; watch the log rather than waiting on it.
-Reruns are cheap because responses and audio land in `.cache/`.
+Reruns are cheap because dictionary responses and word recordings land in
+`.cache/` — narration does not, so anything that invalidates the source hash
+pays for `VOICES.length` fresh syntheses per text.
+
+**Kill a build properly.** Stopping the shell that launched it leaves the `tsx`
+process running: it keeps writing, and — because it holds the whole
+`build-state.json` in memory from before — it will happily overwrite hashes a
+later build wrote. A run that mysteriously rebuilds unchanged texts is the
+symptom. Check for a stray `node` process before blaming the incremental logic.
 
 ## Architecture
 
@@ -61,7 +69,14 @@ Every text is narrated once per voice (`shared/voices.ts`), so a build does
 **Adding a voice** is one entry in that file plus a rerun — the picker, the
 sidebar's durations and the pipeline all read the same list, and the ids are in
 the source hash so the rerun is not optional. Read its own `aligned` line
-before trusting it.
+before trusting it. Reordering the roster is free: the hash is taken over the
+sorted ids, because which voices exist matters and their order in the picker
+does not.
+
+Each voice also records one short clip introducing itself
+(`public/media/voices/<id>.mp3`), which is what the picker auditions. It is
+rebuilt only when its `sample` text changes, tracked in `build-state.json`
+beside the source hashes.
 
 Things that are easy to break:
 
@@ -85,6 +100,12 @@ Things that are easy to break:
   not stand or fall together: the older non-multilingual voices report
   boundaries differently from the multilingual ones, so a new voice has to be
   read on its own line.
+- **A narration's length is the length of its file.** `durationSec` used to be
+  the end of the last word boundary, which is short by the silence the encoder
+  leaves at the end — 0.4s for the multilingual voices, 1.1s for Conrad. The
+  sidebar and the player then disagreed by a second. `mp3DurationSec`
+  (`scripts/pipeline/mp3.ts`) counts frame headers instead and agrees with what
+  the browser reports to the millisecond.
 - **Comparisons fold German spelling.** The engine is inconsistent about `ß`
   vs `ss`, so both sides go through `foldGerman` (`scripts/pipeline/util.ts`)
   before matching.
@@ -144,6 +165,15 @@ as `/…/` so transcriptions look the same everywhere.
   the outside-click and Escape handling, and the menu that opens *upwards* —
   the sidebar sits at the bottom of the window. Theme and voice differ only in
   the options they hand it; a third setting should not grow a third popover.
+  Which side the menu hangs from is measured, not declared: it flips to the
+  pill's right edge when the left one would push it out of the nearest
+  `[data-popover-boundary]` — the sidebar, which clips its overflow. Tooltips
+  use the same marker, so reordering the settings cannot clip anything.
+- **A voice can be heard before it is chosen.** Each option carries a preview
+  button, which is why an option is a `<div role="option">` rather than a
+  button — a button cannot contain one. It plays through `clipAudio`, the same
+  Web Audio path as the word recordings, so the volume setting reaches it; the
+  four clips are prefetched when the picker mounts.
 - **Word recordings go through the Web Audio API** (`src/lib/clipAudio.ts`),
   not `new Audio()`. They are volunteer contributions varying ~7x in loudness
   with ~0.5s of silence before the word, so each is decoded up front, scaled

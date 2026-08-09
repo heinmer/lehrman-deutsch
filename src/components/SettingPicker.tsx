@@ -1,14 +1,21 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 import styles from "./SettingPicker.module.css";
+
+/** Distance kept between the menu and the edge of its boundary. */
+const EDGE_MARGIN = 8;
 
 export interface PickerOption {
   id: string;
   label: string;
   /** A swatch, an icon — whatever identifies the option at a glance. */
   leading?: ReactNode;
-  /** Muted text set to the right of the label. */
-  meta?: string;
+  /**
+   * A control at the far end of the row, doing something other than choosing:
+   * the voices audition themselves from here. It sits inside the option, so it
+   * has to stop the click from also selecting.
+   */
+  action?: ReactNode;
   /** Draws a rule above this option, so a list can fall into groups. */
   separated?: boolean;
 }
@@ -22,12 +29,6 @@ interface Props {
   options: readonly PickerOption[];
   selectedId: string;
   onSelect: (id: string) => void;
-  /**
-   * Which edge of the pill the menu lines up with. `end` is for a pill sitting
-   * near the sidebar's right edge, where a menu opening rightwards would be
-   * clipped — the sidebar hides its overflow.
-   */
-  align?: "start" | "end";
 }
 
 /**
@@ -43,10 +44,34 @@ export function SettingPicker({
   options,
   selectedId,
   onSelect,
-  align = "start",
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [align, setAlign] = useState<"start" | "end">("start");
   const rootRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * The menu hangs from the pill's left edge and flips to the right one when
+   * that would take it outside the boundary — which pill sits where changes
+   * whenever the settings are reordered, so it is not worth deciding by hand.
+   * Measured before paint, so the menu never appears on the wrong side.
+   */
+  useLayoutEffect(() => {
+    const menu = menuRef.current;
+    const root = rootRef.current;
+    if (!open || !menu || !root) return;
+
+    const boundary = root.closest<HTMLElement>("[data-popover-boundary]");
+    const bounds = boundary?.getBoundingClientRect() ?? {
+      left: 0,
+      right: window.innerWidth,
+    };
+    const pill = root.getBoundingClientRect();
+
+    const overflowsRight = pill.left + menu.offsetWidth > bounds.right - EDGE_MARGIN;
+    const fitsFlipped = pill.right - menu.offsetWidth >= bounds.left + EDGE_MARGIN;
+    setAlign(overflowsRight && fitsFlipped ? "end" : "start");
+  }, [open]);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -81,26 +106,44 @@ export function SettingPicker({
       </button>
 
       {open && (
-        <div className={styles.menu} data-align={align} role="listbox" aria-label={name}>
-          {options.map((option) => (
-            <div key={option.id}>
-              {option.separated && <hr className={styles.divider} />}
-              <button
-                type="button"
-                role="option"
-                aria-selected={option.id === selectedId}
-                className={styles.option}
-                onClick={() => {
-                  onSelect(option.id);
-                  setOpen(false);
-                }}
-              >
-                {option.leading}
-                {option.label}
-                {option.meta && <span className={styles.meta}>{option.meta}</span>}
-              </button>
-            </div>
-          ))}
+        <div
+          className={styles.menu}
+          ref={menuRef}
+          data-align={align}
+          role="listbox"
+          aria-label={name}
+        >
+          {options.map((option) => {
+            const choose = () => {
+              onSelect(option.id);
+              setOpen(false);
+            };
+
+            return (
+              <div key={option.id}>
+                {option.separated && <hr className={styles.divider} />}
+                {/* A div, not a button: an option that carries its own button
+                    cannot be one itself. */}
+                <div
+                  role="option"
+                  tabIndex={0}
+                  aria-selected={option.id === selectedId}
+                  className={styles.option}
+                  onClick={choose}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      choose();
+                    }
+                  }}
+                >
+                  {option.leading}
+                  {option.label}
+                  {option.action && <span className={styles.action}>{option.action}</span>}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
