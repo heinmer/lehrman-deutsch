@@ -1,14 +1,10 @@
 .bar {
   display: flex;
   align-items: center;
-  /* The anchor the library button hangs above; see `.library`. Its padding is
-     named because that button is placed against it — that is what puts it on
-     the same axis as the play button, at every width the padding changes. */
+  /* The anchor the library button hangs above; see `.library`. */
   position: relative;
-  --bar-pad-x: 1.5rem;
-  --bar-pad-y: 1rem;
   gap: 1.1rem;
-  padding: var(--bar-pad-y) var(--bar-pad-x);
+  padding: 1rem 1.5rem;
   background: var(--surface-player);
   /* The voice menu opens upwards, out of the bar; the island would clip it.
      Nothing else in here overflows. */
@@ -21,20 +17,29 @@
 
 /* Opens the drawer — a round island of its own above the bar's corner rather
    than one more control in the row, which at this width is what the bar has
-   least room for. It is placed against the bar's own padding, so it stands on
-   the same axis as the play button and keeps its distance from the bar
-   whatever height the bar has wrapped to. There is no drawer while the sidebar
-   is in the layout, so above the breakpoint it does not exist. */
+   least room for. Its corner is the reader's, not the bar's: `--corner-inset`
+   is the distance from both of the reader's edges, and the bar only supplies
+   the bottom reference — hence the layout gap between them in `margin-bottom`.
+   That the bar is what it is positioned against is an implementation detail;
+   the bar is simply the one box whose top edge is where the reader's bottom
+   edge is, whatever height it has wrapped to. There is no drawer while the
+   sidebar is in the layout, so above the breakpoint it does not exist. */
 .library {
   display: none;
   position: absolute;
-  left: var(--bar-pad-x);
+  --corner-inset: 1.25rem;
+  /* Offsets are resolved against the bar's padding box, which is a border
+     inside the reader's own edges — without the 1px back the inset from the
+     left and the inset from the bottom come out 2px apart. */
+  left: calc(var(--corner-inset) - 1px);
   bottom: 100%;
-  margin-bottom: var(--bar-pad-y);
+  margin-bottom: calc(var(--gap) + var(--corner-inset) + 1px);
   place-items: center;
-  /* The play button's size: they read as a pair, one above the other. */
-  width: 3.25rem;
-  height: 3.25rem;
+  /* Larger than anything in the bar: it is the only way out of a text on a
+     phone, and it is read against the whole reader rather than a row of
+     controls. */
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%;
   /* Frosted rather than opaque: it floats over the prose, and the blur is what
      keeps the text from reading through it. */
@@ -259,9 +264,8 @@
 
 @media (max-width: 62rem) {
   .bar {
-    --bar-pad-x: 1.1rem;
-    --bar-pad-y: 0.85rem;
     gap: 1rem;
+    padding: 0.85rem 1.1rem;
   }
 
   .speed,
@@ -280,9 +284,9 @@
    source order alone and quietly undo it. */
 @media (max-width: 48rem) {
   .bar {
-    --bar-pad-x: 1rem;
     flex-wrap: wrap;
     gap: 0.7rem;
+    padding: 0.85rem 1rem;
   }
 
   /* A row of its own: sharing one with the buttons left about sixty pixels of

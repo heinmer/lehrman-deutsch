@@ -266,12 +266,14 @@ as `/…/` so transcriptions look the same everywhere.
   That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
-  wrapping. It is the play button's size and stands on the play button's axis,
-  which is why the bar's padding is kept in `--bar-pad-x`/`--bar-pad-y` rather
-  than written into the shorthand: the button is offset by the same values, so
-  the two cannot drift apart when a breakpoint changes the padding. Its ground
-  is `--surface-overlay` at 62% behind a `backdrop-filter` blur — the one
-  floating thing that is not opaque, and the blur is what stands in for it. Below 48rem the word panel becomes a drawer in exactly the same
+  wrapping. The corner it is inset from is the **reader's**, not the bar's:
+  `--corner-inset` is the same distance from the reader's left edge and from
+  its bottom one, which is why the bottom offset carries `--gap` (the gutter
+  between the two islands) and a pixel for the bar's own border — offsets
+  resolve against the bar's padding box, one border inside the edges being
+  measured from. Its ground is `--surface-overlay` at 62% behind a
+  `backdrop-filter` blur — the one floating thing that is not opaque, and the
+  blur is what stands in for it. Below 48rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
   third of a phone is not a column the prose can be read in, and a section
   covering the reader should not leave the reader clickable underneath it.
