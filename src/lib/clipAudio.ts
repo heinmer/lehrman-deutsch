@@ -120,6 +120,13 @@ export async function prefetchClips(sources: string[]): Promise<void> {
 }
 
 let activeSource: AudioBufferSourceNode | null = null;
+/** The sidebar's output level, applied on top of each clip's own gain. */
+let masterVolume = 1;
+
+/** Sets the output level for word clips, 0–1. Takes effect on the next click. */
+export function setClipVolume(value: number): void {
+  masterVolume = Math.min(Math.max(value, 0), 1);
+}
 
 function start(ctx: AudioContext, clip: PreparedClip): void {
   activeSource?.stop();
@@ -128,7 +135,7 @@ function start(ctx: AudioContext, clip: PreparedClip): void {
   source.buffer = clip.buffer;
 
   const gain = ctx.createGain();
-  gain.gain.value = clip.gain;
+  gain.gain.value = clip.gain * masterVolume;
 
   source.connect(gain).connect(ctx.destination);
   source.onended = () => {
@@ -147,6 +154,7 @@ export function playClip(src: string): void {
   if (!ctx) {
     fallback?.pause();
     fallback = new Audio(src);
+    fallback.volume = masterVolume;
     void fallback.play();
     return;
   }

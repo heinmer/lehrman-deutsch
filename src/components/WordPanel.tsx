@@ -1,4 +1,4 @@
-import { CornerDownRight, MousePointerClick, Volume2, X } from "lucide-react";
+import { CornerDownRight, MousePointerClick, Play, Volume2, X } from "lucide-react";
 import type { DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
 import { genderArticle, posLabel } from "../lib/format";
 import { spokenLexeme } from "../lib/pronunciation";
@@ -10,9 +10,13 @@ interface Props {
   token: WordToken | null;
   entry: DictionaryEntry | null;
   onClose: () => void;
+  /** Plays the narration from this word, paused or not. */
+  onPlayFrom: () => void;
+  /** False when the word has no timing, or the narration is still loading. */
+  canPlayFrom: boolean;
 }
 
-export function WordPanel({ token, entry, onClose }: Props) {
+export function WordPanel({ token, entry, onClose, onPlayFrom, canPlayFrom }: Props) {
   if (!token) {
     return (
       <aside className={`island ${styles.panel}`} aria-label="Word details">
@@ -85,6 +89,21 @@ export function WordPanel({ token, entry, onClose }: Props) {
         ) : (
           <p className={styles.empty}>No dictionary entry found for this word.</p>
         )}
+      </div>
+
+      {/* Outside the scrolling body, so the senses above end before it rather
+          than sliding underneath. */}
+      <div className={styles.footer}>
+        <button
+          type="button"
+          className={styles.playFrom}
+          onClick={onPlayFrom}
+          disabled={!canPlayFrom}
+          title={canPlayFrom ? undefined : "This word has no timing in the recording"}
+        >
+          <Play size={18} strokeWidth={2.25} />
+          Read from here
+        </button>
       </div>
     </aside>
   );

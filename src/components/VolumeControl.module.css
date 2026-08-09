@@ -1,0 +1,122 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+/* The pill control, squared off into a disc. */
+.button {
+  width: var(--control-height);
+  padding: 0;
+  justify-content: center;
+  flex: none;
+}
+
+.button[data-muted="true"] {
+  color: var(--text-soft);
+}
+
+/* Opens upwards, like the theme menu: the control sits at the bottom of the
+   sidebar. The padding is the bridge — it keeps the hover area continuous
+   between the button and the card, so the pointer never crosses a gap. */
+.popover {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  z-index: 30;
+  transform: translateX(-50%);
+  padding-bottom: 0.4rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 130ms ease, visibility 130ms;
+}
+
+/* Keyboard focus keeps it open, but focus left behind by a drag must not:
+   `:focus-within` would pin the slider open after the pointer had gone. */
+.root:hover .popover,
+.root:has(:focus-visible) .popover {
+  opacity: 1;
+  visibility: visible;
+}
+
+.card {
+  display: flex;
+  justify-content: center;
+  padding: 0.7rem 0.6rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface-overlay);
+  /* A ring of the sidebar's own ground, the same trick the scrubber's thumb
+     uses against its track: it holds the card clear of the settings it opens
+     over instead of letting the two shapes touch. An outline, not a border or
+     a second shadow — it costs no layout and the themes that set
+     `--shadow-card: none` could not take another shadow layer. */
+  outline: 5px solid var(--surface-sidebar);
+  box-shadow: var(--shadow-card);
+}
+
+/* As wide as the thumb, so the thumb fills it and reads as centred. */
+.sliderWrap {
+  position: relative;
+  width: 1.25rem;
+  height: 6.5rem;
+}
+
+/* The track. Inset by half a thumb at each end so that it spans exactly the
+   travel of the thumb's centre — otherwise the fill and the thumb drift apart
+   towards the ends. */
+.sliderWrap::before {
+  content: "";
+  position: absolute;
+  top: 0.625rem;
+  bottom: 0.625rem;
+  left: 50%;
+  width: 0.45rem;
+  transform: translateX(-50%);
+  border-radius: var(--radius-pill);
+  background: linear-gradient(to top, var(--accent) var(--fill), var(--track) var(--fill));
+}
+
+.slider {
+  appearance: none;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Chrome's own stylesheet gives a range 2px of margin, which is enough to
+     push the thumb off the track drawn behind it. */
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  /* Vertical with the loud end at the top. */
+  writing-mode: vertical-rl;
+  direction: rtl;
+}
+
+.slider::-webkit-slider-runnable-track {
+  background: none;
+}
+
+.slider::-moz-range-track {
+  background: none;
+}
+
+/* The ring is the card's own ground, exactly as the player's scrubber cuts
+   itself out of the bar: it holds the thumb apart from the track. */
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface-overlay);
+  box-shadow: var(--shadow-raised);
+}
+
+.slider::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--surface-overlay);
+  box-shadow: var(--shadow-raised);
+}

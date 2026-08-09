@@ -16,6 +16,8 @@ export interface Narration {
   activeWordId: string | null;
   activeSentenceId: string | null;
   toggle: () => void;
+  /** Starts playback, whether or not it was already running. */
+  play: () => void;
   /** Moves the playhead without changing whether audio is playing. */
   seek: (seconds: number) => void;
   changeRate: (rate: number) => void;
@@ -61,7 +63,11 @@ function findActive(timeline: TimedWord[], time: number): number {
  * element's `timeupdate` event, which only fires about four times a second —
  * far too coarse to follow individual words.
  */
-export function useNarration(src: string | null, sentences: Sentence[]): Narration {
+export function useNarration(
+  src: string | null,
+  sentences: Sentence[],
+  volume = 1,
+): Narration {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const frameRef = useRef<number | null>(null);
 
@@ -79,6 +85,7 @@ export function useNarration(src: string | null, sentences: Sentence[]): Narrati
     const audio = new Audio(src);
     audio.preload = "auto";
     audio.playbackRate = rate;
+    audio.volume = volume;
     audioRef.current = audio;
 
     const onLoaded = () => {
@@ -103,14 +110,19 @@ export function useNarration(src: string | null, sentences: Sentence[]): Narrati
       setCurrentTime(0);
       setDuration(0);
     };
-    // `rate` is applied through its own effect; re-creating the element on a
-    // speed change would interrupt playback.
+    // `rate` and `volume` are applied through their own effects; re-creating
+    // the element on either would interrupt playback. They are read here only
+    // so a text loaded later starts out with the current settings.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [src]);
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.playbackRate = rate;
   }, [rate]);
+
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+  }, [volume]);
 
   useEffect(() => {
     if (!isPlaying) {
@@ -144,6 +156,13 @@ export function useNarration(src: string | null, sentences: Sentence[]): Narrati
     }
   }, []);
 
+  const play = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    void audio.play();
+    setIsPlaying(true);
+  }, []);
+
   const seek = useCallback((seconds: number) => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -163,6 +182,7 @@ export function useNarration(src: string | null, sentences: Sentence[]): Narrati
     activeWordId: active?.wordId ?? null,
     activeSentenceId: active?.sentenceId ?? null,
     toggle,
+    play,
     seek,
     changeRate: setRate,
   };

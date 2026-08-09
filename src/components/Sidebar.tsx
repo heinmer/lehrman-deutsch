@@ -1,9 +1,11 @@
-import { BookOpen, Clock, LocateFixed, LocateOff, Type, Volume2, VolumeX } from "lucide-react";
+import { BookOpen, Clock, LocateFixed, LocateOff, Megaphone, Type } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
 import type { ThemeControls } from "../hooks/useTheme";
+import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
 import { ThemePicker } from "./ThemePicker";
+import { VolumeControl } from "./VolumeControl";
 import styles from "./Sidebar.module.css";
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
   onToggleAutoSpeak: () => void;
   seekOnClick: boolean;
   onToggleSeekOnClick: () => void;
+  volume: VolumeSetting;
 }
 
 export function Sidebar({
@@ -26,6 +29,7 @@ export function Sidebar({
   onToggleAutoSpeak,
   seekOnClick,
   onToggleSeekOnClick,
+  volume,
 }: Props) {
   return (
     <aside className={`island ${styles.sidebar}`} data-tooltip-boundary>
@@ -74,27 +78,32 @@ export function Sidebar({
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
         >
-          {autoSpeak ? (
-            <Volume2 size={19} strokeWidth={2} />
-          ) : (
-            <VolumeX size={19} strokeWidth={2} />
-          )}
+          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
+              setting is off", so the pressed state carries the difference —
+              the control already recolours itself. */}
+          <Megaphone size={19} strokeWidth={2} />
           Say word
         </button>
 
-        <button
-          type="button"
-          className="control"
-          onClick={onToggleSeekOnClick}
-          aria-pressed={seekOnClick}
-        >
-          {seekOnClick ? (
-            <LocateFixed size={19} strokeWidth={2} />
-          ) : (
-            <LocateOff size={19} strokeWidth={2} />
-          )}
-          Jump to word
-        </button>
+        {/* Held together so the round volume control keeps this line company
+            rather than wrapping onto one of its own. */}
+        <div className={styles.settingRow}>
+          <VolumeControl {...volume} />
+
+          <button
+            type="button"
+            className="control"
+            onClick={onToggleSeekOnClick}
+            aria-pressed={seekOnClick}
+          >
+            {seekOnClick ? (
+              <LocateFixed size={19} strokeWidth={2} />
+            ) : (
+              <LocateOff size={19} strokeWidth={2} />
+            )}
+            Jump to word
+          </button>
+        </div>
       </footer>
     </aside>
   );
