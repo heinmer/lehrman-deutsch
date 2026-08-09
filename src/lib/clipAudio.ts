@@ -19,8 +19,12 @@ interface PreparedClip {
   duration: number;
 }
 
-/** Roughly the loudness of a well-recorded spoken word. */
-const TARGET_RMS = 0.09;
+/**
+ * The loudness a clip is brought to, measured off the narrations so a word
+ * does not jump out louder than the voice reading it: their speech sits
+ * between 0.099 and 0.114 RMS depending on the voice.
+ */
+const TARGET_RMS = 0.11;
 const MAX_GAIN = 8;
 const MIN_GAIN = 0.4;
 const PEAK_CEILING = 0.98;
@@ -42,21 +46,11 @@ function getContext(): AudioContext | null {
 
 function analyse(buffer: AudioBuffer): PreparedClip {
   const samples = buffer.getChannelData(0);
-  let sumOfSquares = 0;
   let peak = 0;
-
   for (let i = 0; i < samples.length; i += 1) {
     const value = Math.abs(samples[i]);
-    sumOfSquares += samples[i] * samples[i];
     if (value > peak) peak = value;
   }
-
-  const rms = Math.sqrt(sumOfSquares / Math.max(samples.length, 1));
-
-  let gain = rms > 0 ? TARGET_RMS / rms : 1;
-  gain = Math.min(Math.max(gain, MIN_GAIN), MAX_GAIN);
-  // Never push the loudest sample into clipping.
-  if (peak * gain > PEAK_CEILING) gain = PEAK_CEILING / Math.max(peak, 1e-6);
 
   const threshold = Math.max(peak * 0.02, 0.004);
   let first = 0;
@@ -66,8 +60,21 @@ function analyse(buffer: AudioBuffer): PreparedClip {
 
   // All silence: play it as-is rather than nothing at all.
   if (first >= last) {
-    return { buffer, gain, offset: 0, duration: buffer.duration };
+    return { buffer, gain: 1, offset: 0, duration: buffer.duration };
   }
+
+  // Measured over the stretch that is actually played. Taking it over the
+  // whole file instead let the half-second of silence in front of most of
+  // these recordings drag the average down, and every clip came out louder
+  // than the target by however much silence it happened to carry.
+  let sumOfSquares = 0;
+  for (let i = first; i <= last; i += 1) sumOfSquares += samples[i] * samples[i];
+  const rms = Math.sqrt(sumOfSquares / (last - first + 1));
+
+  let gain = rms > 0 ? TARGET_RMS / rms : 1;
+  gain = Math.min(Math.max(gain, MIN_GAIN), MAX_GAIN);
+  // Never push the loudest sample into clipping.
+  if (peak * gain > PEAK_CEILING) gain = PEAK_CEILING / Math.max(peak, 1e-6);
 
   const rate = buffer.sampleRate;
   const offset = Math.max(0, first / rate - LEAD_IN);
