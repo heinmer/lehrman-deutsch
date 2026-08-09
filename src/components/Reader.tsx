@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Languages } from "lucide-react";
+import { Languages, Loader2 } from "lucide-react";
 import type { Sentence, TextDocument, WordToken } from "../../shared/types";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
@@ -74,6 +74,7 @@ export function Reader({
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(new Set());
+  const [titleOpen, setTitleOpen] = useState(false);
 
   const toggleTranslation = (paragraphId: string) => {
     setOpenTranslations((open) => {
@@ -84,7 +85,10 @@ export function Reader({
   };
 
   // A new text starts with everything in German again.
-  useEffect(() => setOpenTranslations(new Set()), [document?.slug]);
+  useEffect(() => {
+    setOpenTranslations(new Set());
+    setTitleOpen(false);
+  }, [document?.slug]);
 
   // Follow the narration, but only when the spoken sentence has drifted out of
   // view — scrolling on every sentence would fidget under the reader's eyes.
@@ -106,7 +110,13 @@ export function Reader({
   }, [activeSentenceId]);
 
   if (!document) {
-    return <div className={`island ${styles.reader}`} ref={scrollRef} />;
+    return (
+      <div className={`island ${styles.reader}`} ref={scrollRef}>
+        <div className={styles.loading} role="status" aria-label="Loading text">
+          <Loader2 size={34} strokeWidth={2} className={styles.spinner} />
+        </div>
+      </div>
+    );
   }
 
   const shared = { activeWordId, activeSentenceId, selectedWordId, onSelectWord };
@@ -119,11 +129,22 @@ export function Reader({
           <div>
             <h2 className={styles.title}>
               <SentenceView sentence={document.heading} {...shared} />
+              {document.titleTranslation && (
+                <button
+                  type="button"
+                  className={styles.translateToggle}
+                  onClick={() => setTitleOpen((value) => !value)}
+                  aria-expanded={titleOpen}
+                  aria-label={titleOpen ? "Hide translation" : "Show translation"}
+                  title={titleOpen ? "Hide translation" : "Show translation"}
+                >
+                  <Languages size={19} strokeWidth={2} />
+                </button>
+              )}
             </h2>
-            {document.titleTranslation && (
+            {titleOpen && document.titleTranslation && (
               <p className={styles.titleTranslation}>{document.titleTranslation}</p>
             )}
-            {document.topic && <p className={styles.meta}>{document.topic}</p>}
           </div>
         </header>
 

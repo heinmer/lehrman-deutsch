@@ -79,7 +79,7 @@ Optional front-matter keys:
 | ------- | ---------------------------------- | ---------------------------------- |
 | `slug`  | file name                          | URL/file identifier                |
 | `level` | `A1`                               | CEFR level shown in the sidebar    |
-| `topic` | —                                  | Short label shown under the title  |
+| `topic` | —                                  | Kept in the data; not shown in the UI |
 | `voice` | `de-DE-SeraphinaMultilingualNeural` | Any Edge German voice              |
 | `rate`  | `-10%`                             | Speaking rate, e.g. `-25%`, `+5%`  |
 

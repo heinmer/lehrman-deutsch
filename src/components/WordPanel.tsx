@@ -17,7 +17,7 @@ export function WordPanel({ token, entry, onClose }: Props) {
     return (
       <aside className={`island ${styles.panel}`} aria-label="Word details">
         <div className={styles.placeholder}>
-          <MousePointerClick size={30} strokeWidth={1.5} />
+          <MousePointerClick size={68} strokeWidth={1.35} />
           <p>Click any word to hear it and see what it means.</p>
         </div>
       </aside>
