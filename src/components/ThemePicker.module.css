@@ -1,68 +1,9 @@
-.root {
-  position: relative;
-  display: inline-flex;
-}
-
+/* The preview dot, on the pill and on every option. The popover itself is
+   styled by SettingPicker.module.css. */
 .disc {
   width: 1.35rem;
   height: 1.35rem;
   flex: none;
   border-radius: 50%;
   box-shadow: 0 0 0 1px var(--track);
-}
-
-.chevron {
-  margin-left: -0.15rem;
-  transition: transform 130ms ease;
-}
-
-.chevron[data-open="true"] {
-  transform: rotate(180deg);
-}
-
-/* Opens upwards: the control sits at the bottom of the sidebar. */
-.menu {
-  position: absolute;
-  bottom: calc(100% + 0.45rem);
-  left: 0;
-  z-index: 30;
-  min-width: 11rem;
-  padding: 0.4rem;
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border);
-  background: var(--surface-overlay);
-  /* Same ring as the volume card: keeps the menu off the text list and the
-     settings it covers. */
-  outline: 5px solid var(--surface-sidebar);
-  box-shadow: var(--shadow-card);
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  width: 100%;
-  padding: 0.45rem 0.6rem;
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  text-align: left;
-  transition: background-color 120ms ease, color 120ms ease;
-}
-
-.option:hover {
-  background: var(--surface-inset);
-  color: var(--text);
-}
-
-.option[aria-selected="true"] {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.divider {
-  height: 1px;
-  margin: 0.35rem 0.25rem;
-  border: none;
-  background: var(--border);
 }
