@@ -316,6 +316,15 @@ Two typefaces, deliberately: `--font-serif` (PT Serif) is used *only* for the
 German prose; everything else uses `--font-sans` (DM Sans). Nothing in the UI
 goes below `--fs-xs`.
 
+**The root is at 90%, and the two kinds of size do not share a unit.**
+Everything structural — gaps, paddings, column widths, control heights — is in
+rem, so `html { font-size: 90% }` in `global.css` shrinks the whole layout the
+way the browser's own 90% zoom does. The type scale is in **px** for exactly
+that reason: scaled by a 14.4px root, a scale in rem would put every heading on
+a fraction of a pixel. So a new spacing value goes in rem and a new font size
+goes in px (a whole one), and a font size written in rem anywhere is a bug —
+`--fs-*` is the only place sizes belong.
+
 ## Adding a text
 
 Drop a Markdown file with front matter into `content/texts/` and run
