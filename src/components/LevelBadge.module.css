@@ -17,7 +17,7 @@
 .label {
   position: relative;
   color: var(--accent-contrast);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
 }
@@ -28,7 +28,7 @@
 }
 
 .badge[data-size="sm"] .label {
-  font-size: 0.9rem;
+  font-size: 1.02rem;
 }
 
 .badge[data-size="md"] {
@@ -37,5 +37,5 @@
 }
 
 .badge[data-size="md"] .label {
-  font-size: var(--fs-md);
+  font-size: var(--fs-lg);
 }
