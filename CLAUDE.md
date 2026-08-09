@@ -19,10 +19,12 @@ npm run content:force    # regenerate everything, ignoring the incremental cache
 There is no test runner and no linter. `npm run typecheck` plus the browser
 checks described under *Verifying UI and behaviour* are what stands in for them.
 
-`npm run content` is slow on first run for a text (several minutes): Wikimedia
-rate-limits hard, and `scripts/pipeline/http.ts` throttles to one request per
-host per 350ms with exponential backoff on 429. Reruns are fast because
-everything lands in `.cache/`.
+`npm run content` is slow the first time a text is built — minutes per text,
+not seconds. Wikimedia rate-limits hard, so `scripts/pipeline/http.ts` starts at
+one request per host per 350ms and **backs off further for the rest of the run**
+once a host answers 429, easing back only while it keeps saying yes. Run it in
+the background and keep working; watch the log rather than waiting on it.
+Reruns are cheap because responses and audio land in `.cache/`.
 
 ## Architecture
 
@@ -61,6 +63,11 @@ Things that are easy to break:
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
   from the dictionary. Only 200s and 404s are cached.
+- **Changing the document shape means bumping `PIPELINE_VERSION`**
+  (`scripts/pipeline/config.ts`). It feeds the source hash, so without a bump
+  the incremental build skips existing texts and they keep the old shape while
+  the app expects the new one. Bumping it re-synthesises every narration, which
+  costs a few minutes — that is the intended trade.
 
 ### Dictionary sources
 
@@ -70,10 +77,16 @@ Things that are easy to break:
   which is common for inflected spellings (`bleibt`, `warmen`).
 - **Wikimedia Commons** — native-speaker recordings, downloaded into
   `public/media/words/`. Standard German is preferred over Austrian/Swiss.
-- **Paragraph translations** — DeepL when `DEEPL_API_KEY` is set in the
-  environment, otherwise MyMemory, which needs no credentials. Both are cached
-  per provider, so switching providers re-translates rather than reusing the
-  other one's output.
+- **Translations** (each paragraph, plus the title) — DeepL when
+  `DEEPL_API_KEY` is set in the environment, otherwise MyMemory, which needs no
+  credentials. Cached per provider, so switching providers re-translates rather
+  than reusing the other one's output.
+
+  MyMemory answers short strings with a zero-quality corpus match that simply
+  echoes the source — titles came back untranslated or truncated until
+  `translate.ts` learned to reject echoes and take the closest real alternative.
+  Always eyeball `titleTranslation` after a build; it is the case most likely to
+  degrade quietly.
 
 Lookups try several spellings (as written, lowercase, capitalized) because
 German capitalizes nouns and a sentence-initial word says nothing about its
@@ -86,8 +99,9 @@ as `/…/` so transcriptions look the same everywhere.
   both rely on this: playing stays playing from the new position, paused stays
   paused. Do not "helpfully" call `play()` in either path.
 - **Clicking a word plays its recording only while the narration is paused**,
-  otherwise the clip would talk over the sentence. The "Say word" toggle in the
-  sidebar disables it.
+  otherwise the clip would talk over the sentence. Two sidebar toggles gate the
+  click independently — "Say word" (speak it) and "Jump to word" (move the
+  playhead); both live in `useToggleSetting` and persist.
 - **Word recordings go through the Web Audio API** (`src/lib/clipAudio.ts`),
   not `new Audio()`. They are volunteer contributions varying ~7x in loudness
   with ~0.5s of silence before the word, so each is decoded up front, scaled
@@ -120,19 +134,26 @@ A theme must define *every* token — a missing one is not inherited from anothe
 theme, it simply goes unset and the declaration is dropped, which is silent.
 Renaming a token means renaming it in the components too; grep for it.
 
-`--island-border` is what separates the sections when their backgrounds cannot:
-dark themes need it because a drop shadow has nothing to darken, and the flat
-White and Black themes rely on it entirely, having no shadow at all.
+`--island-border` separates the sections where the backgrounds cannot: the dark
+themes need it because a drop shadow has nothing to darken. White and Black set
+it to `transparent` on purpose — there they share one ground with the page and
+are meant to read as a single sheet.
 
 `--border` draws lines; `--track` fills areas that must read as "empty but
 present" — the unplayed part of the scrubber, the ring around a theme dot, a
-disabled button. Keeping them apart is what lets White set `--border` to pure
-black without turning the scrubber into one solid black bar.
+disabled button. They were one token until White needed strong section outlines
+without turning the scrubber into a solid bar; keep the two roles apart.
 
-`scratchpad/check-contrast.mjs` walks every theme and reports WCAG ratios. Body
-text is kept at AAA (7:1), and it also checks the filled accent buttons against
-the surfaces they sit on — that is what caught the speak button disappearing
-into the panel.
+White and Black keep pure `#fff`/`#000` **grounds only**. Everything on them is
+tinted: body text is a very dark grey / off-white rather than pure ink, and the
+accents keep the blue and green of the other themes. Do not "simplify" these
+back to two literal colours.
+
+A one-off script that measures WCAG ratios across every theme has repeatedly
+earned its keep — body text at AAA (7:1), and filled accent buttons against the
+surface behind them, which is what caught the speak button vanishing into the
+panel. Scratchpad scripts do not survive between sessions; rewrite it (see
+*Verifying UI and behaviour*) rather than trusting the eye on a new theme.
 
 Tailwind was considered and rejected: theming here is pure CSS variables, which
 Tailwind v4 would express the same way, so a rewrite would buy nothing.
@@ -144,21 +165,66 @@ goes below `--fs-xs`.
 ## Adding a text
 
 Drop a Markdown file with front matter into `content/texts/` and run
-`npm run content`. Keys: `title`, `level`, `topic`, `slug`, `voice`, `rate`.
-Blank lines separate paragraphs; sentences are detected with `Intl.Segmenter`.
-The title is narrated and clickable like the body, so it counts as content.
+`npm run content` (in the background — see *Commands*). Blank lines separate
+paragraphs; sentences are detected with `Intl.Segmenter`. The title is narrated
+and clickable like the body, so it counts as content.
+
+```markdown
+---
+title: Ein Tag am See
+level: A1
+topic: Summer
+---
+
+Es ist Sommer. Lena und Tom fahren mit dem Fahrrad zum See.
+
+Nach einer Stunde kommen sie am See an.
+```
+
+| Key     | Default                             | Notes                              |
+| ------- | ----------------------------------- | ---------------------------------- |
+| `title` | file name                           | Narrated first, then the body      |
+| `level` | `A1`                                | Sorts the sidebar; shown on a badge |
+| `topic` | —                                   | Stored but not displayed anywhere  |
+| `slug`  | file name                           | Output file and URL identifier     |
+| `voice` | `de-DE-SeraphinaMultilingualNeural` | Any Edge German voice              |
+| `rate`  | `-10%`                              | Speaking rate                      |
+
+The sidebar sorts by level then title, so file names do not set the order.
+
+**Write real German.** These are teaching texts: keep A1 to present tense and
+simple clauses, and let A2 use Perfekt, subordinate clauses with `dass`/`weil`,
+modals and separable verbs. Grammar errors here become errors the learner
+memorises with audio attached.
+
+**After the build, check the log rather than assuming:**
+
+- `aligned N/M words (100%)` for every text — anything less means the
+  highlighting will sit dead on some words.
+- `entries found` close to the distinct-word count, and most with native audio.
+- `titleTranslation` in the generated JSON actually reads as English.
 
 ## Verifying UI and behaviour
 
-There is no browser automation dependency; Edge is driven directly over CDP
-from throwaway scripts in the scratchpad (launch
-`msedge.exe --headless=new --remote-debugging-port=…`, drive it with Node's
-built-in `WebSocket`). This has been used to screenshot both themes
-(`Emulation.setEmulatedMedia` for the colour scheme, and clear `localStorage`
-first or the stored theme wins) and to assert behaviour — e.g. stubbing
-`window.Audio` to count word clips, or watching `Network.requestWillBeSent` to
-prove a click plays from memory. Prefer this over reasoning about the UI from
-source alone; it has caught real bugs.
+There is no browser automation dependency, and none is needed: Edge is driven
+directly over CDP from throwaway scripts in the scratchpad — launch
+`msedge.exe --headless=new --remote-debugging-port=…`, then drive it with Node's
+built-in `WebSocket`. These scripts are not committed, so expect to write them
+again; they take a few minutes and have repeatedly caught real bugs.
+
+Techniques that have paid off:
+
+- Screenshot a theme by setting `localStorage.theme` and reloading (clear it
+  first, or the stored value beats `Emulation.setEmulatedMedia`).
+- Assert behaviour instead of eyeballing: stub `window.Audio` to count word
+  clips, watch `Network.requestWillBeSent` to prove a click plays from memory,
+  read `getBoundingClientRect()` to check a tooltip stays inside its container.
+- Drive real hover with `Input.dispatchMouseEvent`; React's `pointerenter` does
+  not fire from a synthetic `click()`.
+
+Bugs found this way that source reading missed: a line break falling between a
+word and its full stop, the player pushed off screen by a grid row sized to
+content, and section cards melting into the page ground in dark themes.
 
 ## Attribution
 
