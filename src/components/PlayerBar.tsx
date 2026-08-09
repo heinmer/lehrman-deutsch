@@ -22,7 +22,7 @@ export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: P
 
   return (
     // The voice menu opens out of the bar and has to measure itself against it.
-    <div className={`island ${styles.bar}`} data-popover-boundary>
+    <div className={`island ${styles.bar}`} data-popover-boundary data-failed={error || undefined}>
       {/* The way back to the text list and the settings once they have left
           the layout. It is drawn as an island of its own above the bar's left
           corner, not as a control in the row — the bar is only what it is
@@ -71,7 +71,7 @@ export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: P
         <div className={styles.failed} role="alert">
           <span>{error}</span>
           <button type="button" className={styles.retry} onClick={narration.reload}>
-            <RotateCw size={16} strokeWidth={2} />
+            <RotateCw size={18} strokeWidth={2} />
             Try again
           </button>
         </div>

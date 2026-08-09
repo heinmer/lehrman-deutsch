@@ -15,6 +15,14 @@
   --popover-ring: transparent;
 }
 
+/* Only while the reading failed: see `.failed`, which claims a whole row. The
+   bar cannot wrap by itself above the phone breakpoint, and a child cannot ask
+   its parent to. */
+.bar[data-failed] {
+  flex-wrap: wrap;
+  row-gap: 0.7rem;
+}
+
 /* Opens the drawer — a round island of its own above the bar's corner rather
    than one more control in the row, which at this width is what the bar has
    least room for. Its corner is the reader's, not the bar's: `--corner-inset`
@@ -63,22 +71,21 @@
   }
 }
 
-/* Where the scrubber would be: it is the control the message explains, and it
-   is the one part of the bar wide enough to hold a sentence. */
+/* Where the scrubber would be: it is the control the message explains. Not
+   *beside* the controls, though — every other control in the bar is a fixed
+   width and only this one gives, so a sentence squeezed in between them was
+   ellipsised down to "This rea…" at every window width there is. It takes a
+   row of its own instead, exactly as the scrubber does on a phone, which is
+   why the bar is allowed to wrap while it is showing. */
 .failed {
   display: flex;
   align-items: center;
   gap: 0.85rem;
-  flex: 1;
+  order: -1;
+  flex: 1 0 100%;
   min-width: 0;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--text-muted);
-}
-
-.failed > span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .retry {
@@ -90,7 +97,7 @@
   border-radius: var(--radius-pill);
   background: var(--surface-inset);
   color: var(--accent);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
 }
 
 .retry:hover {
