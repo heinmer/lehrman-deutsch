@@ -1,4 +1,5 @@
 import { MsEdgeTTS, OUTPUT_FORMAT } from "msedge-tts";
+import { mp3DurationSec } from "./mp3.ts";
 
 /** A boundary event reported by the speech engine, in seconds. */
 export interface Boundary {
@@ -95,7 +96,9 @@ export async function synthesize(
       throw new Error("speech synthesis returned no audio");
     }
 
-    return { audio, words, durationSec: words.at(-1)?.end ?? 0 };
+    // The length of the file, not the end of the last word: the encoder leaves
+    // a moment of silence after it, and the player counts that silence too.
+    return { audio, words, durationSec: mp3DurationSec(audio) };
   } finally {
     tts.close();
   }
