@@ -248,3 +248,26 @@
     padding-left: 1rem;
   }
 }
+
+/* A phone cannot hold this row. The controls are fixed widths and only the
+   scrubber gives, so past a point everything to its right hung off the side of
+   the window — the bar sets `overflow: visible` on purpose, for the voice
+   menu, so nothing stopped it. It wraps instead.
+
+   This block belongs at the end of the file: a media query adds no
+   specificity, so the plain `.scrubber` rule above would otherwise win on
+   source order alone and quietly undo it. */
+@media (max-width: 48rem) {
+  .bar {
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    padding: 0.85rem 1rem;
+  }
+
+  /* A row of its own: sharing one with the buttons left about sixty pixels of
+     track, which is not something anybody can seek with. */
+  .scrubber {
+    order: -1;
+    flex: 1 0 100%;
+  }
+}
