@@ -260,11 +260,15 @@ as `/…/` so transcriptions look the same everywhere.
 - **Below 62rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
-  It is now a fixed panel opened from the player — the one thing always on
-  screen — closed by choosing a text, by Escape or by the scrim, and
+  It is now a fixed panel opened from a round island in the reader's bottom
+  corner — closed by choosing a text, by Escape or by the scrim, and
   `visibility: hidden` while shut so it is not somewhere the tab key can go.
-  Below 48rem the word panel behaves the same way, since a third of a phone is
-  not a column the prose can be read in, and the player bar wraps: every
+  That island is a child of the player bar (`.library`, absolutely positioned
+  against it) only because the bar is the one thing whose top edge is where it
+  has to hang; it is not a control in the row, which at this width is already
+  wrapping. Below 48rem the word panel behaves the same way, since a third of
+  a phone is not a column the prose can be read in. The player bar wraps down
+  here too: every
   control in it is a fixed width and only the scrubber gives, so without
   wrapping the speed and voice controls hung off the side of the window —
   which `overflow: visible` (below) does nothing to stop.

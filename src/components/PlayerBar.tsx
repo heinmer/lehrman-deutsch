@@ -24,8 +24,9 @@ export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: P
     // The voice menu opens out of the bar and has to measure itself against it.
     <div className={`island ${styles.bar}`} data-popover-boundary>
       {/* The way back to the text list and the settings once they have left
-          the layout. The player is the one thing always on screen, so it is
-          where this belongs; CSS hides it wherever the sidebar is visible. */}
+          the layout. It is drawn as an island of its own above the bar's left
+          corner, not as a control in the row — the bar is only what it is
+          anchored to. CSS hides it wherever the sidebar is visible. */}
       <button
         type="button"
         className={styles.library}

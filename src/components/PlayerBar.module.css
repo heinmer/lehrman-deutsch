@@ -1,6 +1,8 @@
 .bar {
   display: flex;
   align-items: center;
+  /* The anchor the library button hangs above; see `.library`. */
+  position: relative;
   gap: 1.1rem;
   padding: 1rem 1.5rem;
   background: var(--surface-player);
@@ -13,23 +15,36 @@
   --popover-ring: transparent;
 }
 
-/* Opens the drawer. There is no drawer while the sidebar is in the layout, so
-   above the breakpoint this control does not exist. */
+/* Opens the drawer — a round island of its own in the reader's bottom corner
+   rather than one more control in the row, which at this width is what the bar
+   has least room for. The bar is only what it hangs from: `left: 0` and the
+   layout's own gap put it in the corner of the centre column, above whatever
+   height the bar happens to have wrapped to. There is no drawer while the
+   sidebar is in the layout, so above the breakpoint it does not exist. */
 .library {
   display: none;
+  position: absolute;
+  left: 1.1rem;
+  bottom: 100%;
+  /* Clear of the reader's own rounded corner: sitting flush with it, the
+     circle straddles the curve instead of resting inside it. */
+  margin-bottom: calc(var(--gap) + 1.1rem);
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  flex: none;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
+  /* It floats over the prose, so its ground has to be opaque — the inset tint
+     the bar's other buttons use would show the text through it. */
+  background: var(--surface-overlay);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
   color: var(--text-muted);
-  background: var(--surface-inset);
-  transition: color 130ms ease, background-color 130ms ease;
+  transition: color 130ms ease, transform 130ms ease;
 }
 
 .library:hover {
   color: var(--accent);
-  background: var(--surface-raised);
+  transform: scale(1.06);
 }
 
 @media (max-width: 62rem) {
