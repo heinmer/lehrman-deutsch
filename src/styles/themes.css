@@ -81,10 +81,12 @@
   color-scheme: dark;
 
   --page: #080b14;
-  --surface-sidebar: #18202f;
-  --surface-reader: #161d2b;
-  --surface-panel: #1c2334;
-  --surface-player: #151c2b;
+  /* One ground for the three reading sections; the player is lifted a step so
+     the controls read as a separate surface. */
+  --surface-sidebar: #151c2a;
+  --surface-reader: #151c2a;
+  --surface-panel: #151c2a;
+  --surface-player: #1f293b;
   --surface-inset: rgb(223 230 242 / 0.055);
   --surface-raised: rgb(223 230 242 / 0.1);
 
@@ -110,11 +112,11 @@
 }
 
 /**
- * White — one flat white sheet: page and every section share it, so the
- * sections are told apart by their borders alone, drawn in pure black rather
- * than a tinted hairline. No colour anywhere. The few greys that remain are
- * functional, not decorative: something has to mark the selected text, the
- * spoken word, the raised chips and the unplayed part of the scrubber.
+ * White — one flat white sheet with nothing drawn around the sections at all:
+ * page, sidebar, reader, panel and player share the same white and no border
+ * separates them. No colour anywhere. The few greys that remain are functional,
+ * not decorative: something has to mark the selected text, the spoken word, the
+ * raised chips and the unplayed part of the scrubber.
  */
 :root[data-theme="white"] {
   color-scheme: light;
@@ -131,7 +133,10 @@
   --text-muted: #3a3a3a;
   --text-soft: #6b6b6b;
 
-  --border: #000000;
+  /* Only ever an internal divider now — the tooltip outline, the rule between
+     the scrubber and the speed control. Kept quiet so it does not read as a
+     stray mark on an otherwise empty sheet. */
+  --border: #d6d6d6;
   --track: #c4c4c4;
 
   --accent: #000000;
@@ -143,7 +148,7 @@
   --highlight-sentence: #f2f2f2;
   --selected-word: #dedede;
 
-  --island-border: #000000;
+  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
@@ -164,7 +169,7 @@
   --text-muted: #c2c2c2;
   --text-soft: #8f8f8f;
 
-  --border: #ffffff;
+  --border: #333333;
   --track: #4d4d4d;
 
   --accent: #ffffff;
@@ -176,7 +181,7 @@
   --highlight-sentence: rgb(255 255 255 / 0.09);
   --selected-word: rgb(255 255 255 / 0.2);
 
-  --island-border: #ffffff;
+  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
