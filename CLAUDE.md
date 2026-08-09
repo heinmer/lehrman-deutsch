@@ -168,6 +168,16 @@ as `/…/` so transcriptions look the same everywhere.
 
 ### App behaviour worth knowing
 
+- **Nothing hands a path from the data to `fetch` or `new Audio`.** The
+  pipeline writes site-root-relative paths (`/media/words/…`) because at build
+  time it cannot know where the site will be served from; `assetUrl`
+  (`src/lib/assets.ts`) is what turns one into a URL, against Vite's
+  `BASE_URL`. Under a prefix — a project page, a preview deploy, a proxy — a
+  leading slash points at the host root and every request 404s, silently in the
+  case of a word recording. `vite.config.ts` takes the prefix from `BASE_PATH`,
+  so a subpath build is `BASE_PATH=/texts-in-german/ npm run build`. Clips stay
+  *keyed* by the raw path; only the request is resolved.
+
 - **Switching voice carries the position by word, not by time.** Second 40 of
   Seraphina is a different word than second 40 of Florian, so `useNarration`
   remembers the active *word id* in its teardown and, once the new file has its

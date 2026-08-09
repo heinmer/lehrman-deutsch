@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Sentence, Span, TextDocument } from "../../shared/types";
+import { assetUrl } from "../lib/assets";
 
 interface TimedWord {
   wordId: string;
@@ -174,7 +175,7 @@ export function useNarration(
     slugRef.current = slug;
     resumeRef.current = null;
 
-    const audio = new Audio(track.src);
+    const audio = new Audio(assetUrl(track.src));
     audio.preload = "auto";
     audio.playbackRate = rate;
     audio.volume = volume;

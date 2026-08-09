@@ -1,4 +1,5 @@
 import type { TextDocument, TextIndex } from "../../shared/types";
+import { assetUrl } from "./assets";
 
 async function getJson<T>(url: string): Promise<T> {
   const response = await fetch(url);
@@ -9,9 +10,9 @@ async function getJson<T>(url: string): Promise<T> {
 }
 
 export function fetchTextIndex(): Promise<TextIndex> {
-  return getJson<TextIndex>("/data/index.json");
+  return getJson<TextIndex>(assetUrl("/data/index.json"));
 }
 
 export function fetchTextDocument(slug: string): Promise<TextDocument> {
-  return getJson<TextDocument>(`/data/texts/${slug}.json`);
+  return getJson<TextDocument>(assetUrl(`/data/texts/${encodeURIComponent(slug)}.json`));
 }

@@ -9,6 +9,8 @@
  * waiting on a fetch.
  */
 
+import { assetUrl } from "./assets";
+
 interface PreparedClip {
   buffer: AudioBuffer;
   /** Gain that brings this clip towards the target loudness. */
@@ -95,7 +97,9 @@ async function load(src: string): Promise<PreparedClip | null> {
   if (!ctx) return null;
 
   try {
-    const response = await fetch(src);
+    // Clips are keyed by the path the data carries; only the request itself
+    // needs to know where the site is actually served from.
+    const response = await fetch(assetUrl(src));
     if (!response.ok) return null;
     const buffer = await ctx.decodeAudioData(await response.arrayBuffer());
     const clip = analyse(buffer);
@@ -167,7 +171,7 @@ export function playClip(src: string): void {
   const ctx = getContext();
   if (!ctx) {
     fallback?.pause();
-    fallback = new Audio(src);
+    fallback = new Audio(assetUrl(src));
     fallback.volume = masterVolume;
     void fallback.play();
     return;
