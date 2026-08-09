@@ -136,6 +136,17 @@ Things that are easy to break:
 - **Comparisons fold German spelling.** The engine is inconsistent about `ß`
   vs `ss`, so both sides go through `foldGerman` (`scripts/pipeline/util.ts`)
   before matching.
+- **The files the app downloads are written without indentation.** Indentation
+  more than doubled them — 1690 bytes per word against 780 — and nothing reads
+  them by eye. `writeJson` takes `{ pretty: false }` for those; `.cache/`
+  bookkeeping stays indented, since a person debugging an incremental build
+  does read it. Because *how* a file is written is not part of the source
+  hash, the skip path rewrites an unchanged document rather than leaving it in
+  whatever shape it was last built in — otherwise a format change reaches a
+  text only when its content next happens to change.
+- **`titleTranslation` is printed in the build log**, which is where to check
+  it now that the documents are one long line. It is still the translation
+  most likely to degrade quietly.
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
   from the dictionary. Only 200s and 404s are cached.
@@ -193,6 +204,12 @@ as `/…/` so transcriptions look the same everywhere.
   unreachable mp3 left every control disabled and silent about why. Both
   failures are remembered **against the attempt that produced them**, so asking
   again clears them without anything being reset by hand.
+- **The build writes a `.br` and a `.gz` beside every compressible file.**
+  They are inert unless the host is told to prefer them (`brotli_static` /
+  `gzip_static` and friends); where it is, the generated data goes from about
+  780 bytes per word to 160. mp3 is deliberately skipped — it is already
+  compressed, and squeezing it again costs build time for nothing. The app
+  never knows: it asks for the same URLs either way.
 - **The text being read is the URL, not state.** `useSlugRoute` keeps it in
   the hash (`#/der-erste-schnee`), so a text can be linked to and Back means
   something. A hash and not a path because the site is static: a path route
@@ -479,7 +496,7 @@ memorises with audio attached.
 - `aligned N/M words (100%)` for every text — anything less means the
   highlighting will sit dead on some words.
 - `entries found` close to the distinct-word count, and most with native audio.
-- `titleTranslation` in the generated JSON actually reads as English.
+- the `title: "…" -> "…"` line actually reads as English.
 
 ## Verifying UI and behaviour
 

@@ -164,6 +164,12 @@ is served from, so a prefix is one variable:
 BASE_PATH=/texts-in-german/ npm run build   # dist/ then lives under that path
 ```
 
+The build also writes a `.br` and a `.gz` next to every compressible file.
+Point the host at them — nginx `brotli_static`/`gzip_static`, Caddy's
+`precompressed`, and similar — and a text goes from about 780 bytes per word
+to 160. Hosts that compress on the fly ignore them; the audio is deliberately
+left alone.
+
 Two things are worth knowing before it goes anywhere public:
 
 - **`public/data` and `public/media` are generated and gitignored**, so a clean
