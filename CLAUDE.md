@@ -105,11 +105,15 @@ Things that are easy to break:
   the field that made a second voice impossible. `alignTimings` is pure for the
   same reason: it is called once per voice on the same `Sentence[]`, so it must
   not touch them.
-- **Narration order is the contract for alignment.** `alignTimings` takes one
+- **Narration order is the contract for alignment**, and it is assembled in one
+  place: `narrationOrder` in `shared/narration.ts`. `alignTimings` takes one
   flat `Sentence[]` that must be in the order the engine speaks it — title
   first, then body — because it walks tokens and TTS boundaries together with a
-  shared cursor. Anything added to the narration text must also be added to
-  that list, in the same position.
+  shared cursor. The build assembles that list to synthesize and align, and the
+  app assembles it again to know which word is being spoken; they were two
+  copies of one rule, which is a bug waiting for the day something new gets
+  narrated. Anything added to the narration text goes in that function, in the
+  position it is read.
 - **Boundaries are not one-to-one with tokens.** The engine sometimes reports
   two words in one event (`"Die Straße"`) and sometimes skips a token, so a
   boundary is consumed piece by piece and the aligner resynchronises within a
@@ -135,6 +139,17 @@ Things that are easy to break:
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
   from the dictionary. Only 200s and 404s are cached.
+- **The build removes what no source accounts for.** Deleting a Markdown file
+  used to leave its JSON, its narrations and its hash behind for good — the
+  index stopped listing it, so nothing looked wrong while `dist` carried a text
+  that no longer exists. `pruneRemovedTexts` now sweeps documents, narration
+  directories, state entries and any word recording no surviving document names
+  (they are shared, so that last one is a reference count, not a per-text
+  delete).
+- **A slug is never taken at its word.** It names a file under `public/` and a
+  segment of a URL, so `slug:` from front matter goes through `slugify` like
+  everything else, and two texts landing on the same slug is an error rather
+  than a silent overwrite.
 - **Changing the document shape means bumping `PIPELINE_VERSION`**
   (`scripts/pipeline/config.ts`). It feeds the source hash, so without a bump
   the incremental build skips existing texts and they keep the old shape while
@@ -219,10 +234,34 @@ as `/…/` so transcriptions look the same everywhere.
   in the props they hand it; a third setting should not grow a third popover.
   Which side the menu hangs from is measured, not declared: it flips to the
   control's right edge when the left one would push it out of the nearest
-  `[data-popover-boundary]`. Tooltips use the same marker, so reordering the
-  settings cannot clip anything. The gap above the control is *padding on the
-  anchor*, not a margin — in hover mode it is the bridge the pointer crosses,
-  exactly as in `VolumeControl`.
+  `[data-popover-boundary]`, so reordering the settings cannot clip a menu.
+  The gap above the control is *padding on the anchor*, not a margin — in hover
+  mode it is the bridge the pointer crosses, exactly as in `VolumeControl`.
+  The list answers to Up/Down/Home/End and, when it was opened by click rather
+  than by hover, takes focus to the chosen option — in hover mode it must not,
+  or the pointer arriving would steal focus from wherever it was.
+- **Below 62rem the sidebar becomes a drawer, not nothing.** It used to be
+  `display: none`, which took the text list, the theme, the volume and both
+  toggles away with it and left a phone showing one text it could not leave.
+  It is now a fixed panel opened from the player — the one thing always on
+  screen — closed by choosing a text, by Escape or by the scrim, and
+  `visibility: hidden` while shut so it is not somewhere the tab key can go.
+  Below 48rem the word panel behaves the same way, since a third of a phone is
+  not a column the prose can be read in, and the player bar wraps: every
+  control in it is a fixed width and only the scrubber gives, so without
+  wrapping the speed and voice controls hung off the side of the window —
+  which `overflow: visible` (below) does nothing to stop.
+- **Every grid track that holds content is explicit.** An implicit track is
+  sized to its content: `.main` without `grid-template-columns` let the reader
+  grow past its column instead of wrapping inside it — invisible on a wide
+  screen, a page that scrolls sideways on a narrow one — exactly as the
+  implicit *row* once pushed the player off the bottom. `min-width: 0` on the
+  item does not cover this; it stops the item outgrowing the page, not the
+  item's own child outgrowing the item.
+- **A media query adds no specificity.** A narrow-screen override of a rule
+  declared *later* in the same file loses on source order and does nothing —
+  silently, since both rules are valid. Responsive blocks go at the end of the
+  file; `PlayerBar.module.css` has one there for exactly this reason.
 - **The player bar sets `overflow: visible`**, against `.island`, because the
   voice menu opens out of it; nothing else in the bar overflows. It also sets
   `--popover-ring: transparent`: the sidebar's menus cut a ring of their own
@@ -309,11 +348,14 @@ structural tokens (type scale, radii, spacing); `src/styles/themes.css` holds
 every colour. Change the token, not the component — no component names a colour
 directly, which is what makes new themes cheap.
 
-**Adding a theme** means: a full token block in `themes.css` under
-`:root[data-theme="<id>"]`, an entry in `src/lib/themes.ts` (its two swatch
-colours are duplicated there for the picker dot), and the id added to the
-`known` list in the inline script in `index.html`. Miss the last one and the
-theme works until reload, then silently falls back.
+**Adding a theme** means two places: a full token block in `themes.css` under
+`:root[data-theme="<id>"]`, and an entry in `shared/themes.ts` (its two swatch
+colours are duplicated there for the picker dot). It used to be three — the
+inline script in `index.html` carried its own hand-copied list of ids, and a
+theme missing from it worked until the next reload and then silently fell back.
+That list is now written in from `shared/themes.ts` by a small Vite plugin, in
+place of the `__THEMES__` placeholder. The script runs before the bundle, so it
+cannot import; a build step is the only way it and the app can hold one list.
 
 A theme must define *every* token — a missing one is not inherited from another
 theme, it simply goes unset and the declaration is dropped, which is silent.
@@ -330,9 +372,15 @@ is a seam.
 but only the overlay is guaranteed **opaque**. Raised may be a translucent
 white — that is what gives the dark themes their lift — which is fine for
 something sitting in the layout and wrong for anything floating over it: the
-theme menu, the volume slider and the tooltip all showed the text list through
-themselves until they moved to the overlay token. Anything that floats belongs
-on `--surface-overlay`.
+theme menu and the volume slider both showed the text list through themselves
+until they moved to the overlay token. Anything that floats belongs on
+`--surface-overlay`.
+
+`--scrim` is the ground *behind* the drawer on narrow screens, and it is the
+one token whose job is to be seen through: it darkens the reader enough that
+the drawer reads as being in front of it. Light themes tint it with their own
+ink rather than plain black — Paper's is warm, because a neutral black over
+newsprint reads as a hole.
 
 `--surface-selected` is the chosen option inside a segmented strip — today only
 the playback speed. It has to clear `--surface-inset`, the strip *behind* it,
@@ -445,15 +493,28 @@ Techniques that have paid off:
 
 - Screenshot a theme by setting `localStorage.theme` and reloading (clear it
   first, or the stored value beats `Emulation.setEmulatedMedia`).
-- Assert behaviour instead of eyeballing: stub `window.Audio` to count word
-  clips, watch `Network.requestWillBeSent` to prove a click plays from memory,
-  read `getBoundingClientRect()` to check a tooltip stays inside its container.
+- Assert behaviour instead of eyeballing: watch `Network.requestWillBeSent` to
+  prove a click plays from memory and that opening a text fetches no
+  recordings, read `getBoundingClientRect()` to check nothing leaves its
+  container, compare `document.documentElement.scrollWidth` against
+  `innerWidth` to catch a page that scrolls sideways.
+- Force the failure you want to see: `Network.setBlockedURLs` with
+  `*/data/texts/*` or `*/media/texts/*` is how the error paths are checked.
+- `Emulation.setDeviceMetricsOverride` for the narrow layouts — the drawer and
+  the panel are only reachable below their breakpoints.
 - Drive real hover with `Input.dispatchMouseEvent`; React's `pointerenter` does
-  not fire from a synthetic `click()`.
+  not fire from a synthetic `click()`. Same for keys: `Input.dispatchKeyEvent`
+  is what exercises the roving tabindex.
+- **Kill the browser properly.** `child.kill()` leaves Edge's helper processes
+  holding the debugging port, and the next run attaches to a browser whose
+  profile has been deleted underneath it and hangs. Use `taskkill /T /F`, and
+  give each run its own port.
 
 Bugs found this way that source reading missed: a line break falling between a
 word and its full stop, the player pushed off screen by a grid row sized to
-content, and section cards melting into the page ground in dark themes.
+content, section cards melting into the page ground in dark themes, and the
+reader outgrowing its column on a narrow screen because `.main` had no explicit
+column.
 
 ## Attribution
 
