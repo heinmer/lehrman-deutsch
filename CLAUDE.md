@@ -6,6 +6,18 @@ Keep it current: when a change invalidates something written here — a command,
 a source of data, one of the invariants below — update this file in the same
 commit. It is only useful while it is true.
 
+## Committing
+
+**Commit each change once it works.** Do not leave finished work sitting in the
+working tree waiting to be asked about: typecheck it, check it in the browser
+if it is visible, then commit. Several unrelated changes in one commit is the
+thing to avoid — split them by subject instead of batching them up.
+
+Messages follow the existing log: one line, imperative, sentence case, no
+prefix or ticket, saying what the change does rather than which files moved —
+*Drop the rule between the text list and the settings*, not *update CSS*. A
+body is only worth adding when the reason is not obvious from the diff.
+
 ## Commands
 
 ```bash
@@ -97,7 +109,9 @@ as `/…/` so transcriptions look the same everywhere.
 
 - **`seek` never changes play state.** Clicking a word and the restart button
   both rely on this: playing stays playing from the new position, paused stays
-  paused. Do not "helpfully" call `play()` in either path.
+  paused. Do not "helpfully" call `play()` in either path. The word panel's
+  "Read from here" is the one deliberate exception — it seeks *and* calls
+  `play()`, because asking to be read from a word is asking to hear it.
 - **Clicking a word plays its recording only while the narration is paused**,
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
   click independently — "Say word" (speak it) and "Jump to word" (move the
@@ -107,9 +121,30 @@ as `/…/` so transcriptions look the same everywhere.
   with ~0.5s of silence before the word, so each is decoded up front, scaled
   towards a common loudness and started at the first real sound. The prefetch
   is also what makes a click instant — playing must not trigger a fetch.
+- **One volume setting, two playback paths.** The sidebar's volume control
+  (`useVolumeSetting`) feeds the narration element's `volume` *and*
+  `setClipVolume` in `clipAudio.ts`, where it multiplies each clip's own
+  normalising gain. A new path that makes a sound has to be told as well —
+  nothing routes them through a shared node. Mute is stored apart from the
+  level rather than as a level of zero, so unmuting returns to where the slider
+  was left.
+- **Chromium lays a vertical `<input type="range">` out against its inline
+  edge**, which leaves the thumb hanging off the side of the track. The volume
+  slider therefore keeps the native track transparent and draws its own on the
+  wrapper, which is exactly as wide as the thumb. The drawn track is inset by
+  half a thumb at each end so the fill and the thumb do not drift apart.
+  The popover it lives in has no gap above the button — the hover area has to
+  stay continuous, or the slider closes as the pointer travels to it.
 - **Words render as `<span role="button">`, never `<button>`.** Chrome lays
   buttons out as atomic inline boxes, which lets a line break fall between a
   word and the punctuation after it.
+- **The translate toggle is rendered inside its sentence, not after it**, as
+  `SentenceView`'s `trailing`. Chromium allows a break in front of an atomic
+  inline box with or without a space before it, so a toggle appended to the
+  paragraph would regularly wrap onto a line by itself. Everything from the
+  last word onwards — word, punctuation, toggle — sits in one `white-space:
+  nowrap` span and wraps together. Removing a space is not enough; verify by
+  sweeping window widths, not by looking at one.
 - **Playback position is polled with `requestAnimationFrame`**, because
   `timeupdate` fires ~4x a second — far too coarse to follow words.
 - **Theme is applied by an inline script in `index.html`** before first paint;
@@ -134,10 +169,26 @@ A theme must define *every* token — a missing one is not inherited from anothe
 theme, it simply goes unset and the declaration is dropped, which is silent.
 Renaming a token means renaming it in the components too; grep for it.
 
-`--island-border` separates the sections where the backgrounds cannot: the dark
-themes need it because a drop shadow has nothing to darken. White and Black set
-it to `transparent` on purpose — there they share one ground with the page and
-are meant to read as a single sheet.
+`--island-border` separates the sections where the backgrounds cannot: the
+layered themes need it because a drop shadow has nothing to darken. The
+single-sheet themes — White, Black, Ink, Paper — set it to `transparent` on
+purpose, along with `--shadow-card: none`: there page and sections share one
+ground and are meant to read as a single sheet, so anything drawn between them
+is a seam.
+
+`--surface-raised` and `--surface-overlay` are both "a step above the page",
+but only the overlay is guaranteed **opaque**. Raised may be a translucent
+white — that is what gives the dark themes their lift — which is fine for
+something sitting in the layout and wrong for anything floating over it: the
+theme menu, the volume slider and the tooltip all showed the text list through
+themselves until they moved to the overlay token. Anything that floats belongs
+on `--surface-overlay`.
+
+`--surface-selected` is the chosen option inside a segmented strip — today only
+the playback speed. It has to clear `--surface-inset`, the strip *behind* it,
+which is a different job from clearing the page: on the one-sheet themes
+"raised" and that strip land within a hundredth of each other and the selection
+vanishes. Measure the chip against the strip, not against the ground.
 
 `--border` draws lines; `--track` fills areas that must read as "empty but
 present" — the unplayed part of the scrubber, the ring around a theme dot, a
@@ -148,6 +199,12 @@ White and Black keep pure `#fff`/`#000` **grounds only**. Everything on them is
 tinted: body text is a very dark grey / off-white rather than pure ink, and the
 accents keep the blue and green of the other themes. Do not "simplify" these
 back to two literal colours.
+
+Paper is the one theme whose accents are **not** blue and green. It is a
+newsprint sheet with the blue filtered out of the whole palette, so its accents
+are brick and olive; a cool accent on that warm ground is exactly what the
+theme exists to avoid. Ink is the opposite case and follows the usual rule —
+one deep navy ground where Dusk is navy in layers.
 
 A one-off script that measures WCAG ratios across every theme has repeatedly
 earned its keep — body text at AAA (7:1), and filled accent buttons against the
