@@ -168,6 +168,14 @@ as `/…/` so transcriptions look the same everywhere.
 
 ### App behaviour worth knowing
 
+- **The text being read is the URL, not state.** `useSlugRoute` keeps it in
+  the hash (`#/der-erste-schnee`), so a text can be linked to and Back means
+  something. A hash and not a path because the site is static: a path route
+  needs a server that rewrites unknown paths to `index.html`, which a project
+  page or a bucket will not do, and the hash survives a base prefix for free.
+  The only state is what the hash says — *which text that is* is derived, since
+  a slug is not a text until the index says so, and a hash naming nothing is
+  **replaced** rather than pushed so Back cannot return to a bad address.
 - **Nothing hands a path from the data to `fetch` or `new Audio`.** The
   pipeline writes site-root-relative paths (`/media/words/…`) because at build
   time it cannot know where the site will be served from; `assetUrl`

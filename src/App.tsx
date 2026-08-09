@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
+import { useSlugRoute } from "./hooks/useSlugRoute";
 import { useToggleSetting } from "./hooks/useToggleSetting";
 import { useVoiceSetting } from "./hooks/useVoiceSetting";
 import { useVolumeSetting } from "./hooks/useVolumeSetting";
@@ -26,8 +27,12 @@ export function App() {
   useEffect(() => setClipVolume(volume.effective), [volume.effective]);
 
   const [texts, setTexts] = useState<TextSummary[]>([]);
-  const [slug, setSlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // The text being read lives in the URL, so it can be linked to and the back
+  // button means something.
+  const slugs = useMemo(() => texts.map((text) => text.slug), [texts]);
+  const [slug, selectText] = useSlugRoute(slugs);
 
   // Both of these are stored with the text they belong to and read back only
   // while that is still the text on screen. Deriving them costs a comparison
@@ -41,10 +46,7 @@ export function App() {
 
   useEffect(() => {
     fetchTextIndex()
-      .then((index) => {
-        setTexts(index.texts);
-        setSlug((current) => current ?? index.texts[0]?.slug ?? null);
-      })
+      .then((index) => setTexts(index.texts))
       .catch((cause: unknown) => setError((cause as Error).message));
   }, []);
 
@@ -132,7 +134,7 @@ export function App() {
       <Sidebar
         texts={texts}
         activeSlug={slug}
-        onSelect={setSlug}
+        onSelect={selectText}
         theme={theme}
         voiceId={voice}
         autoSpeak={autoSpeak}
