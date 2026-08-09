@@ -74,7 +74,8 @@
   width: 1.9rem;
   height: 1.9rem;
   vertical-align: -0.35rem;
-  margin-left: 0.15rem;
+  /* Stands in for the word space that used to sit here; see Reader.tsx. */
+  margin-left: 0.4rem;
   border-radius: 50%;
   color: var(--text-soft);
   transition: background-color 130ms ease, color 130ms ease;
@@ -100,6 +101,12 @@
 .sentence {
   border-radius: var(--radius-sm);
   transition: background-color 140ms ease;
+}
+
+/* The last word, its punctuation and the translate toggle: one piece, so the
+   icon can never be left standing on a line by itself. */
+.tail {
+  white-space: nowrap;
 }
 
 .sentence[data-active="true"] {

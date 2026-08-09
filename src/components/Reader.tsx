@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Languages, Loader2 } from "lucide-react";
-import type { Sentence, TextDocument, WordToken } from "../../shared/types";
+import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
@@ -18,6 +18,15 @@ interface SentenceProps {
   activeSentenceId: string | null;
   selectedWordId: string | null;
   onSelectWord: (token: WordToken) => void;
+  /** False for the last sentence, so nothing can break before what follows. */
+  trailingSpace?: boolean;
+  /**
+   * Put on the same unbreakable line as the last word. Chromium allows a break
+   * in front of an atomic inline box whether or not a space precedes it, so a
+   * translate toggle placed after the sentence would otherwise end up alone on
+   * a line of its own.
+   */
+  trailing?: ReactNode;
 }
 
 /** One sentence, every word clickable — used for the title and body alike. */
@@ -27,40 +36,57 @@ function SentenceView({
   activeSentenceId,
   selectedWordId,
   onSelectWord,
+  trailingSpace = true,
+  trailing,
 }: SentenceProps) {
+  const renderToken = (token: Token, index: number) =>
+    token.kind === "word" ? (
+      // A span, not a button: Chrome lays buttons out as atomic inline
+      // boxes, which lets a line break fall between a word and the
+      // punctuation that follows it.
+      <span
+        key={token.id}
+        role="button"
+        tabIndex={0}
+        className={styles.word}
+        data-active={token.id === activeWordId}
+        data-selected={token.id === selectedWordId}
+        onClick={() => onSelectWord(token)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            onSelectWord(token);
+          }
+        }}
+      >
+        {token.text}
+      </span>
+    ) : (
+      <span key={`${sentence.id}p${index}`}>{token.text}</span>
+    );
+
+  // Everything from the last word onwards — the word, the full stop after it
+  // and whatever is trailing — travels as one unbreakable piece.
+  const lastWord = sentence.tokens.reduce(
+    (found, token, index) => (token.kind === "word" ? index : found),
+    -1,
+  );
+  const head = lastWord < 0 ? sentence.tokens : sentence.tokens.slice(0, lastWord);
+  const tail = lastWord < 0 ? [] : sentence.tokens.slice(lastWord);
+
   return (
     <span
       data-sentence={sentence.id}
       className={styles.sentence}
       data-active={sentence.id === activeSentenceId}
     >
-      {sentence.tokens.map((token, index) =>
-        token.kind === "word" ? (
-          // A span, not a button: Chrome lays buttons out as atomic inline
-          // boxes, which lets a line break fall between a word and the
-          // punctuation that follows it.
-          <span
-            key={token.id}
-            role="button"
-            tabIndex={0}
-            className={styles.word}
-            data-active={token.id === activeWordId}
-            data-selected={token.id === selectedWordId}
-            onClick={() => onSelectWord(token)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                onSelectWord(token);
-              }
-            }}
-          >
-            {token.text}
-          </span>
-        ) : (
-          <span key={`${sentence.id}p${index}`}>{token.text}</span>
-        ),
-      )}
-      {/* Sentence segmentation trims the space that separated them. */}{" "}
+      {head.map(renderToken)}
+      <span className={styles.tail}>
+        {tail.map((token, index) => renderToken(token, lastWord + index))}
+        {trailing}
+      </span>
+      {/* Sentence segmentation trims the space that separated them. */}
+      {trailingSpace && " "}
     </span>
   );
 }
@@ -113,7 +139,7 @@ export function Reader({
     return (
       <div className={`island ${styles.reader}`} ref={scrollRef}>
         <div className={styles.loading} role="status" aria-label="Loading text">
-          <Loader2 size={64} strokeWidth={1.75} className={styles.spinner} />
+          <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />
         </div>
       </div>
     );
@@ -128,19 +154,25 @@ export function Reader({
           <LevelBadge level={document.level} />
           <div>
             <h2 className={styles.title}>
-              <SentenceView sentence={document.heading} {...shared} />
-              {document.titleTranslation && (
-                <button
-                  type="button"
-                  className={styles.translateToggle}
-                  onClick={() => setTitleOpen((value) => !value)}
-                  aria-expanded={titleOpen}
-                  aria-label={titleOpen ? "Hide translation" : "Show translation"}
-                  title={titleOpen ? "Hide translation" : "Show translation"}
-                >
-                  <Languages size={19} strokeWidth={2} />
-                </button>
-              )}
+              <SentenceView
+                sentence={document.heading}
+                trailingSpace={false}
+                trailing={
+                  document.titleTranslation && (
+                    <button
+                      type="button"
+                      className={styles.translateToggle}
+                      onClick={() => setTitleOpen((value) => !value)}
+                      aria-expanded={titleOpen}
+                      aria-label={titleOpen ? "Hide translation" : "Show translation"}
+                      title={titleOpen ? "Hide translation" : "Show translation"}
+                    >
+                      <Languages size={19} strokeWidth={2} />
+                    </button>
+                  )
+                }
+                {...shared}
+              />
             </h2>
             {titleOpen && document.titleTranslation && (
               <p className={styles.titleTranslation}>{document.titleTranslation}</p>
@@ -153,21 +185,32 @@ export function Reader({
           return (
             <div key={paragraph.id} className={styles.block}>
               <p className={styles.paragraph}>
-                {paragraph.sentences.map((sentence) => (
-                  <SentenceView key={sentence.id} sentence={sentence} {...shared} />
-                ))}
-                {paragraph.translation && (
-                  <button
-                    type="button"
-                    className={styles.translateToggle}
-                    onClick={() => toggleTranslation(paragraph.id)}
-                    aria-expanded={open}
-                    aria-label={open ? "Hide translation" : "Show translation"}
-                    title={open ? "Hide translation" : "Show translation"}
-                  >
-                    <Languages size={19} strokeWidth={2} />
-                  </button>
-                )}
+                {paragraph.sentences.map((sentence, index) => {
+                  const last = index === paragraph.sentences.length - 1;
+                  return (
+                    <SentenceView
+                      key={sentence.id}
+                      sentence={sentence}
+                      trailingSpace={!last}
+                      trailing={
+                        last &&
+                        paragraph.translation && (
+                          <button
+                            type="button"
+                            className={styles.translateToggle}
+                            onClick={() => toggleTranslation(paragraph.id)}
+                            aria-expanded={open}
+                            aria-label={open ? "Hide translation" : "Show translation"}
+                            title={open ? "Hide translation" : "Show translation"}
+                          >
+                            <Languages size={19} strokeWidth={2} />
+                          </button>
+                        )
+                      }
+                      {...shared}
+                    />
+                  );
+                })}
               </p>
 
               {open && paragraph.translation && (
