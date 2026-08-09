@@ -54,6 +54,13 @@ export function alignTimings(
     const target = comparable(token.text);
     if (!target) return;
 
+    // Where this token's search began. A word the engine never spoke has to
+    // leave the cursor exactly as it found it: the boundaries it scanned past
+    // belong to the words that follow, and swallowing them costs each of those
+    // its timing too — one skipped word turning into a run of them.
+    const searchIndex = index;
+    const searchConsumed = consumed;
+
     let matched = false;
     for (let skipped = 0; skipped <= LOOKAHEAD && index < boundaries.length; skipped += 1) {
       const spoken = comparable(boundaries[index].text);
@@ -74,7 +81,9 @@ export function alignTimings(
       consumed = 0;
     }
 
-    if (!matched || index >= boundaries.length) {
+    if (!matched) {
+      index = searchIndex;
+      consumed = searchConsumed;
       unmatched.push(token.text);
       return;
     }

@@ -103,7 +103,11 @@ Things that are easy to break:
 - **Boundaries are not one-to-one with tokens.** The engine sometimes reports
   two words in one event (`"Die Straße"`) and sometimes skips a token, so a
   boundary is consumed piece by piece and the aligner resynchronises within a
-  small lookahead window. Word timings are what drives highlighting, so a
+  small lookahead window. **A token that finds nothing in that window puts the
+  cursor back** where it started: the boundaries it scanned past belong to the
+  words after it, and consuming them turned one skipped word into a run of
+  them. Resynchronisation is the job of the *next successful* match, not of the
+  failure. Word timings are what drives highlighting, so a
   regression here is silent — watch the `aligned N/M` line in the build log; it
   should stay at 100%. There is now one such line **per voice**, and they do
   not stand or fall together: the older non-multilingual voices report

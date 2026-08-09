@@ -101,6 +101,45 @@ test("a boundary the engine invented is skipped, not matched", () => {
   assert.deepEqual(result.spans["s0w3"], [1.2, 1.5]);
 });
 
+test("a word the engine skipped does not cost the next word its timing", () => {
+  const sentences = [sentenceOf("Anna geht schnell heim.")];
+  const result = alignTimings(sentences, [
+    boundary("Anna", 0, 0.5),
+    boundary("geht", 0.5, 1),
+    // "schnell" is never reported.
+    boundary("heim", 1.5, 2),
+  ]);
+
+  assert.deepEqual(result.unmatched, ["schnell"]);
+  // The word after the gap keeps the boundary that is its own.
+  assert.deepEqual(result.spans["s0w3"], [1.5, 2]);
+});
+
+test("a run of skipped words still leaves the cursor where the text resumes", () => {
+  const sentences = [sentenceOf("Anna geht sehr schnell wieder heim.")];
+  const result = alignTimings(sentences, [
+    boundary("Anna", 0, 0.5),
+    boundary("geht", 0.5, 1),
+    boundary("heim", 2.5, 3),
+  ]);
+
+  assert.deepEqual(result.unmatched, ["sehr", "schnell", "wieder"]);
+  assert.deepEqual(result.spans["s0w5"], [2.5, 3]);
+});
+
+test("an untimed word inherits the gap between its neighbours", () => {
+  const sentences = [sentenceOf("Anna geht schnell heim.")];
+  const result = alignTimings(sentences, [
+    boundary("Anna", 0, 0.5),
+    boundary("geht", 0.5, 1),
+    boundary("heim", 1.5, 2),
+  ]);
+
+  // Counted as unmatched, but still highlightable rather than dead.
+  assert.equal(result.matched, 3);
+  assert.deepEqual(result.spans["s0w2"], [1, 1.5]);
+});
+
 test("the sentences are left untouched, so every voice aligns the same ones", () => {
   const sentences = [sentenceOf("Anna geht heim.")];
   const before = JSON.stringify(sentences);
