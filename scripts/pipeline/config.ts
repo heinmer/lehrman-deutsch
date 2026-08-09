@@ -46,4 +46,4 @@ export const KAIKKI_BASE = "https://kaikki.org/dictionary/German/meaning";
  * hash, so a format change rebuilds every text instead of leaving old files
  * missing the new fields.
  */
-export const PIPELINE_VERSION = 2;
+export const PIPELINE_VERSION = 3;

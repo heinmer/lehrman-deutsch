@@ -85,49 +85,16 @@
   gap: 0.28rem;
 }
 
+/* One wrapping row: settings share a line whenever they fit. */
 .footer {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.55rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
   flex: none;
   padding: 1rem 1.1rem 1.25rem;
   /* Edge-to-edge rule marking where the texts end and the settings begin. */
   border-top: 1px solid var(--border);
 }
 
-.settingRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.setting {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-height: var(--control-height);
-  padding: 0 1.05rem;
-  border-radius: var(--radius-pill);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  background: var(--surface-inset);
-  transition: color 130ms ease, background-color 130ms ease;
-}
-
-.setting:hover {
-  background: var(--surface-raised);
-  color: var(--text);
-}
-
-/* Only the toggle carries a pressed state; the theme button just swaps its
-   label and icon. */
-.setting[aria-pressed="true"] {
-  background: var(--surface-raised);
-  color: var(--accent);
-  box-shadow: var(--shadow-raised);
-}
-
-.setting[aria-pressed="false"] {
-  color: var(--text-soft);
-}
+/* The settings themselves use the shared .control class in global.css. */

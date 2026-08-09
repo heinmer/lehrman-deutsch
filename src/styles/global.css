@@ -70,6 +70,36 @@ button {
   background: var(--selected-word);
 }
 
+/* Shared pill control: the sidebar settings and the theme trigger. */
+.control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: var(--control-height);
+  padding: 0 1.05rem;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  background: var(--surface-inset);
+  transition: color 130ms ease, background-color 130ms ease;
+}
+
+.control:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.control[aria-pressed="true"],
+.control[aria-expanded="true"] {
+  background: var(--surface-raised);
+  color: var(--accent);
+  box-shadow: var(--shadow-raised);
+}
+
+.control[aria-pressed="false"] {
+  color: var(--text-soft);
+}
+
 /* Shared island: a floating card with its own ground. Dark themes lean on the
    border, where a drop shadow has nothing to darken. */
 .island {

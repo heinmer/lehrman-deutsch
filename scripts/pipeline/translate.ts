@@ -36,6 +36,18 @@ async function translateWithDeepl(text: string, key: string): Promise<string | n
   return payload.translations?.[0]?.text ?? null;
 }
 
+/**
+ * True when a "translation" is really the German back again — MyMemory's
+ * corpus matches often echo the source, or a fragment of it, especially for
+ * short strings like titles.
+ */
+function isEcho(source: string, candidate: string): boolean {
+  const normalise = (value: string) => value.toLowerCase().replace(/\s+/g, " ").trim();
+  const from = normalise(source);
+  const to = normalise(candidate);
+  return to === from || from.includes(to);
+}
+
 async function translateWithMyMemory(text: string): Promise<string | null> {
   const url =
     "https://api.mymemory.translated.net/get" +
@@ -45,11 +57,25 @@ async function translateWithMyMemory(text: string): Promise<string | null> {
   const payload = (await response.json()) as {
     responseStatus?: number | string;
     responseData?: { translatedText?: string };
+    matches?: Array<{ translation?: string; quality?: number | string; match?: number | string }>;
   };
 
   if (Number(payload.responseStatus) !== 200) return null;
-  const translated = payload.responseData?.translatedText;
-  return translated ? decodeEntities(translated) : null;
+
+  const primary = payload.responseData?.translatedText;
+  if (primary && !isEcho(text, primary)) return decodeEntities(primary);
+
+  // The headline answer was an echo; take the closest alternative that is not.
+  const number = (value: number | string | undefined) => Number(value) || 0;
+  const best = (payload.matches ?? [])
+    .filter((m): m is { translation: string } & typeof m =>
+      Boolean(m.translation) && !isEcho(text, m.translation as string))
+    .sort(
+      (a, b) =>
+        number(b.match) - number(a.match) || number(b.quality) - number(a.quality),
+    )[0];
+
+  return best ? decodeEntities(best.translation) : null;
 }
 
 /** The service returns HTML entities for quotes and ampersands. */

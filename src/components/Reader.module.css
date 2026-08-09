@@ -26,8 +26,9 @@
 }
 
 .titleTranslation {
-  margin: 0.35rem 0 0;
-  font-size: var(--fs-lg);
+  margin: 0.4rem 0 0;
+  font-size: var(--fs-xl);
+  line-height: 1.25;
   color: var(--text-muted);
 }
 
