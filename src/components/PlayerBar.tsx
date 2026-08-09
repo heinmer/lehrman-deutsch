@@ -2,17 +2,25 @@ import type { CSSProperties } from "react";
 import { Gauge, Pause, Play, SkipBack } from "lucide-react";
 import type { Narration } from "../hooks/useNarration";
 import { formatTime } from "../lib/format";
+import { VoicePicker } from "./VoicePicker";
 import styles from "./PlayerBar.module.css";
 
 const RATES = [0.5, 0.75, 1] as const;
 
-export function PlayerBar({ narration }: { narration: Narration }) {
+interface Props {
+  narration: Narration;
+  voiceId: string;
+  onSelectVoice: (id: string) => void;
+}
+
+export function PlayerBar({ narration, voiceId, onSelectVoice }: Props) {
   const { isPlaying, isReady, currentTime, duration, rate } = narration;
 
   const progress = duration > 0 ? Math.min(currentTime / duration, 1) * 100 : 0;
 
   return (
-    <div className={`island ${styles.bar}`}>
+    // The voice menu opens out of the bar and has to measure itself against it.
+    <div className={`island ${styles.bar}`} data-popover-boundary>
       <button
         type="button"
         className={styles.play}
@@ -76,6 +84,8 @@ export function PlayerBar({ narration }: { narration: Narration }) {
             </button>
           ))}
         </div>
+
+        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
       </div>
     </div>
   );

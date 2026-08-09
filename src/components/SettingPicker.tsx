@@ -21,21 +21,26 @@ export interface PickerOption {
 }
 
 interface Props {
-  /** Text on the pill itself. */
-  label: string;
+  /** Text on the pill. Leave it out for a round, icon-only control. */
+  label?: string;
   leading?: ReactNode;
-  /** Accessible name for the list that opens. */
+  /** Accessible name for the list, and for the control when it has no label. */
   name: string;
   options: readonly PickerOption[];
   selectedId: string;
   onSelect: (id: string) => void;
+  /**
+   * `hover` is for a control tight enough that reaching it is already the
+   * request — the player's voice button, like the sidebar's volume slider.
+   */
+  trigger?: "click" | "hover";
 }
 
 /**
- * A settings pill that opens a list of choices. Shared by the sidebar's
- * pickers: the popover behaviour — click outside, Escape, opening upwards
- * because the sidebar sits at the bottom of the window — is the same for all
- * of them and only the options differ.
+ * A settings control that opens a list of choices. Shared by the pickers: the
+ * popover behaviour — click outside, Escape, opening upwards because these
+ * controls sit at the bottom of the window, staying inside the boundary that
+ * clips them — is the same for all of them and only the options differ.
  */
 export function SettingPicker({
   label,
@@ -44,6 +49,7 @@ export function SettingPicker({
   options,
   selectedId,
   onSelect,
+  trigger = "click",
 }: Props) {
   const [open, setOpen] = useState(false);
   const [align, setAlign] = useState<"start" | "end">("start");
@@ -51,10 +57,11 @@ export function SettingPicker({
   const menuRef = useRef<HTMLDivElement>(null);
 
   /**
-   * The menu hangs from the pill's left edge and flips to the right one when
-   * that would take it outside the boundary — which pill sits where changes
-   * whenever the settings are reordered, so it is not worth deciding by hand.
-   * Measured before paint, so the menu never appears on the wrong side.
+   * The menu hangs from the control's left edge and flips to the right one
+   * when that would take it outside the boundary — which control sits where
+   * changes whenever the settings are reordered, so it is not worth deciding
+   * by hand. Measured before paint, so the menu never appears on the wrong
+   * side.
    */
   useLayoutEffect(() => {
     const menu = menuRef.current;
@@ -66,15 +73,15 @@ export function SettingPicker({
       left: 0,
       right: window.innerWidth,
     };
-    const pill = root.getBoundingClientRect();
+    const control = root.getBoundingClientRect();
 
-    const overflowsRight = pill.left + menu.offsetWidth > bounds.right - EDGE_MARGIN;
-    const fitsFlipped = pill.right - menu.offsetWidth >= bounds.left + EDGE_MARGIN;
+    const overflowsRight = control.left + menu.offsetWidth > bounds.right - EDGE_MARGIN;
+    const fitsFlipped = control.right - menu.offsetWidth >= bounds.left + EDGE_MARGIN;
     setAlign(overflowsRight && fitsFlipped ? "end" : "start");
   }, [open]);
 
   useEffect(() => {
-    if (!open) return undefined;
+    if (!open || trigger === "hover") return undefined;
 
     const onPointerDown = (event: MouseEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
@@ -89,61 +96,71 @@ export function SettingPicker({
       document.removeEventListener("mousedown", onPointerDown);
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, trigger]);
+
+  // The menu is a child of the root, so travelling into it never leaves the
+  // hover area — and the anchor's padding bridges the gap above the control.
+  const hover =
+    trigger === "hover"
+      ? {
+          onPointerEnter: () => setOpen(true),
+          onPointerLeave: () => setOpen(false),
+        }
+      : {};
 
   return (
-    <div className={styles.root} ref={rootRef}>
+    <div className={styles.root} ref={rootRef} {...hover}>
       <button
         type="button"
-        className="control"
+        className={`control ${label ? "" : styles.iconOnly}`}
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-haspopup="listbox"
+        aria-label={label ? undefined : name}
+        title={label ? undefined : name}
       >
         {leading}
         {label}
-        <ChevronDown size={17} strokeWidth={2} className={styles.chevron} data-open={open} />
+        {label && (
+          <ChevronDown size={17} strokeWidth={2} className={styles.chevron} data-open={open} />
+        )}
       </button>
 
       {open && (
-        <div
-          className={styles.menu}
-          ref={menuRef}
-          data-align={align}
-          role="listbox"
-          aria-label={name}
-        >
-          {options.map((option) => {
-            const choose = () => {
-              onSelect(option.id);
-              setOpen(false);
-            };
+        <div className={styles.anchor} data-align={align}>
+          <div className={styles.menu} ref={menuRef} role="listbox" aria-label={name}>
+            {options.map((option) => {
+              const choose = () => {
+                onSelect(option.id);
+                setOpen(false);
+              };
 
-            return (
-              <div key={option.id}>
-                {option.separated && <hr className={styles.divider} />}
-                {/* A div, not a button: an option that carries its own button
-                    cannot be one itself. */}
-                <div
-                  role="option"
-                  tabIndex={0}
-                  aria-selected={option.id === selectedId}
-                  className={styles.option}
-                  onClick={choose}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === " ") {
-                      event.preventDefault();
-                      choose();
-                    }
-                  }}
-                >
-                  {option.leading}
-                  {option.label}
-                  {option.action && <span className={styles.action}>{option.action}</span>}
+              return (
+                <div key={option.id}>
+                  {option.separated && <hr className={styles.divider} />}
+                  {/* A div, not a button: an option that carries its own button
+                      cannot be one itself. */}
+                  <div
+                    role="option"
+                    tabIndex={0}
+                    aria-selected={option.id === selectedId}
+                    className={styles.option}
+                    onClick={choose}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        choose();
+                      }
+                    }}
+                  >
+                    {option.leading}
+                    {option.label}
+                    {option.action && <span className={styles.action}>{option.action}</span>}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

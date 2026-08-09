@@ -5,7 +5,6 @@ import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
 import { ThemePicker } from "./ThemePicker";
-import { VoicePicker } from "./VoicePicker";
 import { VolumeControl } from "./VolumeControl";
 import styles from "./Sidebar.module.css";
 
@@ -14,8 +13,8 @@ interface Props {
   activeSlug: string | null;
   onSelect: (slug: string) => void;
   theme: ThemeControls;
+  /** Only to show each text's length; the voice itself is chosen in the player. */
   voiceId: string;
-  onSelectVoice: (id: string) => void;
   autoSpeak: boolean;
   onToggleAutoSpeak: () => void;
   seekOnClick: boolean;
@@ -34,7 +33,6 @@ export function Sidebar({
   onSelect,
   theme,
   voiceId,
-  onSelectVoice,
   autoSpeak,
   onToggleAutoSpeak,
   seekOnClick,
@@ -84,13 +82,22 @@ export function Sidebar({
           onSelect={theme.setTheme}
         />
 
-        <VoicePicker voiceId={voiceId} onSelect={onSelectVoice} />
+        <button
+          type="button"
+          className="control"
+          onClick={onToggleAutoSpeak}
+          aria-pressed={autoSpeak}
+        >
+          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
+              setting is off", so the pressed state carries the difference —
+              the control already recolours itself. */}
+          <Megaphone size={19} strokeWidth={2} />
+          Say word
+        </button>
 
         {/* Held together so the round volume control keeps this line company
             rather than wrapping onto one of its own. */}
         <div className={styles.settingRow}>
-          <VolumeControl {...volume} />
-
           <button
             type="button"
             className="control"
@@ -104,20 +111,9 @@ export function Sidebar({
             )}
             Jump to word
           </button>
-        </div>
 
-        <button
-          type="button"
-          className="control"
-          onClick={onToggleAutoSpeak}
-          aria-pressed={autoSpeak}
-        >
-          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
-              setting is off", so the pressed state carries the difference —
-              the control already recolours itself. */}
-          <Megaphone size={19} strokeWidth={2} />
-          Say word
-        </button>
+          <VolumeControl {...volume} />
+        </div>
       </footer>
     </aside>
   );

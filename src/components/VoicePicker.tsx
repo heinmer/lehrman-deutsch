@@ -16,8 +16,12 @@ interface Props {
  * the text survives the swap.
  *
  * Each option can be auditioned without being chosen: the clip goes through
- * the same Web Audio path as the word recordings, so the sidebar's volume
+ * the same Web Audio path as the word recordings, so the volume setting
  * applies to it and nothing has to be fetched at the moment of the click.
+ *
+ * It lives in the player next to the speed, as an icon alone — the two are the
+ * same kind of setting, how the text is read to you, and the player has no
+ * room for a word.
  */
 export function VoicePicker({ voiceId, onSelect }: Props) {
   useEffect(() => {
@@ -47,12 +51,12 @@ export function VoicePicker({ voiceId, onSelect }: Props) {
 
   return (
     <SettingPicker
-      label="Voice"
       name="Narration voice"
       leading={<AudioLines size={19} strokeWidth={2} />}
       options={options}
       selectedId={voiceId}
       onSelect={onSelect}
+      trigger="hover"
     />
   );
 }

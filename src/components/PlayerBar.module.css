@@ -4,6 +4,13 @@
   gap: 1.1rem;
   padding: 1rem 1.5rem;
   background: var(--surface-player);
+  /* The voice menu opens upwards, out of the bar; the island would clip it.
+     Nothing else in here overflows. */
+  overflow: visible;
+  /* No ring here: the sidebar's menus cut themselves out of the settings they
+     cover, but this one opens over the reader, where a band of the player's
+     ground would just be a halo. Its own border is enough. */
+  --popover-ring: transparent;
 }
 
 .play {
@@ -129,10 +136,12 @@
   color: var(--text-soft);
 }
 
+/* Speed and voice belong together — both are how the text gets read to you —
+   so one rule separates the pair from the time. */
 .speed {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.7rem;
   flex: none;
   padding-left: 1.4rem;
   border-left: 1px solid var(--border);

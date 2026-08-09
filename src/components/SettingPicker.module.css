@@ -1,6 +1,15 @@
 .root {
   position: relative;
   display: inline-flex;
+  flex: none;
+}
+
+/* The pill control, squared off into a disc — same shape as the volume knob. */
+.iconOnly {
+  width: var(--control-height);
+  padding: 0;
+  justify-content: center;
+  flex: none;
 }
 
 .chevron {
@@ -12,29 +21,36 @@
   transform: rotate(180deg);
 }
 
-/* Opens upwards: the control sits at the bottom of the sidebar. */
-.menu {
+/* Opens upwards: these controls sit at the bottom of the window. The padding
+   is the bridge — it keeps the hover area continuous between the control and
+   the menu, so a pointer travelling up never crosses a gap. */
+.anchor {
   position: absolute;
-  bottom: calc(100% + 0.45rem);
+  bottom: 100%;
   left: 0;
   right: auto;
   z-index: 30;
+  padding-bottom: 0.45rem;
+}
+
+/* Flipped by SettingPicker when hanging from the left edge would put the menu
+   outside the boundary. */
+.anchor[data-align="end"] {
+  left: auto;
+  right: 0;
+}
+
+.menu {
   min-width: 11rem;
   padding: 0.4rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--surface-overlay);
-  /* Same ring as the volume card: keeps the menu off the text list and the
-     settings it covers. */
-  outline: 5px solid var(--surface-sidebar);
+  /* Same ring as the volume card: keeps the menu off whatever it covers. The
+     ring has to be the ground it opens over, which is the sidebar unless a
+     host says otherwise. */
+  outline: 5px solid var(--popover-ring, var(--surface-sidebar));
   box-shadow: var(--shadow-card);
-}
-
-/* Flipped by SettingPicker when hanging from the left edge would put the menu
-   outside the boundary. */
-.menu[data-align="end"] {
-  left: auto;
-  right: 0;
 }
 
 .option {

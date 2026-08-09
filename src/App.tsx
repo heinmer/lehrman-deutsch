@@ -129,7 +129,6 @@ export function App() {
         onSelect={setSlug}
         theme={theme}
         voiceId={voice}
-        onSelectVoice={setVoice}
         autoSpeak={autoSpeak}
         onToggleAutoSpeak={toggleAutoSpeak}
         seekOnClick={seekOnClick}
@@ -145,7 +144,7 @@ export function App() {
           selectedWordId={selectedWord?.id ?? null}
           onSelectWord={selectWord}
         />
-        <PlayerBar narration={narration} />
+        <PlayerBar narration={narration} voiceId={voice} onSelectVoice={setVoice} />
       </main>
 
       <WordPanel

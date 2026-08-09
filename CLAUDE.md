@@ -161,14 +161,22 @@ as `/…/` so transcriptions look the same everywhere.
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
   click independently — "Say word" (speak it) and "Jump to word" (move the
   playhead); both live in `useToggleSetting` and persist.
-- **The sidebar's dropdowns are one component.** `SettingPicker` owns the pill,
-  the outside-click and Escape handling, and the menu that opens *upwards* —
-  the sidebar sits at the bottom of the window. Theme and voice differ only in
-  the options they hand it; a third setting should not grow a third popover.
+- **The dropdowns are one component.** `SettingPicker` owns the control, the
+  outside-click and Escape handling, and the menu that opens *upwards* — these
+  controls sit at the bottom of the window. Theme (sidebar, a labelled pill,
+  opens on click) and voice (player, a round icon, opens on hover) differ only
+  in the props they hand it; a third setting should not grow a third popover.
   Which side the menu hangs from is measured, not declared: it flips to the
-  pill's right edge when the left one would push it out of the nearest
-  `[data-popover-boundary]` — the sidebar, which clips its overflow. Tooltips
-  use the same marker, so reordering the settings cannot clip anything.
+  control's right edge when the left one would push it out of the nearest
+  `[data-popover-boundary]`. Tooltips use the same marker, so reordering the
+  settings cannot clip anything. The gap above the control is *padding on the
+  anchor*, not a margin — in hover mode it is the bridge the pointer crosses,
+  exactly as in `VolumeControl`.
+- **The player bar sets `overflow: visible`**, against `.island`, because the
+  voice menu opens out of it; nothing else in the bar overflows. It also sets
+  `--popover-ring: transparent`: the sidebar's menus cut a ring of their own
+  ground out of the settings they cover, but this one opens over the reader,
+  where that band would only be a halo.
 - **A voice can be heard before it is chosen.** Each option carries a preview
   button, which is why an option is a `<div role="option">` rather than a
   button — a button cannot contain one. It plays through `clipAudio`, the same
@@ -183,8 +191,9 @@ as `/…/` so transcriptions look the same everywhere.
   file: taking it over the file let that half-second of silence drag the
   average down, and every clip came out louder than the target by however much
   silence it carried — which is why words used to jump out over the narration.
-  Its value is the narrations' own speech level (0.099–0.114 RMS by voice), so
-  the two paths match; re-measure it if the voices change.
+  Its value sits just under the narrations' own speech level (0.099–0.114 RMS
+  by voice), a word being an aside rather than the main voice; re-measure it if
+  the voices change.
 - **Playback rises from silence over 40ms when it starts mid-text**
   (`FADE_MS` in `useNarration`). Words are not separated by silence — in these
   narrations the 40ms before a word's start is on median as loud as the word
