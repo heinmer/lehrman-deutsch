@@ -5,9 +5,22 @@ export async function ensureDir(dir: string): Promise<void> {
   await fs.mkdir(dir, { recursive: true });
 }
 
-export async function writeJson(file: string, value: unknown): Promise<void> {
+/**
+ * Writes JSON, indented by default.
+ *
+ * `pretty: false` is for the files the *app* downloads. Indentation more than
+ * doubled them — 1690 bytes per word against 780 — and nothing reads them by
+ * eye: the build logs what is worth checking, and `npm run content` is what
+ * regenerates them. Bookkeeping under .cache/ stays indented, because that one
+ * is read by a person debugging an incremental build.
+ */
+export async function writeJson(
+  file: string,
+  value: unknown,
+  { pretty = true }: { pretty?: boolean } = {},
+): Promise<void> {
   await ensureDir(path.dirname(file));
-  await fs.writeFile(file, JSON.stringify(value, null, 2), "utf8");
+  await fs.writeFile(file, JSON.stringify(value, null, pretty ? 2 : undefined), "utf8");
 }
 
 export async function readJson<T>(file: string): Promise<T | null> {

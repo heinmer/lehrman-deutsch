@@ -207,6 +207,14 @@ async function buildText(source: SourceText): Promise<TextSummary> {
 
   log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
   const titleTranslation = await translateToEnglish(source.title);
+  // The one translation most likely to degrade quietly, and the documents are
+  // no longer written in a shape anybody would open to look at it.
+  if (titleTranslation) {
+    log.ok(`title: "${source.title}" -> "${titleTranslation}"`);
+  } else {
+    log.warn(`title: "${source.title}" was not translated`);
+  }
+
   let translated = 0;
   for (const paragraph of paragraphs) {
     const text = paragraph.sentences.map((s) => s.text).join(" ");
@@ -257,7 +265,9 @@ async function buildText(source: SourceText): Promise<TextSummary> {
     dictionary,
   };
 
-  await writeJson(path.join(PATHS.dataTexts, `${source.slug}.json`), document);
+  await writeJson(path.join(PATHS.dataTexts, `${source.slug}.json`), document, {
+    pretty: false,
+  });
 
   return {
     slug: source.slug,
@@ -295,6 +305,11 @@ async function main(): Promise<void> {
       if (existing) {
         log.step(`${source.title} (${source.slug})`);
         log.info("unchanged, skipping (use npm run content:force to rebuild)");
+        // Rewritten even though nothing was rebuilt: how the file is *written*
+        // is not part of the source hash, so without this a formatting change
+        // would only reach a text the next time its content happened to
+        // change. It costs one write of an already-loaded object.
+        await writeJson(documentPath, existing, { pretty: false });
         summaries.push({
           slug: existing.slug,
           title: existing.title,
@@ -324,7 +339,7 @@ async function main(): Promise<void> {
     generatedAt: new Date().toISOString(),
     texts: summaries,
   };
-  await writeJson(path.join(PATHS.data, "index.json"), index);
+  await writeJson(path.join(PATHS.data, "index.json"), index, { pretty: false });
 
   log.step(`Done. ${summaries.length} text(s) available.`);
 }
