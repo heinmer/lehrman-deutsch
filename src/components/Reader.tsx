@@ -13,6 +13,11 @@ interface Props {
   activeSentenceId: string | null;
   selectedWordId: string | null;
   onSelectWord: (token: WordToken) => void;
+  /**
+   * The pointer or the focus reaching a word, which is taken as "this one may
+   * be clicked next" — early enough for its recording to be there when it is.
+   */
+  onWarmWord: (token: WordToken) => void;
 }
 
 interface SentenceProps {
@@ -21,6 +26,7 @@ interface SentenceProps {
   activeSentenceId: string | null;
   selectedWordId: string | null;
   onSelectWord: (token: WordToken) => void;
+  onWarmWord: (token: WordToken) => void;
   /** False for the last sentence, so nothing can break before what follows. */
   trailingSpace?: boolean;
   /**
@@ -42,6 +48,7 @@ function SentenceView({
   activeSentenceId,
   selectedWordId,
   onSelectWord,
+  onWarmWord,
   trailingSpace = true,
   trailing,
 }: SentenceProps) {
@@ -58,6 +65,8 @@ function SentenceView({
         data-active={token.id === activeWordId}
         data-selected={token.id === selectedWordId}
         onClick={() => onSelectWord(token)}
+        onPointerEnter={() => onWarmWord(token)}
+        onFocus={() => onWarmWord(token)}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -105,6 +114,7 @@ export function Reader({
   activeSentenceId,
   selectedWordId,
   onSelectWord,
+  onWarmWord,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(NONE_OPEN);
@@ -174,7 +184,7 @@ export function Reader({
     );
   }
 
-  const shared = { activeWordId, activeSentenceId, selectedWordId, onSelectWord };
+  const shared = { activeWordId, activeSentenceId, selectedWordId, onSelectWord, onWarmWord };
 
   return (
     <div className={`island ${styles.reader}`} ref={scrollRef}>

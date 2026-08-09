@@ -14,13 +14,3 @@ export function spokenLexeme(entry: DictionaryEntry | null): LexemeInfo | null {
 export function pronunciationClip(entry: DictionaryEntry | null): AudioClip | null {
   return spokenLexeme(entry)?.audio ?? null;
 }
-
-/** Every recording referenced by a text, for prefetching. */
-export function allClipSources(dictionary: Record<string, DictionaryEntry>): string[] {
-  const sources: string[] = [];
-  for (const entry of Object.values(dictionary)) {
-    if (entry.form?.audio) sources.push(entry.form.audio.src);
-    if (entry.lemma?.audio) sources.push(entry.lemma.audio.src);
-  }
-  return sources;
-}

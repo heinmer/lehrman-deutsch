@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { AudioLines, Volume2 } from "lucide-react";
 import { VOICES, voiceSampleSrc } from "../../shared/voices";
-import { playClip, prefetchClips } from "../lib/clipAudio";
+import { pinClips, playClip } from "../lib/clipAudio";
 import { SettingPicker, type PickerOption } from "./SettingPicker";
 import styles from "./VoicePicker.module.css";
 
@@ -24,8 +24,10 @@ interface Props {
  * room for a word.
  */
 export function VoicePicker({ voiceId, onSelect }: Props) {
+  // Four small files, kept for the session: nothing evicts them, so
+  // auditioning a voice is instant however long the reader has been reading.
   useEffect(() => {
-    void prefetchClips(VOICES.map((voice) => voiceSampleSrc(voice.id)));
+    void pinClips(VOICES.map((voice) => voiceSampleSrc(voice.id)));
   }, []);
 
   const options: PickerOption[] = VOICES.map((voice) => ({

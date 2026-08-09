@@ -3,10 +3,15 @@
  *
  * These come from many different contributors, so they arrive at wildly
  * different loudness and usually carry a moment of silence before the word.
- * Each clip is therefore decoded once, up front, then measured: playback
- * starts at the first real sound and is scaled towards a common loudness.
- * Decoding ahead of time is also what makes a click play instantly instead of
- * waiting on a fetch.
+ * Each clip is therefore decoded once, then measured: playback starts at the
+ * first real sound and is scaled towards a common loudness.
+ *
+ * **A text's recordings are not all fetched when it opens.** They used to be —
+ * a hundred and sixty files and three and a half megabytes for one A2 text,
+ * decoded into float samples and kept forever, which on a phone is the tab
+ * ending. Clips are warmed one at a time as the pointer or the focus reaches a
+ * word, which is early enough that the click still plays from memory, and the
+ * decoded ones are held in a bounded cache that drops the least recently used.
  */
 
 import { assetUrl } from "./assets";
@@ -41,9 +46,44 @@ const PEAK_CEILING = 0.98;
 const LEAD_IN = 0.015;
 const TAIL = 0.06;
 
+/**
+ * How many decoded clips to keep. A decoded clip is float samples at the
+ * context's rate — roughly a third of a megabyte for a second and a half —
+ * so this is the difference between a bounded twenty-odd megabytes and
+ * however many words the reader happens to visit.
+ */
+const MAX_DECODED = 80;
+
 let context: AudioContext | null = null;
+/** Least recently used first: Map iterates in insertion order. */
 const prepared = new Map<string, PreparedClip>();
+/** Clips exempt from eviction — the handful of voice samples. */
+const pinned = new Set<string>();
 const inFlight = new Map<string, Promise<PreparedClip | null>>();
+
+/**
+ * Bumped when the reader moves to another text. A decode still running for the
+ * text they left is finished but not kept: it would evict something they are
+ * about to want.
+ */
+let generation = 0;
+
+function recall(src: string): PreparedClip | undefined {
+  const clip = prepared.get(src);
+  if (!clip) return undefined;
+  // Re-inserting moves it to the young end of the map.
+  prepared.delete(src);
+  prepared.set(src, clip);
+  return clip;
+}
+
+function remember(src: string, clip: PreparedClip): void {
+  prepared.set(src, clip);
+  for (const oldest of prepared.keys()) {
+    if (prepared.size <= MAX_DECODED) break;
+    if (!pinned.has(oldest)) prepared.delete(oldest);
+  }
+}
 
 function getContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -92,7 +132,7 @@ function analyse(buffer: AudioBuffer): PreparedClip {
   return { buffer, gain, offset, duration: Math.max(end - offset, 0.05) };
 }
 
-async function load(src: string): Promise<PreparedClip | null> {
+async function load(src: string, forGeneration: number): Promise<PreparedClip | null> {
   const ctx = getContext();
   if (!ctx) return null;
 
@@ -103,7 +143,8 @@ async function load(src: string): Promise<PreparedClip | null> {
     if (!response.ok) return null;
     const buffer = await ctx.decodeAudioData(await response.arrayBuffer());
     const clip = analyse(buffer);
-    prepared.set(src, clip);
+    // Still playing it if it was asked for directly, just not keeping it.
+    if (forGeneration === generation) remember(src, clip);
     return clip;
   } catch {
     return null;
@@ -113,28 +154,57 @@ async function load(src: string): Promise<PreparedClip | null> {
 }
 
 function ensureLoaded(src: string): Promise<PreparedClip | null> {
-  const ready = prepared.get(src);
+  const ready = recall(src);
   if (ready) return Promise.resolve(ready);
 
   const existing = inFlight.get(src);
   if (existing) return existing;
 
-  const promise = load(src);
+  const promise = load(src, generation);
   inFlight.set(src, promise);
   return promise;
 }
 
 /**
- * Decodes every clip of the current text in the background, a few at a time so
- * the narration's own download is not starved.
+ * Fetches and decodes one clip ahead of being asked to play it — what the
+ * reader's pointer or focus reaching a word is taken to mean. Cheap to call
+ * repeatedly: a clip already held, or already on its way, is not fetched twice.
  */
-export async function prefetchClips(sources: string[]): Promise<void> {
-  const queue = [...new Set(sources)].filter((src) => !prepared.has(src));
-  const BATCH = 6;
+export function warmClip(src: string): void {
+  void ensureLoaded(src);
+}
 
-  for (let i = 0; i < queue.length; i += BATCH) {
-    await Promise.all(queue.slice(i, i + BATCH).map(ensureLoaded));
+/**
+ * Decodes a small, fixed set of clips and keeps them: the voice samples, which
+ * are four files the picker plays and nothing evicts.
+ */
+export async function pinClips(sources: string[]): Promise<void> {
+  for (const src of new Set(sources)) {
+    pinned.add(src);
+    await ensureLoaded(src);
   }
+}
+
+/**
+ * Says that the reader has moved to another text. Decodes still in flight for
+ * the old one are no longer worth keeping — they would evict clips from the
+ * text now on screen.
+ */
+export function newTextOpened(): void {
+  generation += 1;
+}
+
+/**
+ * How many clips are currently decoded. The cache's ceiling is the whole point
+ * of it and nothing else can observe it, so in dev it is reachable from the
+ * console — which is how the browser checks read it.
+ */
+export function decodedClipCount(): number {
+  return prepared.size;
+}
+
+if (import.meta.env.DEV && typeof window !== "undefined") {
+  (window as unknown as Record<string, unknown>).decodedClipCount = decodedClipCount;
 }
 
 let activeSource: AudioBufferSourceNode | null = null;
@@ -180,7 +250,7 @@ export function playClip(src: string): void {
   // Browsers start the context suspended until a gesture; a click is one.
   if (ctx.state === "suspended") void ctx.resume();
 
-  const ready = prepared.get(src);
+  const ready = recall(src);
   if (ready) {
     start(ctx, ready);
     return;

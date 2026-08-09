@@ -233,6 +233,16 @@ as `/…/` so transcriptions look the same everywhere.
   button — a button cannot contain one. It plays through `clipAudio`, the same
   Web Audio path as the word recordings, so the volume setting reaches it; the
   four clips are prefetched when the picker mounts.
+- **A text's recordings are not fetched when it opens.** They were, once — all
+  of them, which for one A2 text is 165 files and about 3.5 MB, decoded into
+  float samples and never released. `clipAudio` now warms **one clip at a
+  time**, when the pointer or the focus reaches a word (`onWarmWord`), which is
+  early enough that the click still plays from memory; `prepared` is an LRU
+  capped at `MAX_DECODED`, and the voice samples are `pinClips`-ed so nothing
+  evicts them. `newTextOpened()` bumps a generation so a decode still in flight
+  for the text the reader left is finished but not kept. The invariant that
+  matters is unchanged — **playing must not trigger a fetch** — it is just
+  bought by reaching the word rather than by the whole dictionary.
 - **Word recordings go through the Web Audio API** (`src/lib/clipAudio.ts`),
   not `new Audio()`. They are volunteer contributions varying ~7x in loudness
   with ~0.5s of silence before the word, so each is decoded up front, scaled
@@ -242,6 +252,8 @@ as `/…/` so transcriptions look the same everywhere.
   file: taking it over the file let that half-second of silence drag the
   average down, and every clip came out louder than the target by however much
   silence it carried — which is why words used to jump out over the narration.
+  In dev the module puts `decodedClipCount` on `window`; the cache's ceiling is
+  otherwise unobservable, and that is what the browser check reads.
   Its value is set so the two paths measure the same: K-weighted (BS.1770, the
   LUFS weighting), a clip and the narration land within 0.03 LU of each other.
   Plain RMS is not enough to tune this by — it called them level while they

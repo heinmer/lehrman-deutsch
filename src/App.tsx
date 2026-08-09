@@ -7,8 +7,8 @@ import { useVoiceSetting } from "./hooks/useVoiceSetting";
 import { useVolumeSetting } from "./hooks/useVolumeSetting";
 import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
-import { allClipSources, pronunciationClip } from "./lib/pronunciation";
-import { playClip, prefetchClips, setClipVolume } from "./lib/clipAudio";
+import { pronunciationClip } from "./lib/pronunciation";
+import { newTextOpened, playClip, setClipVolume, warmClip } from "./lib/clipAudio";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
@@ -80,10 +80,10 @@ export function App() {
 
   const narration = useNarration(document, voice, volume.effective);
 
-  // Decode the text's recordings ahead of time so a click plays instantly.
-  useEffect(() => {
-    if (document) void prefetchClips(allClipSources(document.dictionary));
-  }, [document]);
+  // Recordings are warmed one at a time as the reader reaches a word (see
+  // clipAudio); this only tells the cache that the ones still arriving belong
+  // to a text nobody is reading any more.
+  useEffect(() => newTextOpened(), [slug]);
 
   const { seek, play, isPlaying, wordStart } = narration;
 
@@ -103,6 +103,16 @@ export function App() {
       }
     },
     [seek, wordStart, isPlaying, autoSpeak, seekOnClick, document, slug],
+  );
+
+  // Reaching a word is a good guess that it is about to be clicked, and a
+  // fetch started now is finished by the time the click lands.
+  const warmWord = useCallback(
+    (token: WordToken) => {
+      const clip = pronunciationClip(document?.dictionary[token.key] ?? null);
+      if (clip) warmClip(clip.src);
+    },
+    [document],
   );
 
   const closePanel = useCallback(() => setSelection(null), []);
@@ -164,6 +174,7 @@ export function App() {
           activeSentenceId={narration.activeSentenceId}
           selectedWordId={selectedWord?.id ?? null}
           onSelectWord={selectWord}
+          onWarmWord={warmWord}
         />
         <PlayerBar narration={narration} voiceId={voice} onSelectVoice={setVoice} />
       </main>
