@@ -76,43 +76,50 @@ export function PlayerBar({ narration, voiceId, onSelectVoice, onOpenDrawer }: P
           </button>
         </div>
       ) : (
-        <>
-          {/* Clicking anywhere on the track jumps there — that is native range
-              behaviour, and the track is sized to make it an easy target. */}
-          <input
-            type="range"
-            className={styles.scrubber}
-            style={{ "--progress": `${progress}%` } as CSSProperties}
-            min={0}
-            max={duration || 0}
-            step={0.01}
-            value={Math.min(currentTime, duration || 0)}
-            onChange={(event) => narration.seek(Number(event.target.value))}
-            disabled={!isReady}
-            aria-label="Seek"
-          />
+        /* Clicking anywhere on the track jumps there — that is native range
+           behaviour, and the track is sized to make it an easy target. */
+        <input
+          type="range"
+          className={styles.scrubber}
+          style={{ "--progress": `${progress}%` } as CSSProperties}
+          min={0}
+          max={duration || 0}
+          step={0.01}
+          value={Math.min(currentTime, duration || 0)}
+          onChange={(event) => narration.seek(Number(event.target.value))}
+          disabled={!isReady}
+          aria-label="Seek"
+        />
+      )}
 
+      {/* The two controls the row runs out of room for, in one box so that they
+          can scroll together instead of wrapping to a line of their own. Above
+          the breakpoint the box is not there at all (`display: contents`) and
+          the bar lays them out itself — which is why they are in the DOM where
+          they are read. */}
+      <div className={styles.trailing}>
+        {!error && (
           <div className={styles.time}>
             <span className={styles.timeNow}>{formatTime(currentTime)}</span>
             <span className={styles.timeSep}>/</span>
             <span>{formatTime(duration)}</span>
           </div>
-        </>
-      )}
+        )}
 
-      <div className={styles.speed}>
-        <div className={styles.rates} role="group" aria-label="Playback speed">
-          {RATES.map((value) => (
-            <button
-              key={value}
-              type="button"
-              className={styles.rate}
-              aria-pressed={rate === value}
-              onClick={() => narration.changeRate(value)}
-            >
-              {value}&times;
-            </button>
-          ))}
+        <div className={styles.speed}>
+          <div className={styles.rates} role="group" aria-label="Playback speed">
+            {RATES.map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={styles.rate}
+                aria-pressed={rate === value}
+                onClick={() => narration.changeRate(value)}
+              >
+                {value}&times;
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 

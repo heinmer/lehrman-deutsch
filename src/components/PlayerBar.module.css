@@ -3,7 +3,11 @@
   align-items: center;
   /* The anchor the library button hangs above; see `.library`. */
   position: relative;
-  gap: 1.1rem;
+  /* A property rather than a length because `.trailing` has to space its own
+     children by the same amount: below the breakpoint it is a box of its own
+     and the bar's `gap` no longer reaches them. */
+  --control-gap: 1.1rem;
+  gap: var(--control-gap);
   padding: 1rem 1.5rem;
   background: var(--surface-player);
   /* The voice menu opens upwards, out of the bar; the island would clip it.
@@ -203,6 +207,14 @@
   cursor: default;
 }
 
+/* Holds the time and the speed strip. It is nothing at all while the bar is
+   one row — the two are ordinary items of the bar's own flex row, in the DOM
+   where they are read — and becomes a box only where they have to scroll
+   together; see the end of the file. */
+.trailing {
+  display: contents;
+}
+
 /* Time and speed sat side by side and blurred together, so each gets its own
    surface and they are pushed apart. */
 .time {
@@ -302,16 +314,52 @@
     order: -1;
     flex: 1 0 100%;
   }
+
+  /* The controls now have a row to themselves, and the settings belong at the
+     far end of it — the near end is the transport. Everything from the speed
+     strip's rule rightwards travels together, because that rule is drawn as
+     the strip's own left border. */
+  .speed {
+    margin-left: auto;
+  }
+
+  /* What is left over between the transport and the voice picker, and where the
+     row runs out first. Past that it scrolls rather than wrapping to a third
+     line: an auto margin takes only *positive* free space, so the same rule
+     that pins the speed strip right lets go of it the moment the line
+     overflows, and the content packs left to be scrolled at.
+
+     It holds the time and the speed strip and not the voice picker, which
+     would be clipped: the menu opens upwards out of the bar, and a scroll
+     container clips on both axes whatever the other one's `overflow` says.
+     Nor is there a reason to scroll to it — pinned outside, beside the
+     transport at the other end, it is always where it was. */
+  .trailing {
+    display: flex;
+    align-items: center;
+    gap: var(--control-gap);
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+    /* A horizontal scroll that runs out must not turn into a Back gesture. */
+    overscroll-behavior-x: contain;
+    /* The clip box cuts the shadows and focus rings off the controls inside it
+       otherwise. This is the room they need, taken straight back out of the
+       layout so the row's height does not move. */
+    padding-block: 0.75rem;
+    margin-block: -0.75rem;
+    /* A bar of scrollbar across a bar of controls, and on the one layout with
+       the least height to spare. The cut-off edge is the affordance. */
+    scrollbar-width: none;
+  }
 }
 
-/* Now the row of fixed controls is itself running out, and the only thing left
-   to give is the space between them. It buys another 2rem or so before they
-   wrap in their turn, which they may: the bar sets `overflow: visible` on
-   purpose, for the voice menu, so nothing else would stop them hanging off the
-   side of the window. */
+/* Now the row is itself running out, and the space between the controls is the
+   first thing to give. It buys them another 2rem or so of room before anything
+   has to scroll. */
 @container (max-width: 38rem) {
   .bar {
-    gap: 0.7rem;
+    --control-gap: 0.7rem;
     padding: 0.85rem 1rem;
   }
 

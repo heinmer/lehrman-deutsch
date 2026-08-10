@@ -346,6 +346,22 @@ as `/…/` so transcriptions look the same everywhere.
   thresholds are in rem because what they are weighed against is — but note
   that a `rem` in a container query is the root's font size (90%, so 52rem is
   749px), while a `rem` in a media query is the browser's untouched default.
+- **On two rows the settings hang from the right edge**, the transport from the
+  left: `margin-left: auto` on the speed strip, which carries the rule between
+  the two groups as its own left border and so takes it along. The same
+  declaration is what lets go on a row too narrow to hold them — an auto margin
+  takes only *positive* free space — and the row then packs left to be
+  scrolled at.
+- **The row scrolls rather than wrapping a second time.** `.trailing` (the time
+  and the speed strip) is `display: contents` on a wide bar and a horizontally
+  scrolling flex box on a narrow one, so a phone gets two rows and never three.
+  What it may **not** hold is the voice picker, whose menu opens upwards out of
+  the bar: a scroll container clips on both axes no matter what the other
+  one's `overflow` says, and there is no CSS pairing of `auto` with `visible`.
+  It stays outside, pinned to the right edge — as do play and restart at the
+  other end, which is why neither is ever something to scroll to. The box
+  carries `padding-block` with an equal negative `margin-block`: without it the
+  clip box cuts the shadows and focus rings off the controls inside.
 - **A media query adds no specificity**, and neither does a container query. A
   narrow-screen override of a rule declared *later* in the same file loses on
   source order and does nothing — silently, since both rules are valid.
