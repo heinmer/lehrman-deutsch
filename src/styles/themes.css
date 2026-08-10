@@ -36,6 +36,12 @@
   --surface-raised: #283a63;
   --surface-player-raised: rgb(198 214 245 / 0.16);
   --surface-overlay: #283a63;
+  /* The one theme where the info window is not the overlay it floats beside.
+     That light navy is a step a menu of four options wants and a window of
+     prose cannot carry: read at length, the type sat too close to its ground.
+     The page's own navy is what a text is read on here, and the scrim is what
+     tells the card from it. */
+  --surface-dialog: #101a2e;
   --surface-selected: #283a63;
 
   --text: #dfe6f4;
@@ -88,6 +94,9 @@
   --surface-raised: #e9e0cf;
   --surface-player-raised: rgb(61 47 28 / 0.13);
   --surface-overlay: #e9e0cf;
+  /* The info window's ground. The light themes are read comfortably on their
+     overlay, so it is that; see Ink for the theme where it is not. */
+  --surface-dialog: #e9e0cf;
   --surface-selected: #fdf9f1;
 
   --text: #2a2620;
@@ -165,6 +174,9 @@
      tooltip — and must therefore be opaque; `--surface-raised` is only
      required to be a step above the page and may be translucent. */
   --surface-overlay: #f3f4f8;
+  /* The info window's ground — see Ink, the one theme where it is not simply
+     the overlay. */
+  --surface-dialog: #f3f4f8;
   /* The chosen option inside a segmented strip — currently the playback speed.
      It has to clear `--surface-inset`, the strip behind it, which is a
      different job from clearing the page: on one sheet "raised" and that strip
@@ -228,6 +240,9 @@
   --surface-raised: #16181f;
   --surface-player-raised: rgb(219 225 245 / 0.16);
   --surface-overlay: #16181f;
+  /* The info window's ground. Black can keep its overlay: that near-black is
+     barely off the page and carries the type as well as the page does. */
+  --surface-dialog: #16181f;
   --surface-selected: #262933;
 
   --text: #e7e9f0;

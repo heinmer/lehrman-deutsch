@@ -354,12 +354,22 @@ as `/…/` so transcriptions look the same everywhere.
   `--surface-overlay`, and in every theme those two are **the same colour** —
   the button lit up into exactly what was already under it. Anything sitting
   on a floating ground has the same problem and the same answer, which is what
-  the pickers' options hover onto. **Its lines are `--track`, not `--border`**,
-  for the same reason one step further: in Ink `--surface-overlay` is a
-  *lighter* navy than `--border` is, so a border-coloured hairline on the card
-  vanished — the rule under the title was invisible in that theme until the
-  row rules arrived beside it and showed it up. `--track` stands off every
-  theme's overlay.
+  the pickers' options hover onto. **Its lines are `--track`, not `--border`**:
+  on Paper's and White's card grounds `--border` is the fainter of the two —
+  1.1:1 and 1.2:1 against them — and a hairline between two rows of text
+  stopped reading as a division at all. Measure a line against the ground it is
+  drawn on, as with everything else here.
+- **The info window has a ground of its own, `--surface-dialog`.** In three
+  themes it is the same value as `--surface-overlay`; in Ink it is the *page*,
+  because that light navy is a step a menu of four options wants and a window
+  of prose cannot carry — a card's worth of text sat too close to it to read.
+  The scrim is what tells the card from the page it matches. It is a separate
+  token and not a change to the overlay because the pickers, the volume slider
+  and the drawer island all float on that one and are right as they are.
+  Its notes are `--text-muted` at `--fs-sm`, the descriptions' own size and
+  colour: `--text-soft` measured 3.4:1 in Paper and 4.0:1 in White, which is a
+  caption's contrast, and a note the tables depend on is not a caption. Its
+  place under the heading is what marks it as a note.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
@@ -647,7 +657,11 @@ white — no theme uses that today, but it is allowed — which is fine for
 something sitting in the layout and wrong for anything floating over it: the
 theme menu and the volume slider both showed the text list through themselves
 until they moved to the overlay token. Anything that floats belongs on
-`--surface-overlay`.
+`--surface-overlay` — with one exception, `--surface-dialog`, which is the info
+window's own ground. Everything else that floats is a handful of controls read
+at a glance and wants a step up off the page; that one is a window of prose and
+wants a page's contrast, which in Ink is not the same colour at all. A second
+box of prose over the page would use it too.
 
 `--scrim` is the ground *behind* the drawer on narrow screens, and it is the
 one token whose job is to be seen through: it darkens the reader enough that
