@@ -3,7 +3,7 @@ import path from "node:path";
 import zlib from "node:zlib";
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
-import { DEFAULT_DARK, DEFAULT_LIGHT, THEMES } from "./shared/themes.ts";
+import { DEFAULT_THEME, THEMES } from "./shared/themes.ts";
 
 /** The name the inline script in index.html expects to be filled in. */
 const PLACEHOLDER = "__THEMES__";
@@ -27,8 +27,7 @@ function themeIds(): Plugin {
         PLACEHOLDER,
         JSON.stringify({
           known: THEMES.map((theme) => theme.id),
-          light: DEFAULT_LIGHT,
-          dark: DEFAULT_DARK,
+          fallback: DEFAULT_THEME,
         }),
       );
     },

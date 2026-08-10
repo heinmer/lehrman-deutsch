@@ -12,12 +12,9 @@
       (() => {
         const themes = __THEMES__;
         const stored = localStorage.getItem("theme");
-        const fallback = matchMedia("(prefers-color-scheme: dark)").matches
-          ? themes.dark
-          : themes.light;
         document.documentElement.dataset.theme = themes.known.includes(stored)
           ? stored
-          : fallback;
+          : themes.fallback;
       })();
     </script>
   </head>

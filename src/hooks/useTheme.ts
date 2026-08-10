@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { DEFAULT_LIGHT, findTheme, type ThemeInfo } from "../../shared/themes";
+import { DEFAULT_THEME, findTheme, type ThemeInfo } from "../../shared/themes";
 
 const STORAGE_KEY = "theme";
 
 function initialTheme(): string {
   const stored = document.documentElement.dataset.theme;
-  return stored && findTheme(stored) ? stored : DEFAULT_LIGHT;
+  return stored && findTheme(stored) ? stored : DEFAULT_THEME;
 }
 
 export interface ThemeControls {

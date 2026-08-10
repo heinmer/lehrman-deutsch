@@ -36,8 +36,11 @@ export const THEMES: readonly ThemeInfo[] = [
   { id: "white", name: "White", mode: "light", swatch: ["#ffffff", "#44559f"] },
 ];
 
-export const DEFAULT_LIGHT = "white";
-export const DEFAULT_DARK = "black";
+/**
+ * What a reader who has never chosen gets. The system's colour scheme is not
+ * consulted: this is a page of prose, and it opens as one sheet of paper.
+ */
+export const DEFAULT_THEME = "white";
 
 export function findTheme(id: string): ThemeInfo | undefined {
   return THEMES.find((theme) => theme.id === id);
