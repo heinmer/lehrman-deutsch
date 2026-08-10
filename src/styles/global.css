@@ -34,6 +34,11 @@
   --player-inset: 1.25rem;
   --player-fade: 1.75rem;
   --player-space: 3rem;
+  /* The same idea one size down: the band a popover fades the thing behind it
+     out over, so a menu opening over the prose or over the text list has a
+     transition into it rather than an edge. Its colour is whichever ground it
+     floats on — `--popover-ground`, set by the host. */
+  --popover-fade: 1.5rem;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;
 }
@@ -100,14 +105,16 @@ button {
   transition: color 130ms ease, background-color 130ms ease;
 }
 
+/* `--control-hover` is for a host whose own ground is `--surface-raised` — the
+   player bar, where a control hovering onto it disappears into the bar. */
 .control:hover {
-  background: var(--surface-raised);
+  background: var(--control-hover, var(--surface-raised));
   color: var(--text);
 }
 
 .control[aria-pressed="true"],
 .control[aria-expanded="true"] {
-  background: var(--surface-raised);
+  background: var(--control-hover, var(--surface-raised));
   color: var(--accent);
   box-shadow: var(--shadow-raised);
 }

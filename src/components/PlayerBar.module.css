@@ -68,8 +68,14 @@
   overflow: visible;
   /* No ring here: the sidebar's menus cut themselves out of the settings they
      cover, but this one opens over the reader, where a band of the player's
-     ground would just be a halo. Its own border is enough. */
+     ground would just be a halo. What separates a menu from the prose above it
+     is the same fade the bar itself has, in the same ground. */
   --popover-ring: transparent;
+  --popover-ground: var(--surface-reader);
+  /* Every control in here hovers onto this rather than `--surface-raised`,
+     which in three of the four themes *is* `--surface-player`: pointing at a
+     control made it vanish into the bar. */
+  --control-hover: var(--surface-player-raised);
 }
 
 /* Only while the reading failed: see `.failed`, which claims a whole row. The
@@ -153,7 +159,7 @@
 }
 
 .retry:hover {
-  background: var(--surface-raised);
+  background: var(--control-hover);
 }
 
 .play {
@@ -192,7 +198,7 @@
 }
 
 .restart:hover:not(:disabled) {
-  background: var(--surface-raised);
+  background: var(--control-hover);
   color: var(--accent);
 }
 

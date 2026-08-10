@@ -34,6 +34,7 @@
   /* A clear step above the inset strip, not just above the page: with no drop
      shadow to help, this alone is what marks the selected playback speed. */
   --surface-raised: #283a63;
+  --surface-player-raised: rgb(198 214 245 / 0.16);
   --surface-overlay: #283a63;
   --surface-selected: #283a63;
 
@@ -85,6 +86,7 @@
   --surface-player: #e9e0cf;
   --surface-inset: rgb(61 47 28 / 0.06);
   --surface-raised: #e9e0cf;
+  --surface-player-raised: rgb(61 47 28 / 0.13);
   --surface-overlay: #e9e0cf;
   --surface-selected: #fdf9f1;
 
@@ -152,6 +154,13 @@
      to meet what sits on them. */
   --surface-inset: rgb(26 32 56 / 0.08);
   --surface-raised: #f3f4f8;
+  /* A control in the player, hovered or open. It cannot be `--surface-raised`:
+     that is a step above the *page*, and in every theme but Ink it is the
+     player's own ground — a disc pointed at dissolved into the bar exactly
+     when it was being reached for. A stronger pour of the same overlay the
+     resting control is filled with, so it is a step from what it replaces and
+     never the ground it sits on, whatever the bar is made of. */
+  --surface-player-raised: rgb(26 32 56 / 0.16);
   /* Anything that floats over the page — the theme menu, the volume slider, a
      tooltip — and must therefore be opaque; `--surface-raised` is only
      required to be a step above the page and may be translucent. */
@@ -217,6 +226,7 @@
   --surface-player: #16181f;
   --surface-inset: rgb(219 225 245 / 0.08);
   --surface-raised: #16181f;
+  --surface-player-raised: rgb(219 225 245 / 0.16);
   --surface-overlay: #16181f;
   --surface-selected: #262933;
 
