@@ -640,6 +640,7 @@ Nach einer Stunde kommen sie am See an.
 | ------- | ----------------------------------- | ---------------------------------- |
 | `title` | file name                           | Narrated first, then the body      |
 | `level` | `A1`                                | Sorts the sidebar; shown on a badge |
+| `order` | —                                   | Place within the level; see below  |
 | `topic` | —                                   | Stored but not displayed anywhere  |
 | `slug`  | file name                           | Output file and URL identifier     |
 | `rate`  | `-10%`                              | Speaking rate, applied to every voice |
@@ -667,7 +668,26 @@ encoded; the two are indistinguishable side by side at 1:1). ffmpeg does it:
 ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 out.webp
 ```
 
-The sidebar sorts by level then title, so file names do not set the order.
+**The sidebar reads as a course, and `order:` is what writes it.** Texts sort
+by level first — easiest to hardest, by position in `LEVELS` and not by how the
+labels happen to spell — and within a level by `order:`, lowest first. The
+texts of one level build on each other in a sequence only the author knows, so
+the alphabet is not it; file names never were.
+
+A text carrying no `order:` falls to the *end* of its level, alphabetically
+among its like. That is on purpose: an unplaced text must not land in the
+middle of a sequence that was placed. Numbering runs 1, 2, 3 per level and
+starts over at each one — inserting in the middle means renumbering what
+follows, which for a handful of texts is cheaper than reading gapped numbers
+forever. `order:` is not in the source hash and not in the document, so
+reshuffling the whole course is a rerun of seconds: only `index.json` changes.
+
+The sort lives in `byCourseOrder` (`scripts/pipeline/source.ts`) and is applied
+to the *sources*, once, before anything is built. Summaries are pushed one per
+source, so that order is the index's order and therefore the sidebar's — and
+the build log then reads in the same order the reader sees. Do not add a second
+sort over the summaries at the end; there was one, and it was a second place to
+keep in step.
 
 **Write real German.** These are teaching texts: keep A1 to present tense and
 simple clauses, and let A2 use Perfekt, subordinate clauses with `dass`/`weil`,

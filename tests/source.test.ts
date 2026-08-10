@@ -3,7 +3,11 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { loadSourceTexts } from "../scripts/pipeline/source.ts";
+import {
+  byCourseOrder,
+  loadSourceTexts,
+  type SourceText,
+} from "../scripts/pipeline/source.ts";
 
 /** Writes the given files into a throwaway directory and loads them. */
 async function load(files: Record<string, string>) {
@@ -133,6 +137,70 @@ test("quotes around a front-matter value are not part of it", async () => {
   const [text] = await load({ "a.md": '---\ntitle: "Ein Tag"\n---\n\nEs schneit.\n' });
 
   assert.equal(text.title, "Ein Tag");
+});
+
+test("the place in the course is a number or an error, never a guess", async () => {
+  const [placed] = await load({ "a.md": "---\ntitle: T\norder: 3\n---\n\nEs schneit.\n" });
+  assert.equal(placed.order, 3);
+
+  const [unplaced] = await load({ "a.md": "---\ntitle: T\n---\n\nEs schneit.\n" });
+  assert.equal(unplaced.order, undefined);
+
+  await assert.rejects(
+    () => load({ "a.md": "---\ntitle: T\norder: erste\n---\n\nEs schneit.\n" }),
+    /order "erste" is not a number/,
+  );
+});
+
+test("where a text stands is not part of the hash — reordering must not re-narrate", async () => {
+  const [without] = await load({ "a.md": "---\ntitle: T\n---\n\nEs schneit.\n" });
+  const [with_] = await load({ "a.md": "---\ntitle: T\norder: 7\n---\n\nEs schneit.\n" });
+
+  assert.equal(with_.hash, without.hash);
+});
+
+/** Only the fields byCourseOrder reads; the rest of a SourceText is noise here. */
+function placed(level: SourceText["level"], title: string, order?: number): SourceText {
+  return { level, title, order } as SourceText;
+}
+
+test("the course runs easiest level first, then the order the author set", () => {
+  const texts = [
+    placed("A2", "Zwei", 1),
+    placed("A1", "Anfang", 2),
+    placed("B1", "Drei", 1),
+    placed("A1", "Zuerst", 1),
+  ];
+
+  assert.deepEqual(
+    [...texts].sort(byCourseOrder).map((t) => t.title),
+    ["Zuerst", "Anfang", "Zwei", "Drei"],
+  );
+});
+
+test("a text with no place lands at the end of its level, not in the middle", () => {
+  const texts = [
+    placed("A1", "Ohne"),
+    placed("A1", "Erste", 1),
+    placed("A1", "Andere"),
+    placed("A2", "Zweite", 1),
+  ];
+
+  assert.deepEqual(
+    [...texts].sort(byCourseOrder).map((t) => t.title),
+    ["Erste", "Andere", "Ohne", "Zweite"],
+  );
+});
+
+test("levels sort by the CEFR scale and not by how their labels spell", () => {
+  // The two agree for A1…C2, so the guard is that the comparison reads the
+  // scale at all: a level later in LEVELS must not overtake an earlier one.
+  const texts = [placed("C1", "C", 1), placed("A2", "A", 9), placed("B2", "B", 1)];
+
+  assert.deepEqual(
+    [...texts].sort(byCourseOrder).map((t) => t.level),
+    ["A2", "B2", "C1"],
+  );
 });
 
 test("texts come back in a stable order regardless of when they were written", async () => {

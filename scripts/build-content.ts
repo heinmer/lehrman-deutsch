@@ -19,7 +19,7 @@ import type {
 } from "../shared/types.ts";
 import { VOICES } from "../shared/voices.ts";
 import { DEFAULT_RATE, PATHS } from "./pipeline/config.ts";
-import { loadSourceTexts, type SourceText } from "./pipeline/source.ts";
+import { byCourseOrder, loadSourceTexts, type SourceText } from "./pipeline/source.ts";
 import { narrationOrder } from "../shared/narration.ts";
 import {
   collectVocabulary,
@@ -325,6 +325,12 @@ async function buildText(source: SourceText): Promise<TextSummary> {
 
 async function main(): Promise<void> {
   const sources = await loadSourceTexts();
+  // Sorted here and nowhere else: a summary is pushed per source in this
+  // order, so this is the order of the index and therefore of the sidebar.
+  // Sorting the summaries at the end instead would work equally well and
+  // leave two things to keep in step; it also read the build log in an order
+  // no one sees.
+  sources.sort(byCourseOrder);
   if (sources.length === 0) {
     log.fail(`no .md files in ${PATHS.source}`);
     process.exitCode = 1;
@@ -380,11 +386,6 @@ async function main(): Promise<void> {
 
   await pruneRemovedTexts(new Set(sources.map((source) => source.slug)), state);
   await writeJson(statePath, state);
-
-  // Easiest first, so the sidebar reads as a course rather than a directory.
-  summaries.sort(
-    (a, b) => a.level.localeCompare(b.level) || a.title.localeCompare(b.title, "de"),
-  );
 
   const index: TextIndex = {
     generatedAt: new Date().toISOString(),

@@ -1,6 +1,7 @@
 ---
 title: Der erste Schnee
 level: A1
+order: 2
 topic: Everyday life
 image: der-erste-schnee.webp
 ---

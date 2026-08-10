@@ -1,6 +1,7 @@
 ---
 title: Das Fahrrad meines Großvaters
 level: B1
+order: 1
 topic: Family
 image: das-fahrrad-meines-grossvaters.webp
 ---

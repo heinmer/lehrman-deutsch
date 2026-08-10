@@ -15,11 +15,44 @@ export interface SourceText {
   rate: string;
   /** File name of the header illustration in content/images; absent when none. */
   image?: string;
+  /**
+   * Where the text sits inside its level, lowest first; absent when it has
+   * not been placed. Like the picture, it is not in the hash — the narration
+   * and the dictionary do not depend on where a text stands in the list, so
+   * reordering the course is an index rewrite and nothing else.
+   */
+  order?: number;
   /** Body with paragraphs separated by blank lines. */
   body: string;
   file: string;
   /** Changes whenever the text or its narration settings change. */
   hash: string;
+}
+
+/** An unplaced text sorts after every placed one, not before them. */
+function placement(text: SourceText): number {
+  return text.order ?? Number.MAX_SAFE_INTEGER;
+}
+
+/**
+ * The order the sidebar reads in: easiest level first, and within a level the
+ * order the course was written in rather than the alphabet — the texts of one
+ * level build on each other, which is something only the author knows.
+ *
+ * A text carrying no `order:` falls to the end of its level, alphabetically
+ * among its like: a text that has not been placed yet must not land in the
+ * middle of a sequence that was.
+ *
+ * Levels compare by their position in LEVELS and not as strings. The two
+ * agree today — "A1" … "C2" happen to sort alphabetically into the CEFR scale
+ * — but that is a coincidence of the labels, and one "B1+" would end it.
+ */
+export function byCourseOrder(a: SourceText, b: SourceText): number {
+  return (
+    LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level) ||
+    placement(a) - placement(b) ||
+    a.title.localeCompare(b.title, "de")
+  );
 }
 
 /**
@@ -84,6 +117,17 @@ export async function loadSourceTexts(dir: string = PATHS.source): Promise<Sourc
     if (!slug) {
       throw new Error(`${file}: slug "${meta.slug}" has nothing usable in it`);
     }
+    // A number or nothing at all. `order: fisrt` is not worth guessing at:
+    // whatever it were taken to mean, the text would sort to one end of its
+    // level and look placed, which is the quiet kind of wrong.
+    let order: number | undefined;
+    if (meta.order !== undefined) {
+      order = Number(meta.order);
+      if (!Number.isFinite(order)) {
+        throw new Error(`${file}: order "${meta.order}" is not a number`);
+      }
+    }
+
     const clash = texts.find((text) => text.slug === slug);
     if (clash) {
       throw new Error(
@@ -101,6 +145,7 @@ export async function loadSourceTexts(dir: string = PATHS.source): Promise<Sourc
       // not reach outside content/images. That the file exists is the build's
       // business, not the loader's.
       image: meta.image ? path.basename(meta.image) : undefined,
+      order,
       rate,
       body: normalized,
       file: full,
