@@ -1,7 +1,7 @@
 ---
 title: Der neue Nachbar
 level: A2
-order: 1
+order: 2
 topic: People
 image: der-neue-nachbar.webp
 ---

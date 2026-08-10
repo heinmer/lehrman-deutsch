@@ -1,7 +1,7 @@
 ---
 title: Ein Tag am See
 level: A1
-order: 3
+order: 1
 topic: Summer
 image: ein-tag-am-see.webp
 ---

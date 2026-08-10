@@ -1,7 +1,7 @@
 ---
 title: Mein erster Tag im Praktikum
 level: A2
-order: 2
+order: 1
 topic: Work
 image: mein-erster-tag-im-praktikum.webp
 ---
