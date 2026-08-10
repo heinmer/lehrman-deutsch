@@ -606,10 +606,20 @@ Techniques that have paid off:
   everything that happened before the listener was attached. "Nothing was
   downloaded" is worth nothing as an assertion if the events were never
   arriving in the first place.
-- **Kill the browser properly.** `child.kill()` leaves Edge's helper processes
-  holding the debugging port, and the next run attaches to a browser whose
-  profile has been deleted underneath it and hangs. Use `taskkill /T /F`, and
-  give each run its own port.
+- **Kill the browser properly, and check that it died.** `child.kill()` leaves
+  Edge's helper processes holding the debugging port, and the next run attaches
+  to a browser whose profile has been deleted underneath it and hangs. Use
+  `taskkill /T /F`, and give each run its own port. `/T` is not enough on its
+  own either — Edge's children outlive the process that spawned them, and
+  seventeen runs left 161 processes and 9.9 GB of profiles in `%TEMP%`. Sweep
+  by profile at the end of a session, which cannot touch a real browser:
+
+  ```powershell
+  Get-CimInstance Win32_Process -Filter "Name='msedge.exe'" |
+    Where-Object { $_.CommandLine -like "*edge-cdp-*" } |
+    ForEach-Object { Stop-Process -Id $_.ProcessId -Force }
+  Get-ChildItem $env:TEMP -Directory -Filter "edge-cdp-*" | Remove-Item -Recurse -Force
+  ```
 
 Bugs found this way that source reading missed: a line break falling between a
 word and its full stop, the player pushed off screen by a grid row sized to
