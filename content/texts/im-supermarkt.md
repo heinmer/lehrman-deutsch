@@ -1,7 +1,7 @@
 ---
 title: Im Supermarkt
 level: A1
-order: 2
+order: 4
 topic: Everyday life
 image: im-supermarkt.webp
 ---
