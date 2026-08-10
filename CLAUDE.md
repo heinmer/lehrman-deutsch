@@ -343,32 +343,67 @@ as `/…/` so transcriptions look the same everywhere.
   reads as a border. It is titled for the site and not for its contents, so
   that the next thing to go in it is a section under its own heading rather
   than a second window; today there are two, *Settings* and *Shortcuts*, each
-  a table of one grid with a note under its heading. **The settings come
+  a table with a note under its heading. **The settings come
   first**, because they are what a plain click does and the modifiers read as
   the exceptions to them — which is the one thing about those four shortcuts a
-  reader cannot work out by trying them. The rows are separated by a rule and
-  not only by space: six descriptions of one length in one colour read as a
-  paragraph, and which key goes with which sentence is the whole point.
-  **Two rules of different orders, then, and that is what separates the
-  sections**: the one between them runs the full width of the card, as the one
-  under the title does, while the ones inside a table stop where its text does.
-  Each section is therefore a box of its own (`.block`) which gives the body's
-  side padding back with a negative margin — `--help-inset` exists so the two
-  cannot drift — since only a box that reaches the card's edges can draw a line
-  along them. An inset rule between the sections was tried first and read as
-  one more table row, space around it or not; the headings went up a step to
-  `--fs-md` at the same time, because at the size of the descriptions their
+  reader cannot work out by trying them.
+- **Its tables are drawn as tables**, in `HelpDialog.module.css`: a rounded box
+  with an outline, a rule between the two columns as well as between every pair
+  of rows, and the rows banded. They were a hairline between rows and nothing
+  else, which left what the two columns *are* to be worked out from the ragged
+  edge of the left one. Four things hold it together and each was arrived at
+  the hard way:
+  - **It is drawn in tints, not in the tokens at full strength.** `--track` is
+    the weight of a scrubber's groove; an outline round every cell in it turned
+    six sentences into a form. `--help-line` and `--help-stripe` are
+    `color-mix`ed from `--track` and `--surface-inset` on `.rows`, because what
+    is wanted is a *fraction* of a colour each theme has already chosen — a
+    per-theme token would be four hand-picked values to keep in step with the
+    two they come from.
+  - **The fill is `--surface-inset` and the bands are two pours of it.** A
+    table is set *into* the page rather than lifted off it, and inset is the
+    only step there is on this ground anyway: `--surface-raised` and
+    `--surface-overlay` are both the card's own colour in three themes of four.
+    The token is translucent everywhere, which is what makes the banding work
+    — each stripe is a wash over the card, so the pair is one step apart
+    whatever is under it, and the `kbd` chips (inset as well) stay a step off
+    either band by the same compounding.
+  - **The cells stretch; the rules are borders on them.** The column rule is a
+    `border-right` on the left cell, so that cell has to reach the row's full
+    height — baseline-aligned it drew the line a third of the way down. The key
+    is then centred down its row with `align-content`, which needs
+    `flex-wrap: wrap` to have any effect at all; `align-items` still sets the
+    chips of a chord on one baseline. Below 30rem the row stacks and that
+    border has to turn with it, or it hangs down the middle of a cell with
+    nothing to its right.
+  - **The left column is sized to the longest chord *plus the cell padding*.**
+    10.5rem was right while the column was bare and broke `Ctrl+Alt+click` over
+    two lines the moment the cells were given padding. Assert it rather than
+    counting characters — and not by comparing the children's `offsetTop`,
+    which differs on one line too because they are baseline-aligned, nor
+    against the cell's height, which `align-content` fills. Two items on one
+    line overlap vertically; two on different lines cannot.
+- **The rule between the sections stays inside the body.** It is level with the
+  sides of the tables it divides and keeps `--track` at full strength, so the
+  section division is the larger of the two by *weight* while the lines inside
+  a table are a softer pour. It ran out to the card's edges once, which is why
+  `.body` had a `--help-inset` to hand back with a negative margin; that was to
+  tell it from the hairlines within a table, and a table that is now a bordered
+  box of its own leaves nothing to confuse it with. The rule under the title is
+  the one that still reaches the edges — it divides the window's head from its
+  body, which is not a division of the same kind. The headings went up a step
+  to `--fs-md` along the way, because at the size of the descriptions their
   caps and their colour were doing all the work.
-  Its cross hovers onto `--surface-inset` and not onto `--surface-raised` as the word
+  The cross hovers onto `--surface-inset` and not onto `--surface-raised` as the word
   panel's does: the panel's ground is the page, while this card floats on
   `--surface-overlay`, and in every theme those two are **the same colour** —
   the button lit up into exactly what was already under it. Anything sitting
   on a floating ground has the same problem and the same answer, which is what
   the pickers' options hover onto. **Its lines are `--track`, not `--border`**:
   on Paper's and White's card grounds `--border` is the fainter of the two —
-  1.1:1 and 1.2:1 against them — and a hairline between two rows of text
-  stopped reading as a division at all. Measure a line against the ground it is
-  drawn on, as with everything else here.
+  1.1:1 and 1.2:1 against them, which is invisible — so it is `--track` that
+  every line here is a full or a fractional pour of. Measure a line against the
+  ground it is drawn on, as with everything else here.
 - **The info window has a ground of its own, `--surface-dialog`.** In three
   themes it is the same value as `--surface-overlay`; in Ink it is the *page*,
   because that light navy is a step a menu of four options wants and a window

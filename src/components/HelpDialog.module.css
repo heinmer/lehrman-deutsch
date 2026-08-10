@@ -21,7 +21,7 @@
 .card {
   display: flex;
   flex-direction: column;
-  width: min(36rem, 100%);
+  width: min(44rem, 100%);
   max-height: 100%;
   background: var(--surface-dialog);
   color: var(--text);
@@ -83,26 +83,29 @@
 }
 
 /* The foot is deeper than the head: the title has a rule under it holding it
-   off its own edge, and the last description has nothing — set level with the
-   sides it came to rest against the bottom of the card. The side padding is a
-   property because the sections give it back: a rule that divides them has to
-   reach the card's edges, and only a box that ignores this can draw one. */
+   off its own edge, and the last table has nothing — set level with the sides
+   it came to rest against the bottom of the card. */
 .body {
-  --help-inset: 1.75rem;
-
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1.6rem var(--help-inset) 2.6rem;
+  padding: 1.6rem 1.75rem 2.6rem;
 }
 
-/* Two sections, and what tells them apart is the *order* of the division: an
-   edge-to-edge rule between them, exactly as under the title, against hairlines
-   inside a table that stop where its text does. A rule inset like the rows' own
-   read as one more row — which is what it was tried as first. */
+/* The one rule inside the body, and it stays inside it: level with the sides of
+   the tables it divides rather than run out to the card's own edges, which is
+   what it used to do. That was to tell it from the hairlines within a table,
+   back when those were all a table was; now each is a bordered box of its own
+   and nothing is left to confuse it with, so the rule can line up with them
+   instead of stepping over them. It keeps `--track` at full strength while the
+   lines inside a table are a softer pour of it — the section division is the
+   larger of the two and now says so by weight rather than by width.
+
+   The rule under the title is the one that still reaches the edges: it divides
+   the window's head from its body, which is not a division of the same kind. */
 .block + .block {
-  margin: 1.9rem calc(var(--help-inset) * -1) 0;
-  padding: 1.9rem var(--help-inset) 0;
+  margin-top: 1.9rem;
+  padding-top: 1.9rem;
   border-top: 1px solid var(--track);
 }
 
@@ -137,46 +140,122 @@
   color: var(--text-muted);
 }
 
+/* A table drawn as one: a filled box with its own outline and rounded corners,
+   ruled between the columns as well as between the rows. It was neither before
+   — a hairline between the rows and nothing else — and what the two columns
+   are was left to the eye to work out from the ragged edge of the left one.
+
+   It is drawn in **tints of what the card already uses** rather than in the
+   tokens at full strength, which is a table and not a control: `--track` is the
+   weight of a scrubber's groove and outlining every cell in it turned six
+   sentences into a form. So one softened pour of it draws every line here, and
+   the fill is `--surface-inset` — the recessed step the speed strip is made of,
+   a table being a thing set *into* the page rather than a card lifted off it,
+   and on this ground the only step there is: `--surface-raised` and
+   `--surface-overlay` are both the card's own colour in three themes of four.
+
+   Both are `color-mix`ed rather than given per-theme values, because what is
+   wanted is a fraction of a colour each theme has already chosen and not a new
+   colour of its own — a token would be four hand-picked values that have to
+   stay in step with the two they are derived from. The section rule outside
+   the table keeps `--track` at full strength, so the divisions read in the
+   right order: sections first, then rows inside one. */
 .rows {
+  --help-line: color-mix(in srgb, var(--track) 55%, transparent);
+  /* The paler of the two stripes. The darker one is the inset itself, so the
+     step between them is the same fraction of it that separates the table from
+     the card — a shade either side of the fill it would otherwise have had. */
+  --help-stripe: color-mix(in srgb, var(--surface-inset) 45%, transparent);
+
   margin: 0;
+  border: 1px solid var(--help-line);
+  border-radius: var(--radius-md);
+  /* The corners are only round if what reaches them is clipped — the first and
+     the last rows carry their own fill into them otherwise. */
+  overflow: hidden;
 }
 
-/* The left column is sized to the longest chord rather than to the longest
-   single key, so that no row wraps its own shortcut. */
+/* Banded rather than plain, so a long description and the key beside it are
+   held together by their own ground and not only by the rules above and below.
+   The tokens are translucent in every theme, which is what makes this work at
+   all: each stripe is a wash over the card, so the pair reads as one step
+   apart whatever the ground under it happens to be — and the `kbd` chips,
+   which are `--surface-inset` too, stay a step off either of them by the same
+   compounding. */
+.row:nth-child(odd) {
+  background: var(--help-stripe);
+}
+
+.row:nth-child(even) {
+  background: var(--surface-inset);
+}
+
+/* The left column is sized to the longest chord *plus the cell's own padding*,
+   so that no row wraps its own shortcut. It was 10.5rem when the column was
+   bare, and Ctrl+Alt+click broke over two lines the moment the cells were given
+   padding — the chord had not changed, the room for it had. Measure it, do not
+   count characters: `.keys` holding its children on one line is what the
+   browser check asserts.
+
+   The cells are stretched and not baseline-aligned: the rule between the
+   columns is a border on the left one, and a cell only as tall as its own line
+   draws it a third of the way down the row. */
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 10.5rem) minmax(0, 1fr);
-  gap: 0.3rem 1.25rem;
-  align-items: baseline;
+  grid-template-columns: minmax(0, 12.5rem) minmax(0, 1fr);
 }
 
-/* A rule between the rows, not just space: descriptions of one length set in
-   one colour read as a paragraph otherwise, and which key goes with which
-   sentence is the whole point of the table. `--track`, for the reason above. */
 .row + .row {
-  margin-top: 0.85rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid var(--track);
+  border-top: 1px solid var(--help-line);
 }
 
+/* One padding for every cell, both boxes being stretched to the row's height:
+   the description fills its cell from the top, and the key is centred in its
+   own. */
+.keys,
+.setting,
+.what {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  font-size: var(--fs-sm);
+}
+
+/* The rule between the columns. It reaches the row's edges because the cell
+   does, which is the whole reason the cells stretch. */
+.keys,
+.setting {
+  border-right: 1px solid var(--help-line);
+}
+
+/* Centred down its own row rather than sat on the description's first line: a
+   name is what the row *is*, and hung at the top of a cell three lines deep it
+   read as the first line of the sentence beside it.
+
+   `wrap` is what makes that reachable. In a single-line flex box the line is
+   the height of the box, so `align-items` would centre the keys of a chord
+   against each other and leave the group where it was — it is `align-content`
+   that places the line, and `align-content` needs a wrapping container to have
+   any effect at all. Nothing is expected to wrap: the column is sized to the
+   longest chord so that no row can break its own shortcut, and `align-items`
+   still does its own job of setting the chips and the word on one baseline. */
 .keys {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
+  align-content: center;
   gap: 0.35rem;
-  margin: 0;
-  font-size: var(--fs-sm);
   color: var(--text);
 }
 
 /* The settings name themselves in words rather than in keys, so the label
    carries the weight a `kbd` box would have given it. Centred against its own
-   icon; the row still hangs off the label's baseline. */
+   icon, and the pair centred down the row as the chords are. */
 .setting {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  align-content: center;
   gap: 0.45rem;
-  margin: 0;
-  font-size: var(--fs-sm);
   font-weight: 600;
   color: var(--text);
 }
@@ -191,8 +270,6 @@
 }
 
 .what {
-  margin: 0;
-  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-muted);
 }
@@ -214,9 +291,17 @@
 }
 
 /* Narrower than the card can be: the two columns stop reading as a pair and
-   the key sits over its own description instead. */
+   the key sits over its own description instead. The rule between them has to
+   turn with them — left where it was it would be a line hanging down the middle
+   of a cell that no longer has anything on its right. */
 @media (max-width: 30rem) {
   .row {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .keys,
+  .setting {
+    border-right: none;
+    border-bottom: 1px solid var(--help-line);
   }
 }
