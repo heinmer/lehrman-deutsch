@@ -72,8 +72,7 @@
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  box-shadow: 0 0 var(--popover-fade) calc(var(--popover-fade) * 0.45)
-    var(--popover-ground, var(--surface-sidebar));
+  box-shadow: var(--popover-fade) var(--popover-ground, var(--surface-sidebar));
 }
 
 /* A menu opening over the reader rather than inside the settings footer: the

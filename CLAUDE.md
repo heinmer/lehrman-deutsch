@@ -307,10 +307,12 @@ as `/…/` so transcriptions look the same everywhere.
   `size="large"` is the voice list, which is read from across the reader; the
   sidebar's menus stay the size of the footer they belong to, so the two sizes
   are a prop and not a change to the component. **A menu in the sidebar fades
-  the settings it covers out around itself**, over `--popover-fade` and in
-  `--popover-ground` — the separator the player draws over the prose, wrapped
-  round the whole box, since a menu is in the middle of a list and not at an
-  edge of the layout. It is a shadow cast in that ground rather than a colour
+  the settings it covers out around itself** — `--popover-fade` is the reach of
+  that band and `--popover-ground` its colour — the separator the player draws
+  over the prose, wrapped round the whole box, since a menu is in the middle of
+  a list and not at an edge of the layout. Held close to the box, with the
+  spread wider than the blur: a soft wide one read as a smudge rather than as
+  an edge. It is a shadow cast in that ground rather than a colour
   of its own, on a pseudo-element behind the menu: `--shadow-card` is `none` in
   every theme, and `none` in a list of shadows invalidates the declaration. The
   player passes `transparent` and its menu has nothing drawn round it at all.
