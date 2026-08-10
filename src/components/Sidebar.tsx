@@ -100,6 +100,22 @@ export function Sidebar({
         <button
           type="button"
           className="control"
+          onClick={onToggleShowImage}
+          aria-pressed={showImage}
+        >
+          {showImage ? (
+            <Image size={19} strokeWidth={2} />
+          ) : (
+            <ImageOff size={19} strokeWidth={2} />
+          )}
+          Show image
+        </button>
+
+        <VolumeControl {...volume} />
+
+        <button
+          type="button"
+          className="control"
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
         >
@@ -127,23 +143,7 @@ export function Sidebar({
           ) : (
             <LocateOff size={19} strokeWidth={2} />
           )}
-          Jump to word
-        </button>
-
-        <VolumeControl {...volume} />
-
-        <button
-          type="button"
-          className="control"
-          onClick={onToggleShowImage}
-          aria-pressed={showImage}
-        >
-          {showImage ? (
-            <Image size={19} strokeWidth={2} />
-          ) : (
-            <ImageOff size={19} strokeWidth={2} />
-          )}
-          Show image
+          Jump
         </button>
       </footer>
     </aside>

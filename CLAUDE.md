@@ -267,7 +267,7 @@ as `/…/` so transcriptions look the same everywhere.
   `play()`, because asking to be read from a word is asking to hear it.
 - **Clicking a word plays its recording only while the narration is paused**,
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
-  click independently — "Say word" (speak it) and "Jump to word" (move the
+  click independently — "Say word" (speak it) and "Jump" (move the
   playhead); both live in `useToggleSetting` and persist. Each toggle draws a
   lucide pair, the plain icon against its `*Off` twin, because the recolouring
   alone reads as "hovered" rather than as "off" — which is why "Say word" is a
