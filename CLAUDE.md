@@ -268,7 +268,11 @@ as `/…/` so transcriptions look the same everywhere.
 - **Clicking a word plays its recording only while the narration is paused**,
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
   click independently — "Say word" (speak it) and "Jump to word" (move the
-  playhead); both live in `useToggleSetting` and persist.
+  playhead); both live in `useToggleSetting` and persist. Each toggle draws a
+  lucide pair, the plain icon against its `*Off` twin, because the recolouring
+  alone reads as "hovered" rather than as "off" — which is why "Say word" is a
+  speech bubble and not a megaphone: `MegaphoneOff` is too busy at 19px for
+  its slash to register.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,

@@ -5,7 +5,8 @@ import {
   ImageOff,
   LocateFixed,
   LocateOff,
-  Megaphone,
+  MessageCircle,
+  MessageCircleOff,
   Type,
 } from "lucide-react";
 import type { TextSummary } from "../../shared/types";
@@ -102,10 +103,16 @@ export function Sidebar({
           onClick={onToggleAutoSpeak}
           aria-pressed={autoSpeak}
         >
-          {/* MegaphoneOff exists, but reads as "silenced" rather than "this
-              setting is off", so the pressed state carries the difference —
-              the control already recolours itself. */}
-          <Megaphone size={19} strokeWidth={2} />
+          {/* A speech bubble rather than a megaphone: the off state is what
+              decides it. Every setting here is a shape with a slash through
+              it when it is off, and the round bubble takes the slash as
+              cleanly as the picture and the crosshair do — the megaphone is
+              busy enough at 19px that its own slash gets lost in it. */}
+          {autoSpeak ? (
+            <MessageCircle size={19} strokeWidth={2} />
+          ) : (
+            <MessageCircleOff size={19} strokeWidth={2} />
+          )}
           Say word
         </button>
 
