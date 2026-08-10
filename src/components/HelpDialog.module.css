@@ -78,6 +78,11 @@
   color: var(--accent);
 }
 
+/* Every heading but the first: the body's own padding sets that one. */
+.shortcuts + .section {
+  margin-top: 1.9rem;
+}
+
 .shortcuts {
   margin: 0;
 }

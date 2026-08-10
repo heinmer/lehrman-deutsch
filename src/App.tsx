@@ -10,6 +10,7 @@ import { useTheme } from "./hooks/useTheme";
 import { pronunciationClip } from "./lib/pronunciation";
 import { newTextOpened, playClip, setClipVolume, warmClip } from "./lib/clipAudio";
 import type { WordAction } from "./lib/wordAction";
+import { handlesSpace } from "./lib/keys";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
@@ -187,6 +188,27 @@ export function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [closePanel, drawerOpen, helpOpen]);
+
+  // Space plays and pauses from anywhere, which is what every media player has
+  // taught people to expect — and what a spacebar that only worked while the
+  // play button happened to hold the focus was not. It yields to whatever
+  // answers to it natively (`handlesSpace`) and to the help window, which is
+  // being read rather than listened to.
+  const { toggle } = narration;
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== " " || event.repeat) return;
+      // A chord belongs to somebody else — Shift+Space is a page up.
+      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      if (helpOpen || handlesSpace(event.target)) return;
+
+      // Otherwise the page scrolls out from under the reader as well.
+      event.preventDefault();
+      toggle();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [helpOpen, toggle]);
 
   // The index is the one thing there is no working around: no list, no route.
   if (indexError) {

@@ -85,6 +85,20 @@ export function HelpDialog({ onClose }: Props) {
         </div>
 
         <div className={styles.body}>
+          <h3 className={styles.section}>Playback</h3>
+
+          <dl className={styles.shortcuts}>
+            <div className={styles.row}>
+              <dt className={styles.keys}>
+                <kbd>Space</kbd>
+              </dt>
+              <dd className={styles.what}>
+                Plays and pauses, wherever you are on the page — unless a
+                button has the focus, which answers to the spacebar itself.
+              </dd>
+            </div>
+          </dl>
+
           <h3 className={styles.section}>Clicking a word</h3>
 
           <dl className={styles.shortcuts}>
@@ -126,8 +140,10 @@ export function HelpDialog({ onClose }: Props) {
 
           <p className={styles.note}>
             Both shortcuts ignore those two settings, so either behaviour is
-            always one click away. They work from the keyboard too:
-            hold the key and press <kbd>Enter</kbd> on the focused word.
+            always one click away. From the keyboard, the arrow keys walk the
+            text and <kbd>Enter</kbd> takes the focused word — with{" "}
+            <kbd>{PRIMARY_KEY}</kbd> or <kbd>{OPTION_KEY}</kbd> held for the
+            same two shortcuts.
           </p>
         </div>
       </div>

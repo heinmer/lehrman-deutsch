@@ -288,6 +288,20 @@ as `/…/` so transcriptions look the same everywhere.
   alone reads as "hovered" rather than as "off" — which is why "Say word" is a
   speech bubble and not a megaphone: `MegaphoneOff` is too busy at 19px for
   its slash to register.
+- **Space is the player's, everywhere in the page.** A window listener in
+  `App` toggles playback on it, because a spacebar that worked only while the
+  play button happened to hold the focus is a spacebar that does not work. It
+  yields in three cases: a chord (Shift+Space is a page up, and the rest
+  belong to the browser), the help window being open, and a focused element
+  that answers to Space natively — `handlesSpace` (`src/lib/keys.ts`), which
+  is buttons, fields, and every `<input>` but a range. That last exclusion is
+  what keeps the settings and the transport controls operable from the
+  keyboard: on those, Space stays the button's and fires once, not twice.
+  The price is that **a word in the reader answers to Enter and not to
+  Space**, though a `role="button"` would normally take both — and it is worth
+  paying, since the focus after clicking a word *is* that word, which is
+  exactly where the spacebar was wanted. It also `preventDefault`s, or the
+  page scrolls under the reader.
 - **Ctrl and Alt on a word replace the settings rather than adjusting them.**
   Ctrl+click reads the text *from* that word — it starts playback even from a
   standstill, and neither opens the word nor speaks it; Alt+click opens the

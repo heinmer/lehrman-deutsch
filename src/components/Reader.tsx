@@ -186,13 +186,18 @@ export function Reader({
   const showSpinner = useDelayedFlag(!text && !failedSlug);
 
   /**
-   * Arrow keys walk the text; Enter and Space choose the word under focus —
-   * and carry the same modifiers a click would, so the two shortcuts are not
-   * something only a mouse can reach.
+   * Arrow keys walk the text; Enter chooses the word under focus, carrying the
+   * same modifiers a click would, so the two shortcuts are not something only
+   * a mouse can reach.
+   *
+   * Enter and not Space, though a `role="button"` would normally answer to
+   * both: Space is the player's everywhere in the page, and a word giving it
+   * up is what buys a transport key that works wherever the focus happens to
+   * be — which, after a click on a word, is the word.
    */
   const onWordKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>, token: WordToken) => {
-      if (event.key === "Enter" || event.key === " ") {
+      if (event.key === "Enter") {
         event.preventDefault();
         onSelectWord(token, wordAction(event));
         return;
