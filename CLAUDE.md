@@ -269,6 +269,14 @@ as `/…/` so transcriptions look the same everywhere.
   otherwise the clip would talk over the sentence. Two sidebar toggles gate the
   click independently — "Say word" (speak it) and "Jump to word" (move the
   playhead); both live in `useToggleSetting` and persist.
+- **"Show image" removes the picture, it does not hide it.** The third
+  `useToggleSetting`, and the only one that is about the page rather than about
+  a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
+  so a reader who does not want the illustration does not download it either —
+  `display: none` would have cost them the file anyway. It sits below the
+  Theme/Say word line rather than beside the theme, where it belongs by
+  subject: the footer is 269px wide, only those two controls fit on a line
+  together, and breaking that pair costs the text list a second row of height.
 - **The dropdowns are one component.** `SettingPicker` owns the control, the
   outside-click and Escape handling, and the menu that opens *upwards* — these
   controls sit at the bottom of the window. Theme (sidebar, a labelled pill,
@@ -586,6 +594,18 @@ Techniques that have paid off:
 - Drive real hover with `Input.dispatchMouseEvent`; React's `pointerenter` does
   not fire from a synthetic `click()`. Same for keys: `Input.dispatchKeyEvent`
   is what exercises the roving tabindex.
+- **Reload with `Page.reload`, not by navigating to where the page already is.**
+  A `Page.navigate` to the current URL keeps the document — and with it the
+  state a reload was supposed to clear — so "the setting survives a reload"
+  passes without ever having been tested. Same trap one step earlier: a hash
+  change alone does not re-run the inline theme script in `index.html`.
+- **Ask the page what it loaded, not the CDP listener.**
+  `performance.getEntriesByType("resource")` is what the document actually
+  fetched, memory-cache hits included and nothing to race;
+  `Network.requestWillBeSent` misses a memory-cache hit entirely and drops
+  everything that happened before the listener was attached. "Nothing was
+  downloaded" is worth nothing as an assertion if the events were never
+  arriving in the first place.
 - **Kill the browser properly.** `child.kill()` leaves Edge's helper processes
   holding the debugging port, and the next run attaches to a browser whose
   profile has been deleted underneath it and hangs. Use `taskkill /T /F`, and

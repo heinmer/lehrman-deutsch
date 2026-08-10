@@ -20,6 +20,7 @@ export function App() {
   const [voice, setVoice] = useVoiceSetting();
   const [autoSpeak, toggleAutoSpeak] = useToggleSetting("auto-speak");
   const [seekOnClick, toggleSeekOnClick] = useToggleSetting("seek-on-click");
+  const [showImage, toggleShowImage] = useToggleSetting("show-image");
   const volume = useVolumeSetting();
 
   // One level for both playback paths: the narration element sets its own, the
@@ -171,8 +172,11 @@ export function App() {
 
   const entry = selectedWord ? text?.dictionary[selectedWord.key] ?? null : null;
   // The header illustration travels in the index rather than the document (see
-  // TextSummary), so it is looked up here beside the text it belongs to.
-  const image = texts.find((summary) => summary.slug === slug)?.image ?? null;
+  // TextSummary), so it is looked up here beside the text it belongs to. Turned
+  // off, it is not rendered at all rather than hidden: an <img> the reader has
+  // asked not to see should not be downloaded either.
+  const image =
+    (showImage ? texts.find((summary) => summary.slug === slug)?.image : null) ?? null;
 
   return (
     <div className={styles.app}>
@@ -189,6 +193,8 @@ export function App() {
           onToggleAutoSpeak={toggleAutoSpeak}
           seekOnClick={seekOnClick}
           onToggleSeekOnClick={toggleSeekOnClick}
+          showImage={showImage}
+          onToggleShowImage={toggleShowImage}
           volume={volume}
         />
       </div>

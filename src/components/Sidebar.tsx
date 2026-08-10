@@ -1,4 +1,13 @@
-import { BookOpen, Clock, LocateFixed, LocateOff, Megaphone, Type } from "lucide-react";
+import {
+  BookOpen,
+  Clock,
+  Image,
+  ImageOff,
+  LocateFixed,
+  LocateOff,
+  Megaphone,
+  Type,
+} from "lucide-react";
 import type { TextSummary } from "../../shared/types";
 import { forVoice } from "../../shared/voices";
 import type { ThemeControls } from "../hooks/useTheme";
@@ -20,6 +29,8 @@ interface Props {
   onToggleAutoSpeak: () => void;
   seekOnClick: boolean;
   onToggleSeekOnClick: () => void;
+  showImage: boolean;
+  onToggleShowImage: () => void;
   volume: VolumeSetting;
 }
 
@@ -38,6 +49,8 @@ export function Sidebar({
   onToggleAutoSpeak,
   seekOnClick,
   onToggleSeekOnClick,
+  showImage,
+  onToggleShowImage,
   volume,
 }: Props) {
   return (
@@ -94,6 +107,24 @@ export function Sidebar({
               the control already recolours itself. */}
           <Megaphone size={19} strokeWidth={2} />
           Say word
+        </button>
+
+        {/* Belongs beside the theme by subject — both are about how the page
+            looks — but sits here because the footer is 269px wide and only
+            Theme and Say word fit on a line together. Put between them, this
+            setting costs the text list two rows of height instead of one. */}
+        <button
+          type="button"
+          className="control"
+          onClick={onToggleShowImage}
+          aria-pressed={showImage}
+        >
+          {showImage ? (
+            <Image size={19} strokeWidth={2} />
+          ) : (
+            <ImageOff size={19} strokeWidth={2} />
+          )}
+          Show image
         </button>
 
         {/* Held together so the round volume control keeps this line company
