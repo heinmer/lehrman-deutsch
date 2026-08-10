@@ -1,3 +1,53 @@
+/* The bar floats on the reader rather than sitting under it, inset from the
+   reader's corners by `--player-inset`; the reading section runs to the bottom
+   edge of the window and the prose scrolls away underneath. Positioned against
+   `.main`, which is that section's box — the reader is its only in-flow child.
+
+   It is also the container the bar's layout answers to, and it is exactly the
+   bar's width, which `.main` no longer is: the insets take 2 × `--player-inset`
+   off it. The window is the wrong thing to measure either way — the sidebar
+   leaves the layout at 62rem and the word panel at 48rem, so between those two
+   the window gets narrower while the bar gets *wider*. The query at the end of
+   this file is left unnamed on purpose: a container *name* is a custom ident
+   shared across two CSS Modules files, and the day the bundler starts scoping
+   those the two halves stop meeting, silently. Here both halves are in this
+   file, which is the other reason the container moved down to it. */
+.host {
+  position: absolute;
+  left: var(--player-inset);
+  right: var(--player-inset);
+  bottom: var(--player-inset);
+  container-type: inline-size;
+}
+
+/* The reader's own ground, carried down past the bar to the section's bottom
+   edge. Without it the prose scrolls through the gap the bar is inset by and a
+   strip of half a line shows below the player — the bar hides what is behind
+   it, and nothing was hiding what is under it. It fades in over its top edge
+   rather than cutting the text off at a line, which is the one part of this
+   the reader actually sees. Painted before the bar simply by coming first:
+   both are positioned with `z-index: auto`, so document order is the order.
+
+   Only the *bottom* is spread back out. Sideways it stops at the bar's own
+   edges, which are still well inside the reader's padding, so there is no text
+   for it to cover there — and the reader's scrollbar, which is drawn at the
+   very edge, stays whole instead of being cut off by a band lying over it. */
+.host::before {
+  content: "";
+  position: absolute;
+  top: calc(var(--player-fade) * -1);
+  left: 0;
+  right: 0;
+  bottom: calc(var(--player-inset) * -1);
+  /* Its bottom corners sit in the reader's rounded ones. */
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--surface-reader) var(--player-fade)
+  );
+}
+
 .bar {
   display: flex;
   align-items: center;
@@ -29,23 +79,18 @@
 
 /* Opens the drawer — a round island of its own above the bar's corner rather
    than one more control in the row, which at this width is what the bar has
-   least room for. Its corner is the reader's, not the bar's: `--corner-inset`
-   is the distance from both of the reader's edges, and the bar only supplies
-   the bottom reference — hence the layout gap between them in `margin-bottom`.
-   That the bar is what it is positioned against is an implementation detail;
-   the bar is simply the one box whose top edge is where the reader's bottom
-   edge is, whatever height it has wrapped to. There is no drawer while the
-   sidebar is in the layout, so above the breakpoint it does not exist. */
+   least room for. Both islands float on the reader, so it lines up with the
+   bar's left edge and stands the layout gap above it, whatever height the bar
+   has wrapped to. Offsets resolve against the bar's *padding* box, a border
+   inside the edges being measured from, which is what the 1px in each corrects.
+   There is no drawer while the sidebar is in the layout, so above the
+   breakpoint it does not exist. */
 .library {
   display: none;
   position: absolute;
-  --corner-inset: 1.25rem;
-  /* Offsets are resolved against the bar's padding box, which is a border
-     inside the reader's own edges — without the 1px back the inset from the
-     left and the inset from the bottom come out 2px apart. */
-  left: calc(var(--corner-inset) - 1px);
+  left: -1px;
   bottom: 100%;
-  margin-bottom: calc(var(--gap) + var(--corner-inset) + 1px);
+  margin-bottom: calc(var(--gap) + 1px);
   place-items: center;
   /* Larger than anything in the bar: it is the only way out of a text on a
      phone, and it is read against the whole reader rather than a row of
@@ -281,14 +326,12 @@
   box-shadow: var(--shadow-raised);
 }
 
-/* Everything below answers to the bar's own width. The container is `.main`
-   — the bar's parent, and exactly as wide as the bar, which is stretched
-   across its only column; see the note there for why the query names nothing.
-   The window is the wrong thing to measure here: the sidebar leaves the layout
-   at 62rem and the word panel at 48rem, so between those two the window gets
-   narrower while the bar gets *wider*. Driven by the window, the row was
-   squeezed hardest just before each of those steps and the track vanished
-   twice on the way down, at widths nobody had thought to look at.
+/* Everything below answers to the bar's own width. The container is `.host` —
+   the bar's parent, and exactly as wide as the bar, which fills it; see the
+   note there for why it is not the window and why the query names nothing.
+   Driven by the window, the row was squeezed hardest just before each of the
+   layout's steps and the track vanished twice on the way down, at widths
+   nobody had thought to look at.
 
    The thresholds are in rem because everything they are weighed against is:
    the controls are fixed widths in rem, so what is left over for the track

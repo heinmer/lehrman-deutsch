@@ -1,14 +1,22 @@
+/* The one section of the layout: it runs to the bottom edge of the window and
+   the player floats on it. The padding is even top and bottom because the
+   loading and failure states centre themselves in this box — the room the
+   player needs is the article's, below. */
 .reader {
   min-height: 0;
   overflow-y: auto;
   background: var(--surface-reader);
-  padding: 3.5rem 2.5rem 4rem;
+  padding: 3.5rem 2.5rem;
 }
 
 /* The prose fills the whole centre island rather than sitting in a narrow
-   measure inside it. */
+   measure inside it, and leaves room under itself for the player it scrolls
+   away beneath. On the article and not on the scroll box, so that a text that
+   failed to load is still centred in the section rather than pushed up by
+   room kept for a bar the reader is not looking at. */
 .article {
   width: 100%;
+  padding-bottom: var(--player-space);
 }
 
 /* The illustration is cropped to a band rather than shown whole: a header is
@@ -206,7 +214,7 @@
 
 @media (max-width: 62rem) {
   .reader {
-    padding: 2.5rem 1.75rem 3rem;
+    padding: 2.5rem 1.75rem;
   }
 }
 

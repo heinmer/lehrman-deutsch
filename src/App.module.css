@@ -19,28 +19,20 @@
   display: contents;
 }
 
+/* One section, not two: the reader fills this column down to the bottom edge
+   and the player floats *on* it, inset from its corners rather than sitting in
+   a row of its own. The player's host is positioned against this box, which is
+   why it is the only thing here that is positioned. */
 .main {
   display: grid;
   /* Both tracks are explicit for the same reason: an implicit one is sized to
      its content, so the reader would grow past this column rather than wrap
-     inside it, and the player would be pushed off the bottom. `min-width: 0`
-     on the item is not enough — it stops main outgrowing the page, not the
-     reader outgrowing main. */
+     inside it. `min-width: 0` on the item is not enough — it stops main
+     outgrowing the page, not the reader outgrowing main. */
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: var(--gap);
+  grid-template-rows: minmax(0, 1fr);
   min-width: 0;
-  /* The player bar wraps by its own width rather than the window's, and this
-     column is that width — the bar is a grid child stretched across it. It has
-     to be, because the two are not the same shape: the sidebar leaving the
-     layout at 62rem makes the window narrower and the bar wider in one step,
-     so a window query tightens the bar exactly where it has just gained room.
-     See the end of PlayerBar.module.css, which queries this and nothing else:
-     it is the nearest ancestor of the bar carrying a `container-type`, and the
-     query is left unnamed on purpose — a container *name* is a custom ident
-     shared across two CSS Modules files, and the day the bundler starts
-     scoping those the two halves stop meeting, silently. */
-  container-type: inline-size;
+  position: relative;
 }
 
 .error {

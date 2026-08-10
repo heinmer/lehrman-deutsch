@@ -309,11 +309,10 @@ as `/…/` so transcriptions look the same everywhere.
   That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
-  wrapping. The corner it is inset from is the **reader's**, not the bar's:
-  `--corner-inset` is the same distance from the reader's left edge and from
-  its bottom one, which is why the bottom offset carries `--gap` (the gutter
-  between the two islands) and a pixel for the bar's own border — offsets
-  resolve against the bar's padding box, one border inside the edges being
+  wrapping. It lines up with the bar's left edge and stands `--gap` above it —
+  both float on the reader, so the bar's own `--player-inset` is what holds
+  them off the corner. The stray pixel in each offset is the bar's border:
+  offsets resolve against its padding box, one border inside the edges being
   measured from. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
   blur is what stands in for it. Below 48rem the word panel becomes a drawer in exactly the same
@@ -326,26 +325,42 @@ as `/…/` so transcriptions look the same everywhere.
   used to find the panel. The drawer's scrim sits *above* the panel (48
   against 45), because the drawer is in front of it and Escape reads the same
   order.
+- **The centre is one section, and the player floats on it.** The reader fills
+  `.main` down to the bottom edge; the bar is absolutely positioned against
+  that column, `--player-inset` inside its corners, so it is narrower than the
+  section it sits on and the prose scrolls away underneath. Two things follow.
+  The prose keeps `--player-space` of room under itself (on the *article*, so
+  the loading and failure states stay centred in the section) — enough for the
+  bar at its tallest, which is the wrapped two-row phone layout carrying the
+  failure message. And the bar's host draws the reader's own ground from
+  `--player-fade` above it down to the section's bottom edge, fading in over
+  the top: without it a strip of half a line shows *below* the bar, through the
+  gap it is inset by. That backdrop is spread down but **not** sideways — the
+  bar's own edges are already well inside the reader's side padding, where no
+  text can be, and a band reaching the section's edge would lie over the
+  reader's scrollbar and cut it off.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
   grow past its column instead of wrapping inside it — invisible on a wide
   screen, a page that scrolls sideways on a narrow one — exactly as the
-  implicit *row* once pushed the player off the bottom. `min-width: 0` on the
-  item does not cover this; it stops the item outgrowing the page, not the
-  item's own child outgrowing the item.
+  implicit *row* once pushed the player off the bottom, back when the bar was a
+  row of that grid. `min-width: 0` on the item does not cover this; it stops
+  the item outgrowing the page, not the item's own child outgrowing the item.
 - **The player bar measures itself, not the window.** Every control in it is a
   fixed width and only the scrubber gives, so it is the scrubber that pays for
   a narrow bar — down to no track at all, which is what it came to. It takes a
   row of its own below 52rem *of bar*, and the gaps tighten below 38rem, both
-  as container queries against `.main` (`container-type: inline-size`), which
-  is exactly as wide as the bar. Against the *window* this cannot be got
-  right: the sidebar leaves the layout at 62rem and the word panel at 48rem, so
-  between those steps the window narrows while the bar **widens**, and a
-  window breakpoint therefore squeezes the row hardest just before each step
-  and lets go just after. The track vanished twice on the way down. The
-  thresholds are in rem because what they are weighed against is — but note
-  that a `rem` in a container query is the root's font size (90%, so 52rem is
-  749px), while a `rem` in a media query is the browser's untouched default.
+  as container queries against `.host`, the box that holds the bar on the
+  reader (`container-type: inline-size`) and is exactly as wide as it. `.main`
+  is not: the insets take 2 × `--player-inset` off it. Against the *window*
+  this cannot be got right either: the sidebar leaves the layout at 62rem and
+  the word panel at 48rem, so between those steps the window narrows while the
+  bar **widens**, and a window breakpoint therefore squeezes the row hardest
+  just before each step and lets go just after. The track vanished twice on the
+  way down. The thresholds are in rem because what they are weighed against is
+  — but note that a `rem` in a container query is the root's font size (90%, so
+  52rem is 749px), while a `rem` in a media query is the browser's untouched
+  default.
 - **On two rows the settings hang from the right edge**, the transport from the
   left: `margin-left: auto` on the speed strip, which carries the rule between
   the two groups as its own left border and so takes it along. The same
@@ -482,7 +497,10 @@ stretch of the page and, with no border and no shadow to lean on, its ground is
 the only thing that can say so. Exactly one tinted box against three flush ones
 is the arrangement: giving a second section its own ground puts the seams back
 and there is nothing left to tell the controls apart from the prose. The
-scrubber thumb's ring is `--surface-player` too, so it follows on its own.
+scrubber thumb's ring is `--surface-player` too, so it follows on its own. It
+is also the one ground that has to be **opaque**: the bar floats on the reader
+with the prose scrolling under it, and the `--surface-reader` backdrop behind
+it is what the text disappears into.
 
 `--surface-raised` and `--surface-overlay` are both "a step above the page",
 but only the overlay is guaranteed **opaque**. Raised may be a translucent
