@@ -1,5 +1,5 @@
 import { useEffect, useRef, type KeyboardEvent, type MouseEvent } from "react";
-import { X } from "lucide-react";
+import { LocateFixed, MessageCircle, X } from "lucide-react";
 import styles from "./HelpDialog.module.css";
 
 interface Props {
@@ -20,9 +20,11 @@ const FOCUSABLE =
 
 /**
  * Whatever the interface has no room to say, in front of everything else.
- * Today that is one table of shortcuts, under a heading of its own — the
- * window is titled for the site rather than for its contents, so that the
- * next thing to go in it is a second section and not a second window.
+ * Today that is two tables under headings of their own — the window is titled
+ * for the site rather than for its contents, so that the next thing to go in
+ * it is a third section and not a second window. The settings come first
+ * because they are what a plain click does; the shortcuts read as the
+ * exceptions to them, which is what the note under that heading says.
  */
 export function HelpDialog({ onClose }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -86,9 +88,44 @@ export function HelpDialog({ onClose }: Props) {
         </div>
 
         <div className={styles.body}>
-          <h3 className={styles.section}>Shortcuts</h3>
+          <h3 className={styles.section}>Settings</h3>
+          <p className={styles.note}>
+            Two of the sidebar's toggles, for what a plain click on a word does.
+            It always opens the word.
+          </p>
 
-          <dl className={styles.shortcuts}>
+          <dl className={styles.rows}>
+            <div className={styles.row}>
+              {/* The sidebar's own icons, so a row can be found by its shape
+                  rather than by reading the footer for its label. */}
+              <dt className={styles.setting}>
+                <MessageCircle size={17} strokeWidth={2} />
+                Say word
+              </dt>
+              <dd className={styles.what}>
+                Speaks the word in a native speaker's voice. Held back while the
+                narration runs, so the two never overlap.
+              </dd>
+            </div>
+
+            <div className={styles.row}>
+              <dt className={styles.setting}>
+                <LocateFixed size={17} strokeWidth={2} />
+                Jump
+              </dt>
+              <dd className={styles.what}>
+                Moves the narration to that word, without starting or stopping
+                it.
+              </dd>
+            </div>
+          </dl>
+
+          <h3 className={styles.section}>Shortcuts</h3>
+          <p className={styles.note}>
+            Each names a whole behaviour, whatever the settings above say.
+          </p>
+
+          <dl className={styles.rows}>
             <div className={styles.row}>
               <dt className={styles.keys}>
                 <kbd>Space</kbd>
@@ -106,8 +143,7 @@ export function HelpDialog({ onClose }: Props) {
               </dt>
               {/* Not "on the right": below 48rem the panel is a drawer. */}
               <dd className={styles.what}>
-                Opens the word and nothing else — the playhead stays where it
-                is and no recording is played.
+                Opens the word only. Nothing is spoken and nothing moves.
               </dd>
             </div>
 
@@ -118,8 +154,7 @@ export function HelpDialog({ onClose }: Props) {
                 <span>click</span>
               </dt>
               <dd className={styles.what}>
-                Speaks the word in a native speaker's voice, over the narration
-                if it is running. Nothing is opened and nothing moves.
+                Speaks the word only, over the narration if it is running.
               </dd>
             </div>
 
@@ -132,8 +167,8 @@ export function HelpDialog({ onClose }: Props) {
                 <span>click</span>
               </dt>
               <dd className={styles.what}>
-                Reads the text from that word. Playback starts even from a
-                standstill, and the word itself is neither opened nor spoken.
+                Reads the text from that word, starting playback if it is
+                paused.
               </dd>
             </div>
           </dl>

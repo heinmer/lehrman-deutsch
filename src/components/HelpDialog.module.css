@@ -30,7 +30,14 @@
   outline: none;
 }
 
-/* The rule under the title belongs to the window rather than to any one
+/* Every line drawn inside the card is `--track` and not `--border`, for the
+   reason the close button hovers onto `--surface-inset`: the card floats on
+   `--surface-overlay`, and in Ink that ground is a *lighter* navy than
+   `--border` is, so a border-coloured hairline on it disappeared — the rule
+   under the title was invisible in that theme. `--track` is the one
+   line-weight token that stands off every overlay in every theme.
+
+   The rule under the title belongs to the window rather than to any one
    section of it: what follows will not always be a table of shortcuts. */
 .top {
   display: flex;
@@ -39,7 +46,7 @@
   gap: 1rem;
   flex: none;
   padding: 1.2rem 1.2rem 1.2rem 1.75rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--track);
 }
 
 .title {
@@ -87,17 +94,30 @@
   color: var(--accent);
 }
 
-/* A second section would want a margin above its heading; the body's own
-   padding sets the first one. */
-.shortcuts + .section {
+/* A heading with a line under it belongs to that line, not to the table: the
+   note closes the gap the heading would otherwise hold open. */
+.section:has(+ .note) {
+  margin-bottom: 0.4rem;
+}
+
+/* A second section wants a margin above its heading; the body's own padding
+   sets the first one. */
+.rows + .section {
   margin-top: 1.9rem;
 }
 
-.shortcuts {
+.note {
+  margin: 0 0 1.05rem;
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-soft);
+}
+
+.rows {
   margin: 0;
 }
 
-/* The key column is sized to the longest chord rather than to the longest
+/* The left column is sized to the longest chord rather than to the longest
    single key, so that no row wraps its own shortcut. */
 .row {
   display: grid;
@@ -106,8 +126,13 @@
   align-items: baseline;
 }
 
+/* A rule between the rows, not just space: descriptions of one length set in
+   one colour read as a paragraph otherwise, and which key goes with which
+   sentence is the whole point of the table. `--track`, for the reason above. */
 .row + .row {
-  margin-top: 1.1rem;
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--track);
 }
 
 .keys {
@@ -117,6 +142,24 @@
   margin: 0;
   font-size: var(--fs-sm);
   color: var(--text);
+}
+
+/* The settings name themselves in words rather than in keys, so the label
+   carries the weight a `kbd` box would have given it. Centred against its own
+   icon; the row still hangs off the label's baseline. */
+.setting {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.setting svg {
+  flex: none;
+  color: var(--text-muted);
 }
 
 .plus {

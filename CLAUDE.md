@@ -341,14 +341,25 @@ as `/…/` so transcriptions look the same everywhere.
   in the tab order. Its focus ring is turned off: the card is only a landing
   place for the keyboard, and the global outline drawn round the whole window
   reads as a border. It is titled for the site and not for its contents, so
-  that the next thing to go in it is a second section under its own heading
-  rather than a second window; today there is one, *Shortcuts*. Its cross
-  hovers onto `--surface-inset` and not onto `--surface-raised` as the word
+  that the next thing to go in it is a section under its own heading rather
+  than a second window; today there are two, *Settings* and *Shortcuts*, each
+  a table of one grid with a note under its heading. **The settings come
+  first**, because they are what a plain click does and the modifiers read as
+  the exceptions to them — which is the one thing about those four shortcuts a
+  reader cannot work out by trying them. The rows are separated by a rule and
+  not only by space: six descriptions of one length in one colour read as a
+  paragraph, and which key goes with which sentence is the whole point. Its
+  cross hovers onto `--surface-inset` and not onto `--surface-raised` as the word
   panel's does: the panel's ground is the page, while this card floats on
   `--surface-overlay`, and in every theme those two are **the same colour** —
   the button lit up into exactly what was already under it. Anything sitting
   on a floating ground has the same problem and the same answer, which is what
-  the pickers' options hover onto.
+  the pickers' options hover onto. **Its lines are `--track`, not `--border`**,
+  for the same reason one step further: in Ink `--surface-overlay` is a
+  *lighter* navy than `--border` is, so a border-coloured hairline on the card
+  vanished — the rule under the title was invisible in that theme until the
+  row rules arrived beside it and showed it up. `--track` stands off every
+  theme's overlay.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
