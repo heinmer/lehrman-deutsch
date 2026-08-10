@@ -97,9 +97,11 @@
   margin: 0;
 }
 
+/* The key column is sized to the longest chord rather than to the longest
+   single key, so that no row wraps its own shortcut. */
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 10.5rem) minmax(0, 1fr);
   gap: 0.3rem 1.25rem;
   align-items: baseline;
 }

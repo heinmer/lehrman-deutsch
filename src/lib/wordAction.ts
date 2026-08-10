@@ -8,31 +8,42 @@
 export type WordAction =
   /** Whatever the settings say — the plain click. */
   | "open"
+  /** Open the word in the panel, and nothing else. */
+  | "inspect"
+  /** Play the word's own recording, and nothing else. */
+  | "speak"
   /** Read the text from this word, and nothing else. */
-  | "read"
-  /** Look the word up, and nothing else. */
-  | "inspect";
+  | "read";
 
 /** The part of a mouse or keyboard event this depends on. */
 interface Modifiers {
   ctrlKey: boolean;
   metaKey: boolean;
   altKey: boolean;
+  getModifierState(key: "AltGraph"): boolean;
 }
 
 /**
- * Ctrl starts the narration at the word; Alt looks it up and touches nothing
- * else. Cmd counts as Ctrl because on a Mac Ctrl+click *is* the context menu,
- * and the shortcut has to be reachable there too.
+ * Ctrl looks the word up, Alt speaks it, and the two together read the text
+ * from it. Cmd counts as Ctrl because on a Mac Ctrl+click *is* the context
+ * menu, and the shortcuts have to be reachable there too.
  *
- * Ctrl wins when both are held: it is the one that makes a sound, and a chord
- * meaning a third thing would be a third shortcut nobody asked for.
+ * Shift is deliberately unused — it is how a browser extends a text
+ * selection, and the words are ordinary inline text that a reader may want to
+ * copy.
  *
- * Shift is deliberately unused — it is how a browser extends a text selection,
- * and the words are ordinary inline text that a reader may want to copy.
+ * **AltGr is one key that reports itself as Ctrl+Alt.** On a German layout —
+ * which is not a far-fetched keyboard for this site — the right Alt is AltGr,
+ * so somebody reaching for Alt+click with their right hand would otherwise
+ * get the combination instead. Browsers expose the difference as a modifier
+ * state of its own, so the one key is read as the one modifier it is.
  */
 export function wordAction(event: Modifiers): WordAction {
-  if (event.ctrlKey || event.metaKey) return "read";
-  if (event.altKey) return "inspect";
+  if (event.getModifierState("AltGraph")) return "speak";
+
+  const primary = event.ctrlKey || event.metaKey;
+  if (primary && event.altKey) return "read";
+  if (primary) return "inspect";
+  if (event.altKey) return "speak";
   return "open";
 }

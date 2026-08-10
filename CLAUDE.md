@@ -313,19 +313,26 @@ as `/…/` so transcriptions look the same everywhere.
   **A word in the reader therefore answers to Enter and not to Space**, though
   a `role="button"` would normally take both — worth paying, since the focus
   after clicking a word *is* that word.
-- **Ctrl and Alt on a word replace the settings rather than adjusting them.**
-  Ctrl+click reads the text *from* that word — it starts playback even from a
-  standstill, and neither opens the word nor speaks it; Alt+click opens the
-  word and touches nothing else, leaving the playhead where it is. Both ignore
-  "Say word" and "Jump" entirely, which is the point: either behaviour is one
-  click away whatever the settings are. Cmd counts as Ctrl because on a Mac
-  Ctrl+click *is* the context menu. Shift is deliberately unused — it is how a
-  browser extends a text selection, and the words are ordinary inline text.
+- **The modifiers on a word replace the settings rather than adjusting them.**
+  Ctrl+click opens the word and touches nothing else; Alt+click speaks it and
+  touches nothing else; Ctrl+Alt+click reads the text *from* it, starting
+  playback even from a standstill. All three ignore "Say word" and "Jump"
+  entirely, which is the point: each behaviour is one click away whatever the
+  settings are. Alt+click is also the one path that speaks a word **over a
+  running narration** — the setting is held back there precisely so it does
+  not, and asking explicitly is the way to overrule that. Cmd counts as Ctrl
+  because on a Mac Ctrl+click *is* the context menu. Shift is deliberately
+  unused — it is how a browser extends a text selection, and the words are
+  ordinary inline text. **AltGr is one key that reports itself as Ctrl+Alt**,
+  and on a German layout — hardly a far-fetched keyboard here — the right Alt
+  *is* AltGr, so `wordAction` reads `getModifierState("AltGraph")` first and
+  treats it as the one modifier it is; without that, reaching for Alt+click
+  with the right hand would read the text instead of speaking the word.
   The mapping is one pure function, `wordAction` (`src/lib/wordAction.ts`),
-  and the click and the Enter/Space path both go through it, so a shortcut is
-  never something only a mouse can reach. `App`'s `selectWord` is the one
-  place the three outcomes live; its Ctrl branch is `readFrom`, which is also
-  what the panel's "Read from here" calls, so the two cannot drift apart.
+  and the click and the Enter path both go through it, so a shortcut is never
+  something only a mouse can reach. `App`'s `selectWord` is the one place the
+  four outcomes live; its Ctrl+Alt branch is `readFrom`, which is also what
+  the panel's "Read from here" calls, so the two cannot drift apart.
 - **The info window is the only modal.** `HelpDialog`, opened from the `i`
   beside the site's name, is a centred card over a scrim at z-index 60 — in
   front of both drawers, and Escape reads that same order in `App` (info, then

@@ -95,7 +95,7 @@ export function App() {
 
   // Asking to be read from a word is asking to hear it, so this is the one
   // path that starts playback from a standstill — the panel's button and the
-  // Ctrl shortcut are the same request and behave identically.
+  // Ctrl+Alt shortcut are the same request and behave identically.
   const readFrom = useCallback(
     (token: WordToken) => {
       const start = wordStart(token.id);
@@ -106,35 +106,48 @@ export function App() {
     [wordStart, seek, play],
   );
 
+  const speak = useCallback(
+    (token: WordToken) => {
+      const clip = pronunciationClip(text?.dictionary[token.key] ?? null);
+      if (clip) playClip(clip.src);
+    },
+    [text],
+  );
+
   // A plain click never changes whether the narration is playing. Moving the
   // playhead to it and speaking the word are each optional; while the
   // narration runs the clip is suppressed, or it would talk over the sentence.
-  // The two modifiers replace all of that rather than adjusting it: each one
-  // asks for a whole behaviour, whatever the settings happen to be.
+  // The modifiers replace all of that rather than adjusting it: each one asks
+  // for a whole behaviour, whatever the settings happen to be.
   const selectWord = useCallback(
     (token: WordToken, action: WordAction) => {
-      // Ctrl: hear the text from here, and nothing else. The word is not
+      // Ctrl+Alt: hear the text from here, and nothing else. The word is not
       // opened, so it does not take the panel away from whatever is in it.
       if (action === "read") {
         readFrom(token);
         return;
       }
 
+      // Alt: hear the word, and nothing else — no panel and no playhead. This
+      // one is deliberately not held back while the narration runs, unlike the
+      // "Say word" setting: asking for a word out loud over the sentence is
+      // the only way to ask twice, and it is what the modifier is for.
+      if (action === "speak") {
+        speak(token);
+        return;
+      }
+
       if (slug) setSelection({ slug, token });
 
-      // Alt: look the word up, and nothing else — the playhead stays where it
+      // Ctrl: look the word up, and nothing else — the playhead stays where it
       // is and no recording is played.
       if (action === "inspect") return;
 
       const start = wordStart(token.id);
       if (seekOnClick && start !== null) seek(start, { fade: true });
-
-      if (!isPlaying && autoSpeak) {
-        const clip = pronunciationClip(text?.dictionary[token.key] ?? null);
-        if (clip) playClip(clip.src);
-      }
+      if (!isPlaying && autoSpeak) speak(token);
     },
-    [readFrom, seek, wordStart, isPlaying, autoSpeak, seekOnClick, text, slug],
+    [readFrom, speak, seek, wordStart, isPlaying, autoSpeak, seekOnClick, slug],
   );
 
   // Reaching a word is a good guess that it is about to be clicked, and a

@@ -104,9 +104,10 @@ export function HelpDialog({ onClose }: Props) {
                 <span className={styles.plus}>+</span>
                 <span>click</span>
               </dt>
+              {/* Not "on the right": below 48rem the panel is a drawer. */}
               <dd className={styles.what}>
-                Reads the text from that word. Playback starts even from a
-                standstill, and the word itself is neither opened nor spoken.
+                Opens the word and nothing else — the playhead stays where it
+                is and no recording is played.
               </dd>
             </div>
 
@@ -116,10 +117,23 @@ export function HelpDialog({ onClose }: Props) {
                 <span className={styles.plus}>+</span>
                 <span>click</span>
               </dt>
-              {/* Not "on the right": below 48rem the panel is a drawer. */}
               <dd className={styles.what}>
-                Opens the word and nothing else — the playhead stays where it
-                is and no recording is played.
+                Speaks the word in a native speaker's voice, over the narration
+                if it is running. Nothing is opened and nothing moves.
+              </dd>
+            </div>
+
+            <div className={styles.row}>
+              <dt className={styles.keys}>
+                <kbd>{PRIMARY_KEY}</kbd>
+                <span className={styles.plus}>+</span>
+                <kbd>{OPTION_KEY}</kbd>
+                <span className={styles.plus}>+</span>
+                <span>click</span>
+              </dt>
+              <dd className={styles.what}>
+                Reads the text from that word. Playback starts even from a
+                standstill, and the word itself is neither opened nor spoken.
               </dd>
             </div>
           </dl>
