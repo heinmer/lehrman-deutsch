@@ -34,10 +34,11 @@
   --player-inset: 1.25rem;
   --player-fade: 1.75rem;
   --player-space: 3rem;
-  /* The same idea one size down: the band a popover fades the thing behind it
-     out over, so a menu opening over the prose or over the text list has a
-     transition into it rather than an edge. Its colour is whichever ground it
-     floats on — `--popover-ground`, set by the host. */
+  /* The same idea one size down, and all round rather than along one edge: how
+     far a popover fades out what it covers, so the text list gives way to the
+     theme menu instead of running into it. The colour is the ground it opens
+     over — `--popover-ground`, set by the host, and `transparent` in the
+     player, where nothing is drawn round the menu at all. */
   --popover-fade: 1.5rem;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;

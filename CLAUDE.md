@@ -306,20 +306,22 @@ as `/…/` so transcriptions look the same everywhere.
   mode it is the bridge the pointer crosses, exactly as in `VolumeControl`.
   `size="large"` is the voice list, which is read from across the reader; the
   sidebar's menus stay the size of the footer they belong to, so the two sizes
-  are a prop and not a change to the component. **Every popover fades out what
-  is behind it** over `--popover-fade`, in `--popover-ground` — the same band
-  the player draws over the prose, and the reason the voice menu needs no ring.
-  It hangs its own height past each side and is masked away over that much:
-  a band exactly the menu's width ends on a vertical cut, which took the second
-  half of a word and left the first.
-  **A hover menu closes on a delay, not on `pointerleave`** (`HOVER_GRACE_MS`).
-  The control is a disc and the menu is four times wider, so a pointer heading
-  for an option leaves the control *sideways*, across ground that belongs to
-  neither, and closing there left the list reachable only by going straight up
-  first and then turning. Coming back anywhere inside the root — control or
-  menu — calls the departure off. Widening the bridge is not the alternative:
-  the dead ground is beside the control, in the bar's own row, and an anchor
-  reaching down over it would swallow the clicks meant for the speed strip.
+  are a prop and not a change to the component. **A menu in the sidebar fades
+  the settings it covers out around itself**, over `--popover-fade` and in
+  `--popover-ground` — the separator the player draws over the prose, wrapped
+  round the whole box, since a menu is in the middle of a list and not at an
+  edge of the layout. It is a shadow cast in that ground rather than a colour
+  of its own, on a pseudo-element behind the menu: `--shadow-card` is `none` in
+  every theme, and `none` in a list of shadows invalidates the declaration. The
+  player passes `transparent` and its menu has nothing drawn round it at all.
+  A hover menu closes the moment the pointer leaves the root. That makes the
+  travel between the control and the menu a real one — a disc is much narrower
+  than its menu, so a pointer cutting the corner leaves sideways, across ground
+  that belongs to neither, and the list has to be reached by going up first.
+  A grace period before closing fixes that and was tried; it was not wanted,
+  the menu reading as slow to let go. Widening the bridge is not an
+  alternative: that dead ground is the bar's own row, and an anchor reaching
+  down over it would swallow the clicks meant for the speed strip.
   The list answers to Up/Down/Home/End and, when it was opened by click rather
   than by hover, takes focus to the chosen option — in hover mode it must not,
   or the pointer arriving would steal focus from wherever it was.
@@ -414,9 +416,9 @@ as `/…/` so transcriptions look the same everywhere.
   two there for exactly this reason.
 - **The player bar sets `overflow: visible`**, against `.island`, because the
   voice menu opens out of it; nothing else in the bar overflows. It also sets
-  `--popover-ring: transparent`: the sidebar's menus cut a ring of their own
-  ground out of the settings they cover, but this one opens over the reader,
-  where that band would only be a halo.
+  `--popover-ground: transparent`: the sidebar's menus fade the settings they
+  cover out around themselves, but this one opens over the reader, where that
+  would only be a smudge round a box that is already floating.
 - **A voice can be heard before it is chosen.** Each option carries a preview
   button, which is why an option is a `<div role="option">` rather than a
   button — a button cannot contain one. It plays through `clipAudio`, the same

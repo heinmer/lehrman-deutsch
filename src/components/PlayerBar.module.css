@@ -66,12 +66,11 @@
   /* The voice menu opens upwards, out of the bar; the island would clip it.
      Nothing else in here overflows. */
   overflow: visible;
-  /* No ring here: the sidebar's menus cut themselves out of the settings they
-     cover, but this one opens over the reader, where a band of the player's
-     ground would just be a halo. What separates a menu from the prose above it
-     is the same fade the bar itself has, in the same ground. */
-  --popover-ring: transparent;
-  --popover-ground: var(--surface-reader);
+  /* Nothing drawn around this one: the sidebar's menus fade the settings they
+     cover out around themselves, but this one opens over the reader, where a
+     halo of the page is a smudge round a box that is already floating. Its own
+     border is enough. */
+  --popover-ground: transparent;
   /* Every control in here hovers onto this rather than `--surface-raised`,
      which in three of the four themes *is* `--surface-player`: pointing at a
      control made it vanish into the bar. */

@@ -52,36 +52,20 @@
   border-radius: var(--radius-pill);
   border: 1px solid var(--border);
   background: var(--surface-overlay);
-  /* A ring of the sidebar's own ground, the same trick the scrubber's thumb
-     uses against its track: it holds the card clear of the settings it opens
-     over instead of letting the two shapes touch. An outline, not a border or
-     a second shadow — it costs no layout and the themes that set
-     `--shadow-card: none` could not take another shadow layer. */
-  outline: 5px solid var(--surface-sidebar);
   box-shadow: var(--shadow-card);
 }
 
-/* The text list behind it fades out as it comes up to the card, the same band
-   the menus draw and the player draws over the prose — masked away at the
-   sides for the same reason; see SettingPicker. */
+/* The settings it opens over, faded out around the whole card — the same
+   separator the menus draw, in the sidebar's own ground; see SettingPicker for
+   why it is a shadow on a pseudo-element. */
 .card::before {
   content: "";
   position: absolute;
-  left: calc(var(--popover-fade) * -1);
-  right: calc(var(--popover-fade) * -1);
-  bottom: 100%;
-  height: var(--popover-fade);
-  pointer-events: none;
-  background: linear-gradient(to top, var(--surface-sidebar), transparent);
-  --popover-fade-sides: linear-gradient(
-    to right,
-    transparent,
-    #000 var(--popover-fade),
-    #000 calc(100% - var(--popover-fade)),
-    transparent
-  );
-  -webkit-mask-image: var(--popover-fade-sides);
-  mask-image: var(--popover-fade-sides);
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  box-shadow: 0 0 var(--popover-fade) calc(var(--popover-fade) * 0.45)
+    var(--surface-sidebar);
 }
 
 /* As wide as the thumb, so the thumb fills it and reads as centred. */
