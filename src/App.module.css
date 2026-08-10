@@ -75,7 +75,7 @@
 
 @media (max-width: 84rem) {
   .app {
-    --side-width: 17rem;
+    --side-width: 18.5rem;
   }
 }
 
@@ -93,7 +93,7 @@
     top: var(--gap);
     bottom: var(--gap);
     left: var(--gap);
-    width: min(21rem, 86vw);
+    width: min(23rem, 86vw);
     z-index: 50;
     /* Hidden rather than merely offscreen: a drawer nobody can see must not
        be somewhere the tab key can go. */

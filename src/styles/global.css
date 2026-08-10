@@ -25,7 +25,7 @@
 
   --gap: 1rem;
   /* The two side columns are deliberately the same width. */
-  --side-width: 21rem;
+  --side-width: 23rem;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;
 }
