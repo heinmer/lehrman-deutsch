@@ -335,10 +335,15 @@
 }
 
 /* Marked by lifting it out of the inset strip, so the colour has to clear the
-   strip rather than the page — that is what `--surface-selected` is for. */
+   strip rather than the page — that is what `--surface-selected` is for. The
+   label is `--selected-contrast` and not `--accent`, because the chip is not
+   the same kind of thing in every theme: the light ones lift it towards white
+   and write on it in their accent, the dark ones turn it round and print the
+   page's ink on a pale chip. A pale accent had nothing to be read against once
+   the dark chip was lifted far enough to be seen at all. */
 .rate[aria-pressed="true"] {
   background: var(--surface-selected);
-  color: var(--accent);
+  color: var(--selected-contrast);
   font-weight: 600;
   box-shadow: var(--shadow-raised);
 }

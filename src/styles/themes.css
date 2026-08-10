@@ -42,7 +42,11 @@
      The page's own navy is what a text is read on here, and the scrim is what
      tells the card from it. */
   --surface-dialog: #101a2e;
-  --surface-selected: #283a63;
+  /* Pale, and printed on in the page's own navy — the dark themes invert this
+     chip as they invert the level badges, and for the same reason. See White,
+     where the arrangement it mirrors is written down. */
+  --surface-selected: #aebcd8;
+  --selected-contrast: #101a2e;
 
   --text: #dfe6f4;
   --text-muted: #a8b4cd;
@@ -98,6 +102,7 @@
      overlay, so it is that; see Ink for the theme where it is not. */
   --surface-dialog: #e9e0cf;
   --surface-selected: #fdf9f1;
+  --selected-contrast: #8a4126;
 
   --text: #2a2620;
   --text-muted: #57503f;
@@ -177,11 +182,23 @@
   /* The info window's ground — see Ink, the one theme where it is not simply
      the overlay. */
   --surface-dialog: #f3f4f8;
-  /* The chosen option inside a segmented strip — currently the playback speed.
-     It has to clear `--surface-inset`, the strip behind it, which is a
-     different job from clearing the page: on one sheet "raised" and that strip
-     land on top of each other, so this cannot simply reuse it. */
+  /* The chosen option inside a segmented strip — currently the playback speed —
+     and the colour its label is printed in. It has to clear `--surface-inset`,
+     the strip behind it, which is a different job from clearing the page: on
+     one sheet "raised" and that strip land on top of each other, so this cannot
+     simply reuse it.
+
+     The light themes lift the chip towards white and write on it in their
+     accent. The dark themes **invert that**, as the level badges do: a chip
+     lifted only a step off a dark strip cannot be seen — Black's stood at
+     1.01:1 against it, which is the same colour — and lifting it far enough
+     leaves nothing for a pale accent to be read against, Ink's clearing only
+     4.65:1 before it moved and 3.66:1 at the step the light themes have. So
+     there the chip goes pale and the label goes to the page's ink. Measure the
+     chip against the *strip* and the label against the chip; the two move
+     together and a change to one is not safe on its own. */
   --surface-selected: #ffffff;
+  --selected-contrast: #44559f;
 
   --text: #1c1d22;
   --text-muted: #494c57;
@@ -243,7 +260,10 @@
   /* The info window's ground. Black can keep its overlay: that near-black is
      barely off the page and carries the type as well as the page does. */
   --surface-dialog: #16181f;
-  --surface-selected: #262933;
+  /* Pale over a dark strip, as in Ink; see White for why the dark themes turn
+     this chip round. */
+  --surface-selected: #adb0bc;
+  --selected-contrast: #0b0c11;
 
   --text: #e7e9f0;
   --text-muted: #a8abb8;

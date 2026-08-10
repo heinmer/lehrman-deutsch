@@ -348,8 +348,8 @@ as `/…/` so transcriptions look the same everywhere.
   the exceptions to them — which is the one thing about those four shortcuts a
   reader cannot work out by trying them.
 - **Its tables are drawn as tables**, in `HelpDialog.module.css`: a rounded box
-  with an outline, a rule between the two columns as well as between every pair
-  of rows, and the rows banded. They were a hairline between rows and nothing
+  with an outline, one fill, and a rule between the two columns as well as
+  between every pair of rows. They were a hairline between rows and nothing
   else, which left what the two columns *are* to be worked out from the ragged
   edge of the left one. Four things hold it together and each was arrived at
   the hard way:
@@ -360,14 +360,16 @@ as `/…/` so transcriptions look the same everywhere.
     is wanted is a *fraction* of a colour each theme has already chosen — a
     per-theme token would be four hand-picked values to keep in step with the
     two they come from.
-  - **The fill is `--surface-inset` and the bands are two pours of it.** A
-    table is set *into* the page rather than lifted off it, and inset is the
-    only step there is on this ground anyway: `--surface-raised` and
-    `--surface-overlay` are both the card's own colour in three themes of four.
-    The token is translucent everywhere, which is what makes the banding work
-    — each stripe is a wash over the card, so the pair is one step apart
-    whatever is under it, and the `kbd` chips (inset as well) stay a step off
-    either band by the same compounding.
+  - **The fill is under half a pour of `--surface-inset`.** A table is set
+    *into* the page rather than lifted off it, and inset is the only step there
+    is on this ground anyway: `--surface-raised` and `--surface-overlay` are
+    both the card's own colour in three themes of four. What the fraction has
+    to stay is **translucent**, since it is a wash over the card: that is what
+    keeps the `kbd` chips visible, they being inset at full strength and so
+    compounding to a step above whatever is under them. The rows were banded
+    between this and the full pour for a while and it was one stripe too many —
+    the rules already say where a row ends, and a ground changing under every
+    other one made the table busier than the six sentences in it.
   - **The cells stretch; the rules are borders on them.** The column rule is a
     `border-right` on the left cell, so that cell has to reach the row's full
     height — baseline-aligned it drew the line a third of the way down. The key
@@ -715,10 +717,26 @@ ink rather than plain black — Paper's is warm, because a neutral black over
 newsprint reads as a hole.
 
 `--surface-selected` is the chosen option inside a segmented strip — today only
-the playback speed. It has to clear `--surface-inset`, the strip *behind* it,
-which is a different job from clearing the page: on one sheet "raised" and that
-strip land within a hundredth of each other and the selection vanishes. Measure
-the chip against the strip, not against the ground.
+the playback speed — and `--selected-contrast` is the colour its label is
+printed in. It has to clear `--surface-inset`, the strip *behind* it, which is
+a different job from clearing the page: on one sheet "raised" and that strip
+land within a hundredth of each other and the selection vanishes. Measure the
+chip against the strip, not against the ground.
+
+**The light themes lift that chip towards white and write on it in their
+accent; the dark themes turn it round**, as the level badges do — a pale chip
+carrying the page's own ink. The two are not a matter of taste. A dark chip
+lifted one step off a dark strip cannot be seen at all: Black's stood at 1.01:1
+against it, which is to say it *was* the strip, and Ink's at 1.10:1. Lifting it
+to the step the light themes have (1.28:1 in White, 1.38:1 in Paper) then leaves
+nothing for a pale accent to be read against — Ink's cleared only 4.65:1 before
+it moved and 3.66:1 after. So the ground carries the selection there and the
+label goes dark: 6.4:1 and 6.8:1 chip against strip, 9:1 label against chip.
+The two tokens move together and a change to either alone is not safe. Compose
+the strip over the player bar before measuring anything against it — it is
+`--surface-inset`, which is translucent in every theme, and taken at its
+computed value it reported White's chip at 16:1 against a strip that is in fact
+a hair off the bar.
 
 `--level-a1` … `--level-c2` are the CEFR badges, one hue each so the sidebar
 can be scanned by colour, plus `--level-contrast` for the letters printed on
