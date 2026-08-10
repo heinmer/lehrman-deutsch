@@ -13,16 +13,6 @@ import styles from "./SettingPicker.module.css";
 /** Distance kept between the menu and the edge of its boundary. */
 const EDGE_MARGIN = 8;
 
-/**
- * How long a menu opened by hover survives the pointer leaving it. The control
- * is a disc and the menu is several times wider, so a pointer heading straight
- * for an option leaves the control *sideways* — across the ground beside it,
- * which belongs to neither — and closing there left the list reachable only by
- * travelling up first and then turning. Leaving counts only if the pointer is
- * still away when the grace period is up.
- */
-const HOVER_GRACE_MS = 260;
-
 interface Placement {
   align: "start" | "end";
   /** How far the menu is pushed sideways past the control, out to its boundary. */
@@ -188,30 +178,13 @@ export function SettingPicker({
     (chosen ?? items?.[0])?.focus();
   }, [open, trigger]);
 
-  // The pointer is on its way out; see HOVER_GRACE_MS. Coming back — into the
-  // control or anywhere in the menu, both of which are inside the root — calls
-  // the departure off before the timer runs out.
-  const [leaving, setLeaving] = useState(false);
-
-  useEffect(() => {
-    if (!leaving) return undefined;
-    const timer = window.setTimeout(() => {
-      setOpen(false);
-      setLeaving(false);
-    }, HOVER_GRACE_MS);
-    return () => window.clearTimeout(timer);
-  }, [leaving]);
-
   // The menu is a child of the root, so travelling into it never leaves the
   // hover area — and the anchor's padding bridges the gap above the control.
   const hover =
     trigger === "hover"
       ? {
-          onPointerEnter: () => {
-            setLeaving(false);
-            setOpen(true);
-          },
-          onPointerLeave: () => setLeaving(true),
+          onPointerEnter: () => setOpen(true),
+          onPointerLeave: () => setOpen(false),
         }
       : {};
 
