@@ -30,6 +30,17 @@
   grid-template-rows: minmax(0, 1fr) auto;
   gap: var(--gap);
   min-width: 0;
+  /* The player bar wraps by its own width rather than the window's, and this
+     column is that width — the bar is a grid child stretched across it. It has
+     to be, because the two are not the same shape: the sidebar leaving the
+     layout at 62rem makes the window narrower and the bar wider in one step,
+     so a window query tightens the bar exactly where it has just gained room.
+     See the end of PlayerBar.module.css, which queries this and nothing else:
+     it is the nearest ancestor of the bar carrying a `container-type`, and the
+     query is left unnamed on purpose — a container *name* is a custom ident
+     shared across two CSS Modules files, and the day the bundler starts
+     scoping those the two halves stop meeting, silently. */
+  container-type: inline-size;
 }
 
 .error {

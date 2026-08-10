@@ -269,37 +269,54 @@
   box-shadow: var(--shadow-raised);
 }
 
-@media (max-width: 62rem) {
+/* Everything below answers to the bar's own width. The container is `.main`
+   — the bar's parent, and exactly as wide as the bar, which is stretched
+   across its only column; see the note there for why the query names nothing.
+   The window is the wrong thing to measure here: the sidebar leaves the layout
+   at 62rem and the word panel at 48rem, so between those two the window gets
+   narrower while the bar gets *wider*. Driven by the window, the row was
+   squeezed hardest just before each of those steps and the track vanished
+   twice on the way down, at widths nobody had thought to look at.
+
+   The thresholds are in rem because everything they are weighed against is:
+   the controls are fixed widths in rem, so what is left over for the track
+   scales with the reader's text size and the breakpoint has to scale with it
+   too. A `rem` here is the root's font size — 90%, unlike a `rem` in a media
+   query, which is the browser's untouched default.
+
+   This block belongs at the end of the file: a container query adds no
+   specificity either, so the plain `.scrubber` rule above would otherwise win
+   on source order alone and quietly undo it. */
+
+/* Everything but the scrubber is a fixed width, so the scrubber is what pays
+   for a narrow bar, all the way down to no track at all. Below this it takes a
+   row of its own instead — with about 13rem left for it, which is the least
+   anybody can seek with. */
+@container (max-width: 52rem) {
   .bar {
-    gap: 1rem;
-    padding: 0.85rem 1.1rem;
+    flex-wrap: wrap;
+    row-gap: 0.7rem;
+  }
+
+  .scrubber {
+    order: -1;
+    flex: 1 0 100%;
+  }
+}
+
+/* Now the row of fixed controls is itself running out, and the only thing left
+   to give is the space between them. It buys another 2rem or so before they
+   wrap in their turn, which they may: the bar sets `overflow: visible` on
+   purpose, for the voice menu, so nothing else would stop them hanging off the
+   side of the window. */
+@container (max-width: 38rem) {
+  .bar {
+    gap: 0.7rem;
+    padding: 0.85rem 1rem;
   }
 
   .speed,
   .voice {
     padding-left: 1rem;
-  }
-}
-
-/* A phone cannot hold this row. The controls are fixed widths and only the
-   scrubber gives, so past a point everything to its right hung off the side of
-   the window — the bar sets `overflow: visible` on purpose, for the voice
-   menu, so nothing stopped it. It wraps instead.
-
-   This block belongs at the end of the file: a media query adds no
-   specificity, so the plain `.scrubber` rule above would otherwise win on
-   source order alone and quietly undo it. */
-@media (max-width: 48rem) {
-  .bar {
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    padding: 0.85rem 1rem;
-  }
-
-  /* A row of its own: sharing one with the buttons left about sixty pixels of
-     track, which is not something anybody can seek with. */
-  .scrubber {
-    order: -1;
-    flex: 1 0 100%;
   }
 }

@@ -325,10 +325,7 @@ as `/…/` so transcriptions look the same everywhere.
   neither is addressed by position in the grid, which is how `:last-child`
   used to find the panel. The drawer's scrim sits *above* the panel (48
   against 45), because the drawer is in front of it and Escape reads the same
-  order. The player bar wraps down here too: every
-  control in it is a fixed width and only the scrubber gives, so without
-  wrapping the speed and voice controls hung off the side of the window —
-  which `overflow: visible` (below) does nothing to stop.
+  order.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
   grow past its column instead of wrapping inside it — invisible on a wide
@@ -336,10 +333,24 @@ as `/…/` so transcriptions look the same everywhere.
   implicit *row* once pushed the player off the bottom. `min-width: 0` on the
   item does not cover this; it stops the item outgrowing the page, not the
   item's own child outgrowing the item.
-- **A media query adds no specificity.** A narrow-screen override of a rule
-  declared *later* in the same file loses on source order and does nothing —
-  silently, since both rules are valid. Responsive blocks go at the end of the
-  file; `PlayerBar.module.css` has one there for exactly this reason.
+- **The player bar measures itself, not the window.** Every control in it is a
+  fixed width and only the scrubber gives, so it is the scrubber that pays for
+  a narrow bar — down to no track at all, which is what it came to. It takes a
+  row of its own below 52rem *of bar*, and the gaps tighten below 38rem, both
+  as container queries against `.main` (`container-type: inline-size`), which
+  is exactly as wide as the bar. Against the *window* this cannot be got
+  right: the sidebar leaves the layout at 62rem and the word panel at 48rem, so
+  between those steps the window narrows while the bar **widens**, and a
+  window breakpoint therefore squeezes the row hardest just before each step
+  and lets go just after. The track vanished twice on the way down. The
+  thresholds are in rem because what they are weighed against is — but note
+  that a `rem` in a container query is the root's font size (90%, so 52rem is
+  749px), while a `rem` in a media query is the browser's untouched default.
+- **A media query adds no specificity**, and neither does a container query. A
+  narrow-screen override of a rule declared *later* in the same file loses on
+  source order and does nothing — silently, since both rules are valid.
+  Responsive blocks go at the end of the file; `PlayerBar.module.css` has its
+  two there for exactly this reason.
 - **The player bar sets `overflow: visible`**, against `.island`, because the
   voice menu opens out of it; nothing else in the bar overflows. It also sets
   `--popover-ring: transparent`: the sidebar's menus cut a ring of their own
