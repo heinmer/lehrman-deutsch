@@ -2,7 +2,7 @@
 title: Der erste Schnee
 level: A1
 topic: Everyday life
-image: der-erste-schnee.png
+image: der-erste-schnee.webp
 ---
 
 Es ist Winter. Anna wacht früh auf. Draußen ist es noch dunkel. Sie geht zum Fenster und schaut hinaus.

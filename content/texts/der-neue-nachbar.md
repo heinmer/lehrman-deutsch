@@ -2,7 +2,7 @@
 title: Der neue Nachbar
 level: A2
 topic: People
-image: der-erste-schnee.png
+image: der-erste-schnee.webp
 ---
 
 Seit einer Woche wohnt ein neuer Nachbar in unserem Haus. Er heißt Herr Özdemir und kommt aus der Türkei. Am Montag ist er eingezogen. Den ganzen Tag haben Männer Möbel in den dritten Stock getragen.

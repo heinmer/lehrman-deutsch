@@ -65,6 +65,13 @@ process running: it keeps writing, and — because it holds the whole
 later build wrote. A run that mysteriously rebuilds unchanged texts is the
 symptom. Check for a stray `node` process before blaming the incremental logic.
 
+**And do not truncate its output in PowerShell.** `npm run content | Select-Object
+-First 12` does not shorten the log, it *stops the build*: `-First` tears the
+pipeline down once it has what it asked for, and the build died between copying
+the images and writing `index.json`, which then described the previous run.
+`Tee-Object -Variable out | Out-Null` and print `$out` afterwards, or let it run
+in the background and read the log.
+
 ## Architecture
 
 Two halves that meet at one JSON contract, `shared/types.ts`:
@@ -528,6 +535,18 @@ into `public/media/images/` and deletes what nothing names. Several texts may
 share one picture, so the copies are keyed by file name and not by slug. It is
 not in the source hash and not in the document (see the pipeline notes), so
 adding or swapping one is a rerun of seconds rather than of narrations.
+
+**Pictures go in as WebP, about 1600px wide.** The build copies whatever it is
+given, so the discipline is here rather than in the code: the header is drawn
+at most 689 CSS px, which is ~1378 device pixels on a 2× screen, and anything
+larger is downloaded to be thrown away. The first illustration arrived as a
+2.5 MB PNG — several times the whole rest of the site — and came out at 141 KB
+without a visible difference (SSIM 0.976 against the same downscale losslessly
+encoded; the two are indistinguishable side by side at 1:1). ffmpeg does it:
+
+```bash
+ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 out.webp
+```
 
 The sidebar sorts by level then title, so file names do not set the order.
 
