@@ -162,32 +162,23 @@
    right order: sections first, then rows inside one. */
 .rows {
   --help-line: color-mix(in srgb, var(--track) 55%, transparent);
-  /* The paler of the two stripes. The darker one is the inset itself, so the
-     step between them is the same fraction of it that separates the table from
-     the card — a shade either side of the fill it would otherwise have had. */
-  --help-stripe: color-mix(in srgb, var(--surface-inset) 45%, transparent);
+  /* Under half of the inset the table would otherwise be filled with. The rows
+     were banded between this and the full pour and it was one stripe too many:
+     the rules already say where a row ends, and a ground that changes under
+     every other one made the table busier than the six sentences in it. What
+     the fraction has to stay is *translucent* — it is a wash over the card,
+     which is what keeps the `kbd` chips visible: they are `--surface-inset` at
+     full strength, so they compound to a step above whatever is under them
+     rather than matching a fill that happens to be named the same. */
+  --help-fill: color-mix(in srgb, var(--surface-inset) 45%, transparent);
 
   margin: 0;
   border: 1px solid var(--help-line);
   border-radius: var(--radius-md);
-  /* The corners are only round if what reaches them is clipped — the first and
-     the last rows carry their own fill into them otherwise. */
+  background: var(--help-fill);
+  /* The corners are only round if what reaches them is clipped — the rows
+     carry the fill into them otherwise. */
   overflow: hidden;
-}
-
-/* Banded rather than plain, so a long description and the key beside it are
-   held together by their own ground and not only by the rules above and below.
-   The tokens are translucent in every theme, which is what makes this work at
-   all: each stripe is a wash over the card, so the pair reads as one step
-   apart whatever the ground under it happens to be — and the `kbd` chips,
-   which are `--surface-inset` too, stay a step off either of them by the same
-   compounding. */
-.row:nth-child(odd) {
-  background: var(--help-stripe);
-}
-
-.row:nth-child(even) {
-  background: var(--surface-inset);
 }
 
 /* The left column is sized to the longest chord *plus the cell's own padding*,
