@@ -124,20 +124,17 @@
   margin-bottom: 0.4rem;
 }
 
-/* Told from the descriptions by hue and not by weight. Both are sentences of
-   the same length at the same size, so a step along the greys — muted against
-   the body colour — was a difference to be found rather than seen. The note
-   belongs to the heading above it instead: `--accent-soft` is the heading's own
-   colour with the chroma pulled back, which reads as a caption *of* the section
-   while leaving `--accent` to the heading. Going quieter was the other way out
-   and is closed: `--text-soft` is 3.4:1 in Paper and 4.0:1 in White, a
-   caption's contrast, and the sentence a whole table depends on is not fine
-   print. */
+/* Set like a description and not a step under it: the note is the sentence the
+   whole table depends on, and reading as fine print was the one thing it could
+   not afford. `--text-soft` came with the small size and had to go with it —
+   measured on these four grounds it is 3.4:1 in Paper and 4.0:1 in White,
+   which is a caption's contrast and not a sentence's. Its place under the
+   heading is what marks it as a note now, not its colour. */
 .note {
   margin: 0 0 1.05rem;
   font-size: var(--fs-sm);
   line-height: 1.55;
-  color: var(--accent-soft);
+  color: var(--text-muted);
 }
 
 .rows {
