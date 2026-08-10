@@ -109,10 +109,22 @@ export function Sidebar({
           Say word
         </button>
 
-        {/* Belongs beside the theme by subject — both are about how the page
-            looks — but sits here because the footer is 269px wide and only
-            Theme and Say word fit on a line together. Put between them, this
-            setting costs the text list two rows of height instead of one. */}
+        <button
+          type="button"
+          className="control"
+          onClick={onToggleSeekOnClick}
+          aria-pressed={seekOnClick}
+        >
+          {seekOnClick ? (
+            <LocateFixed size={19} strokeWidth={2} />
+          ) : (
+            <LocateOff size={19} strokeWidth={2} />
+          )}
+          Jump to word
+        </button>
+
+        <VolumeControl {...volume} />
+
         <button
           type="button"
           className="control"
@@ -126,26 +138,6 @@ export function Sidebar({
           )}
           Show image
         </button>
-
-        {/* Held together so the round volume control keeps this line company
-            rather than wrapping onto one of its own. */}
-        <div className={styles.settingRow}>
-          <button
-            type="button"
-            className="control"
-            onClick={onToggleSeekOnClick}
-            aria-pressed={seekOnClick}
-          >
-            {seekOnClick ? (
-              <LocateFixed size={19} strokeWidth={2} />
-            ) : (
-              <LocateOff size={19} strokeWidth={2} />
-            )}
-            Jump to word
-          </button>
-
-          <VolumeControl {...volume} />
-        </div>
       </footer>
     </aside>
   );

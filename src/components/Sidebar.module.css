@@ -85,7 +85,9 @@
   gap: 0.28rem;
 }
 
-/* One wrapping row: settings share a line whenever they fit. */
+/* One wrapping row, and nothing in it is pinned to a line: the settings fill
+   each line in order and wrap where they stop fitting, so the footer answers
+   to its own width — narrower sidebar, more lines, same order. */
 .footer {
   display: flex;
   flex-wrap: wrap;
@@ -97,15 +99,6 @@
      text list. */
   position: relative;
   z-index: 2;
-}
-
-/* Settings that belong on one line together; it takes the full width so the
-   wrap above it is decided for the whole row rather than control by control. */
-.settingRow {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: 100%;
 }
 
 /* The settings themselves use the shared .control class in global.css. */

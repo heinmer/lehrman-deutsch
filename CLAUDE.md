@@ -273,10 +273,16 @@ as `/…/` so transcriptions look the same everywhere.
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
   so a reader who does not want the illustration does not download it either —
-  `display: none` would have cost them the file anyway. It sits below the
-  Theme/Say word line rather than beside the theme, where it belongs by
-  subject: the footer is 269px wide, only those two controls fit on a line
-  together, and breaking that pair costs the text list a second row of height.
+  `display: none` would have cost them the file anyway.
+- **Nothing in the settings footer is pinned to a line.** It is one wrapping
+  flex row and the controls fill it in source order, so the same five settings
+  come out as three lines beside a 300px sidebar and five beside a 243px one.
+  The two toggles that have a paired *Off* icon — and the volume button, which
+  is round — used to be held in rows so a particular grouping survived; that
+  made the footer answer to a width someone measured once rather than to its
+  own. Adding a setting is one more child in the position it belongs, and the
+  wrapping is the layout's problem. Verify by sweeping widths and reading the
+  rows out of `getBoundingClientRect()`, not by looking at one screen.
 - **The dropdowns are one component.** `SettingPicker` owns the control, the
   outside-click and Escape handling, and the menu that opens *upwards* — these
   controls sit at the bottom of the window. Theme (sidebar, a labelled pill,
