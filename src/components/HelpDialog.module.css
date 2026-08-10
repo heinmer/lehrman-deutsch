@@ -1,0 +1,152 @@
+/* In front of everything, drawers included — it is opened from the sidebar,
+   which on a narrow screen is itself a drawer at z-index 50. */
+.host {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--gap);
+  background: var(--scrim);
+}
+
+/* The card floats, so its ground is the overlay token and not `--surface-raised`:
+   only the overlay is guaranteed opaque, and the text list must not show
+   through. `.island` clips, which is why the body scrolls and the card does
+   not — the same arrangement as the word panel. */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: min(36rem, 100%);
+  max-height: 100%;
+  background: var(--surface-overlay);
+  color: var(--text);
+}
+
+/* The card is focused when it opens, only so the keyboard starts inside it.
+   It is not a control, and the global focus ring drawn round the whole window
+   reads as a border the dialog does not otherwise have. */
+.card:focus {
+  outline: none;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex: none;
+  padding: 1.35rem 1.35rem 0.75rem 1.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border-radius: 50%;
+  color: var(--text-muted);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.close:hover {
+  background: var(--surface-raised);
+  color: var(--text);
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 1.75rem 1.75rem;
+}
+
+.section {
+  margin: 0 0 1.1rem;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.shortcuts {
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: 0.3rem 1.25rem;
+  align-items: baseline;
+}
+
+.row + .row {
+  margin-top: 1.1rem;
+}
+
+.keys {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+
+.plus {
+  color: var(--text-soft);
+}
+
+.what {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+.what b {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.note {
+  margin: 1.75rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-soft);
+}
+
+/* Scoped to the card: a module only rewrites class names, so a bare `kbd`
+   selector here would be a global rule. */
+.card kbd {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  /* The keys are read as part of the sentence around them, not as code. */
+  font-family: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+/* Narrower than the card can be: the two columns stop reading as a pair and
+   the key sits over its own description instead. */
+@media (max-width: 30rem) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

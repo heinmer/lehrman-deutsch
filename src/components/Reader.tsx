@@ -3,6 +3,7 @@ import { CloudOff, Languages, Loader2, RotateCw } from "lucide-react";
 import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
 import { useDelayedFlag } from "../hooks/useDelayedFlag";
 import { assetUrl } from "../lib/assets";
+import { wordAction, type WordAction } from "../lib/wordAction";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
 
@@ -25,7 +26,11 @@ interface Props {
   activeWordId: string | null;
   activeSentenceId: string | null;
   selectedWordId: string | null;
-  onSelectWord: (token: WordToken) => void;
+  /**
+   * The action is read off the modifiers held at the time (see `wordAction`);
+   * this component only reports which one was asked for.
+   */
+  onSelectWord: (token: WordToken, action: WordAction) => void;
   /**
    * The pointer or the focus reaching a word, which is taken as "this one may
    * be clicked next" — early enough for its recording to be there when it is.
@@ -46,7 +51,7 @@ interface SentenceProps {
   activeWordId: string | null;
   activeSentenceId: string | null;
   selectedWordId: string | null;
-  onSelectWord: (token: WordToken) => void;
+  onSelectWord: (token: WordToken, action: WordAction) => void;
   onWarmWord: (token: WordToken) => void;
   /** The word currently in the tab order — see the roving tabindex below. */
   tabbableId: string | null;
@@ -96,7 +101,7 @@ function SentenceView({
         className={styles.word}
         data-active={token.id === activeWordId}
         data-selected={token.id === selectedWordId}
-        onClick={() => onSelectWord(token)}
+        onClick={(event) => onSelectWord(token, wordAction(event))}
         onPointerEnter={() => onWarmWord(token)}
         onFocus={() => {
           onWarmWord(token);
@@ -180,12 +185,16 @@ export function Reader({
   // would otherwise take it away again, which is the flash being avoided.
   const showSpinner = useDelayedFlag(!text && !failedSlug);
 
-  /** Arrow keys walk the text; Enter and Space choose the word under focus. */
+  /**
+   * Arrow keys walk the text; Enter and Space choose the word under focus —
+   * and carry the same modifiers a click would, so the two shortcuts are not
+   * something only a mouse can reach.
+   */
   const onWordKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>, token: WordToken) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        onSelectWord(token);
+        onSelectWord(token, wordAction(event));
         return;
       }
 

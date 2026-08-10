@@ -25,6 +25,25 @@
   line-height: 1.2;
 }
 
+/* Sized to the icon rather than to the pill controls in the footer: this sits
+   in a line of type, and a 3rem disc beside the name would read as a control
+   the header does not otherwise have. */
+.help {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  border-radius: 50%;
+  color: var(--text-soft);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+.help:hover {
+  background: var(--surface-inset);
+  color: var(--text);
+}
+
 /* Takes whatever height is left above the settings and scrolls inside it, so
    the divider stays put however many texts there are. */
 .list {

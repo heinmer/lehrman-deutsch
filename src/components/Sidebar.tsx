@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  CircleQuestionMark,
   Clock,
   Image,
   ImageOff,
@@ -33,6 +34,8 @@ interface Props {
   showImage: boolean;
   onToggleShowImage: () => void;
   volume: VolumeSetting;
+  /** Opens the help window; the button for it sits beside the site's name. */
+  onOpenHelp: () => void;
 }
 
 /** How long this text runs in the chosen voice; each reads at its own pace. */
@@ -53,6 +56,7 @@ export function Sidebar({
   showImage,
   onToggleShowImage,
   volume,
+  onOpenHelp,
 }: Props) {
   return (
     // The sidebar clips its overflow, so anything floating inside it — the
@@ -61,6 +65,17 @@ export function Sidebar({
       <header className={styles.header}>
         <BookOpen size={24} strokeWidth={1.75} className={styles.logo} />
         <h1 className={styles.title}>Texts in German</h1>
+        {/* Beside the name rather than off at the edge: it is about the whole
+            site, not about the list underneath it. */}
+        <button
+          type="button"
+          className={styles.help}
+          onClick={onOpenHelp}
+          aria-label="How to read a text"
+          title="How to read a text"
+        >
+          <CircleQuestionMark size={19} strokeWidth={2} />
+        </button>
       </header>
 
       <nav className={styles.list} aria-label="Texts">

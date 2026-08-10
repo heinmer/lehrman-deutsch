@@ -9,10 +9,12 @@ import { useNarration } from "./hooks/useNarration";
 import { useTheme } from "./hooks/useTheme";
 import { pronunciationClip } from "./lib/pronunciation";
 import { newTextOpened, playClip, setClipVolume, warmClip } from "./lib/clipAudio";
+import type { WordAction } from "./lib/wordAction";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
 import { WordPanel } from "./components/WordPanel";
+import { HelpDialog } from "./components/HelpDialog";
 import styles from "./App.module.css";
 
 export function App() {
@@ -90,12 +92,38 @@ export function App() {
 
   const { seek, play, isPlaying, wordStart } = narration;
 
-  // Clicking a word never changes whether the narration is playing. Moving the
+  // Asking to be read from a word is asking to hear it, so this is the one
+  // path that starts playback from a standstill — the panel's button and the
+  // Ctrl shortcut are the same request and behave identically.
+  const readFrom = useCallback(
+    (token: WordToken) => {
+      const start = wordStart(token.id);
+      if (start === null) return;
+      seek(start);
+      play();
+    },
+    [wordStart, seek, play],
+  );
+
+  // A plain click never changes whether the narration is playing. Moving the
   // playhead to it and speaking the word are each optional; while the
   // narration runs the clip is suppressed, or it would talk over the sentence.
+  // The two modifiers replace all of that rather than adjusting it: each one
+  // asks for a whole behaviour, whatever the settings happen to be.
   const selectWord = useCallback(
-    (token: WordToken) => {
+    (token: WordToken, action: WordAction) => {
+      // Ctrl: hear the text from here, and nothing else. The word is not
+      // opened, so it does not take the panel away from whatever is in it.
+      if (action === "read") {
+        readFrom(token);
+        return;
+      }
+
       if (slug) setSelection({ slug, token });
+
+      // Alt: look the word up, and nothing else — the playhead stays where it
+      // is and no recording is played.
+      if (action === "inspect") return;
 
       const start = wordStart(token.id);
       if (seekOnClick && start !== null) seek(start, { fade: true });
@@ -105,7 +133,7 @@ export function App() {
         if (clip) playClip(clip.src);
       }
     },
-    [seek, wordStart, isPlaying, autoSpeak, seekOnClick, text, slug],
+    [readFrom, seek, wordStart, isPlaying, autoSpeak, seekOnClick, text, slug],
   );
 
   // Reaching a word is a good guess that it is about to be clicked, and a
@@ -120,14 +148,11 @@ export function App() {
 
   const closePanel = useCallback(() => setSelection(null), []);
 
-  // Unlike clicking a word, this one is a request to hear the text: it starts
-  // playback even from a standstill.
+  // Unlike a plain click on a word, this one is a request to hear the text: it
+  // starts playback even from a standstill.
   const playFromWord = useCallback(() => {
-    const start = selectedWord ? wordStart(selectedWord.id) : null;
-    if (start === null) return;
-    seek(start);
-    play();
-  }, [selectedWord, wordStart, seek, play]);
+    if (selectedWord) readFrom(selectedWord);
+  }, [selectedWord, readFrom]);
 
   // Narrow screens have no room for the sidebar in the layout, so it becomes a
   // drawer over the reader. Wide screens never open or close anything — above
@@ -145,16 +170,23 @@ export function App() {
     [selectText],
   );
 
+  // The shortcuts and whatever else the interface has no room to explain.
+  const [helpOpen, setHelpOpen] = useState(false);
+  const openHelp = useCallback(() => setHelpOpen(true), []);
+  const closeHelp = useCallback(() => setHelpOpen(false), []);
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
-      // The drawer is in front of the panel, so it is what Escape means first.
-      if (drawerOpen) setDrawerOpen(false);
+      // Front to back: the help window covers the drawer, which covers the
+      // panel — Escape closes them in the order they are stacked.
+      if (helpOpen) setHelpOpen(false);
+      else if (drawerOpen) setDrawerOpen(false);
       else closePanel();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [closePanel, drawerOpen]);
+  }, [closePanel, drawerOpen, helpOpen]);
 
   // The index is the one thing there is no working around: no list, no route.
   if (indexError) {
@@ -196,6 +228,7 @@ export function App() {
           showImage={showImage}
           onToggleShowImage={toggleShowImage}
           volume={volume}
+          onOpenHelp={openHelp}
         />
       </div>
 
@@ -246,6 +279,10 @@ export function App() {
           }
         />
       </div>
+
+      {/* Last, and over everything: it is opened from the sidebar, which on a
+          narrow screen is itself a drawer in front of the reader. */}
+      {helpOpen && <HelpDialog onClose={closeHelp} />}
     </div>
   );
 }

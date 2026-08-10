@@ -288,6 +288,28 @@ as `/…/` so transcriptions look the same everywhere.
   alone reads as "hovered" rather than as "off" — which is why "Say word" is a
   speech bubble and not a megaphone: `MegaphoneOff` is too busy at 19px for
   its slash to register.
+- **Ctrl and Alt on a word replace the settings rather than adjusting them.**
+  Ctrl+click reads the text *from* that word — it starts playback even from a
+  standstill, and neither opens the word nor speaks it; Alt+click opens the
+  word and touches nothing else, leaving the playhead where it is. Both ignore
+  "Say word" and "Jump" entirely, which is the point: either behaviour is one
+  click away whatever the settings are. Cmd counts as Ctrl because on a Mac
+  Ctrl+click *is* the context menu. Shift is deliberately unused — it is how a
+  browser extends a text selection, and the words are ordinary inline text.
+  The mapping is one pure function, `wordAction` (`src/lib/wordAction.ts`),
+  and the click and the Enter/Space path both go through it, so a shortcut is
+  never something only a mouse can reach. `App`'s `selectWord` is the one
+  place the three outcomes live; its Ctrl branch is `readFrom`, which is also
+  what the panel's "Read from here" calls, so the two cannot drift apart.
+- **The help window is the only modal.** `HelpDialog`, opened from the
+  question mark beside the site's name, is a centred card over a scrim at
+  z-index 60 — in front of both drawers, and Escape reads that same order in
+  `App` (help, then drawer, then panel). It focuses itself on open, hands
+  focus back to whatever opened it, and wraps Tab at both ends, because the
+  page behind it is still in the tab order. Its focus ring is turned off: the
+  card is only a landing place for the keyboard, and the global outline drawn
+  round the whole window reads as a border. It is where anything the
+  interface has no room to explain belongs; today that is the two shortcuts.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
