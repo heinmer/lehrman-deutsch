@@ -376,13 +376,16 @@ as `/…/` so transcriptions look the same everywhere.
   The scrim is what tells the card from the page it matches. It is a separate
   token and not a change to the overlay because the pickers, the volume slider
   and the drawer island all float on that one and are right as they are.
-  Its notes are `--text` at `--fs-sm`, and the tables' descriptions are
-  `--text-muted`: the two carried the same colour at the same size, so the note
-  under a heading read as a seventh sentence rather than as what the table
-  below it is. The step is **upwards** — `--text-soft` measured 3.4:1 in Paper
-  and 4.0:1 in White, which is a caption's contrast, and a note the tables
-  depend on is not a caption. Its place under the heading is still what marks
-  it as a note; the colour only keeps it off the rows.
+  Its notes are told from the tables' descriptions **by hue, not by weight**:
+  `--accent-soft` against `--text-muted`, both at `--fs-sm`. The two were one
+  colour to begin with and the note read as a seventh sentence in a box of six;
+  a step along the greys — muted against `--text` — was a difference to be
+  found rather than seen, which is what a first attempt at this proved. The
+  note belongs to the heading above it instead, and takes the heading's colour
+  with the chroma pulled back, leaving `--accent` itself to the heading.
+  Quieter was the other way out and is closed: `--text-soft` measured 3.4:1 in
+  Paper and 4.0:1 in White, which is a caption's contrast, and a note the
+  tables depend on is not a caption.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
@@ -697,6 +700,17 @@ the scale in dark fills under a white label; the dark themes invert it, since a
 saturated disc on a dark ground goes muddy. Each fill has to clear
 `--level-contrast` by 4.5:1 — the label is the text — so a new theme's six
 belong in the ratio script before they are believed.
+
+`--accent-soft` is the accent as **prose** rather than as emphasis — a sentence
+that belongs to an accented heading without competing with it, which today is
+the notes in the info window. Each theme's is derived from its own `--accent`:
+same hue, chroma pulled back, lightness set between the accent and
+`--text-muted`. It is body copy, so it is measured against `--surface-dialog`
+(the ground it is read on, not the page) and clears 4.5:1 everywhere — 7.8:1 in
+Ink, 7.4:1 in Black, 7.0:1 in White, 5.9:1 in Paper. The dark themes keep more
+of the accent's chroma than the light ones do: their blues are pale and their
+`--text-muted` is itself a blue-grey, so the usual step back left a sentence
+reading as grey rather than as tinted.
 
 `--border` draws lines; `--track` fills areas that must read as "empty but
 present" — the unplayed part of the scrubber, the ring around a theme dot, a

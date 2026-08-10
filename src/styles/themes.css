@@ -53,6 +53,10 @@
 
   --accent: #8ba7e2;
   --accent-hover: #9fb8ec;
+  /* Holds more of the accent's chroma than the light themes' does: this blue is
+     pale to begin with, and `--text-muted` is itself a blue-grey here, so the
+     usual step back left a sentence that read as grey rather than as tinted. */
+  --accent-soft: #96aede;
   --accent-contrast: #0c1424;
   --accent-secondary: #74c2ab;
 
@@ -108,6 +112,7 @@
 
   --accent: #8a4126;
   --accent-hover: #74351d;
+  --accent-soft: #794533;
   --accent-contrast: #fdf8ef;
   --accent-secondary: #4f6538;
 
@@ -194,6 +199,15 @@
 
   --accent: #44559f;
   --accent-hover: #37478b;
+  /* A quieter pour of the accent, for prose that is tinted rather than
+     emphasised — today the notes under the info window's headings, which have
+     to read as belonging to the heading above them without competing with it.
+     Each theme takes its own accent's hue, pulls the chroma back and sets the
+     lightness between the accent and `--text-muted`, so the colour lands
+     between the heading it follows and the descriptions it stands over. It is
+     body copy, so it clears 4.5:1 against `--surface-dialog` in every theme —
+     measure a new one there and not against the page. */
+  --accent-soft: #435084;
   --accent-contrast: #ffffff;
   --accent-secondary: #3f7d68;
 
@@ -254,6 +268,8 @@
 
   --accent: #93a2dd;
   --accent-hover: #a6b3e8;
+  /* Kept nearer the accent than the light themes', for the reason given in Ink. */
+  --accent-soft: #99a6d7;
   --accent-contrast: #0b0c11;
   --accent-secondary: #77bda7;
 

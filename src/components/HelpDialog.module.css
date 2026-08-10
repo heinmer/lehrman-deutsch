@@ -124,18 +124,20 @@
   margin-bottom: 0.4rem;
 }
 
-/* A step *above* a description rather than below one: the note says what the
-   whole table is, and set in the descriptions' own colour it was a seventh
-   sentence of the same weight in a box of six. Its distance from them is
-   upwards, since reading as fine print is the one thing it could not afford —
-   `--text-soft` came with the small size and had to go with it, being 3.4:1 in
-   Paper and 4.0:1 in White, a caption's contrast and not a sentence's. So the
-   note keeps the body colour and the descriptions stay muted under it. */
+/* Told from the descriptions by hue and not by weight. Both are sentences of
+   the same length at the same size, so a step along the greys — muted against
+   the body colour — was a difference to be found rather than seen. The note
+   belongs to the heading above it instead: `--accent-soft` is the heading's own
+   colour with the chroma pulled back, which reads as a caption *of* the section
+   while leaving `--accent` to the heading. Going quieter was the other way out
+   and is closed: `--text-soft` is 3.4:1 in Paper and 4.0:1 in White, a
+   caption's contrast, and the sentence a whole table depends on is not fine
+   print. */
 .note {
   margin: 0 0 1.05rem;
   font-size: var(--fs-sm);
   line-height: 1.55;
-  color: var(--text);
+  color: var(--accent-soft);
 }
 
 .rows {
