@@ -26,16 +26,14 @@
   --gap: 1rem;
   /* The two side columns are deliberately the same width. */
   --side-width: 23rem;
-  /* The player is not a section of its own: it floats on the reader, this far
-     inside its corners — the same inset the library island keeps, so the two
-     floating things line up. `--player-fade` is the band the prose fades out
-     over as it scrolls under the bar, and `--player-space` is the room it
-     leaves under itself so the last line can scroll clear of both: the bar at
-     its tallest is the wrapped two-row phone layout, and the reader's own
-     bottom padding is added to this. */
+  /* The player is not a section of its own: it sticks to the bottom of the
+     reader, holding itself this far off the edge. `--player-fade` is the band
+     the prose fades out over as it scrolls under the bar, and `--player-space`
+     is the room the prose leaves under itself so that the last line comes to
+     rest clear of that band. */
   --player-inset: 1.25rem;
   --player-fade: 1.75rem;
-  --player-space: 8rem;
+  --player-space: 3rem;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;
 }

@@ -1,21 +1,27 @@
 /* The one section of the layout: it runs to the bottom edge of the window and
-   the player floats on it. The padding is even top and bottom because the
-   loading and failure states centre themselves in this box — the room the
-   player needs is the article's, below. */
+   the player rides at the end of its flow, sticking to the bottom. A column,
+   so that the prose can grow and push the bar down to the bottom edge when the
+   text is too short to fill the section.
+
+   There is no padding under the prose: the player is the last thing in the
+   flow, and what holds it off the bottom edge is its own (see PlayerBar). The
+   room the last lines need is the article's. */
 .reader {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
   overflow-y: auto;
   background: var(--surface-reader);
-  padding: 3.5rem 2.5rem;
+  padding: 3.5rem 2.5rem 0;
 }
 
 /* The prose fills the whole centre island rather than sitting in a narrow
-   measure inside it, and leaves room under itself for the player it scrolls
-   away beneath. On the article and not on the scroll box, so that a text that
-   failed to load is still centred in the section rather than pushed up by
-   room kept for a bar the reader is not looking at. */
+   measure inside it, growing to hold the player at the bottom, and leaves
+   `--player-space` under itself so the last line comes to rest clear of the
+   bar it has been scrolling under. */
 .article {
   width: 100%;
+  flex: 1 0 auto;
   padding-bottom: var(--player-space);
 }
 
@@ -53,10 +59,14 @@
   color: var(--text-muted);
 }
 
+/* Centred in what is left of the section above the player, which is what
+   `flex: 1` measures — a height of 100% would be the whole scrollport and
+   would push the bar off the bottom of it. */
 .loading {
   display: grid;
   place-items: center;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   color: var(--text-soft);
 }
 
@@ -83,7 +93,8 @@
   justify-items: center;
   align-content: center;
   gap: 0.75rem;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   padding: 0 2rem;
   text-align: center;
   color: var(--text-soft);
@@ -214,7 +225,7 @@
 
 @media (max-width: 62rem) {
   .reader {
-    padding: 2.5rem 1.75rem;
+    padding: 2.5rem 1.75rem 0;
   }
 }
 

@@ -309,11 +309,10 @@ as `/…/` so transcriptions look the same everywhere.
   That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
-  wrapping. It lines up with the bar's left edge and stands `--gap` above it —
-  both float on the reader, so the bar's own `--player-inset` is what holds
-  them off the corner. The stray pixel in each offset is the bar's border:
-  offsets resolve against its padding box, one border inside the edges being
-  measured from. Its ground is `--surface-overlay` at 62% behind a
+  wrapping. It lines up with the bar's left edge — and so with the text column
+  — and stands `--gap` above it. The stray pixel in each offset is the bar's
+  border: offsets resolve against its padding box, one border inside the edges
+  being measured from. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
   blur is what stands in for it. Below 48rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
@@ -325,20 +324,27 @@ as `/…/` so transcriptions look the same everywhere.
   used to find the panel. The drawer's scrim sits *above* the panel (48
   against 45), because the drawer is in front of it and Escape reads the same
   order.
-- **The centre is one section, and the player floats on it.** The reader fills
-  `.main` down to the bottom edge; the bar is absolutely positioned against
-  that column, `--player-inset` inside its corners, so it is narrower than the
-  section it sits on and the prose scrolls away underneath. Two things follow.
-  The prose keeps `--player-space` of room under itself (on the *article*, so
-  the loading and failure states stay centred in the section) — enough for the
-  bar at its tallest, which is the wrapped two-row phone layout carrying the
-  failure message. And the bar's host draws the reader's own ground from
-  `--player-fade` above it down to the section's bottom edge, fading in over
-  the top: without it a strip of half a line shows *below* the bar, through the
-  gap it is inset by. That backdrop is spread down but **not** sideways — the
-  bar's own edges are already well inside the reader's side padding, where no
-  text can be, and a band reaching the section's edge would lie over the
-  reader's scrollbar and cut it off.
+- **The centre is one section, and the player rides inside it.** The reader
+  fills `.main` down to the bottom edge, and the bar is the last thing in the
+  reader's own flow, `position: sticky` at the bottom of it — which is why
+  `Reader` takes it as `children` and renders it in every state, text or no
+  text. It is **in the flow and not positioned over it** for one reason: a
+  scrollbar that takes layout space, as Chrome's does and Firefox's does not,
+  narrows the text column, and only something laid out in that column narrows
+  with it. Absolutely positioned against the section, the bar ran under the
+  scrollbar on exactly one of the two browsers, and CSS cannot be asked how
+  wide that scrollbar is. Everything else follows from being in the flow: the
+  reader is a flex column and the article grows (`flex: 1 0 auto`), so a text
+  too short to fill the section still pushes the bar to the bottom and nothing
+  becomes scrollable; the loading and failure states take `flex: 1` instead of
+  a height for the same reason. What holds the bar off the bottom edge is its
+  host's own `padding-bottom`, not a sticky offset and not the reader's
+  padding — Chrome adds the container's padding to the offset and Firefox does
+  not, and a gap carried inside the sticky box is the same in both, stuck or at
+  rest. The host also draws the reader's ground from `--player-fade` above it
+  down to that edge, fading in over the top: without it a strip of half a line
+  shows *below* the bar. And the article keeps `--player-space` under itself so
+  that the last line comes to rest clear of the fade.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
   grow past its column instead of wrapping inside it — invisible on a wide
@@ -350,9 +356,10 @@ as `/…/` so transcriptions look the same everywhere.
   fixed width and only the scrubber gives, so it is the scrubber that pays for
   a narrow bar — down to no track at all, which is what it came to. It takes a
   row of its own below 52rem *of bar*, and the gaps tighten below 38rem, both
-  as container queries against `.host`, the box that holds the bar on the
-  reader (`container-type: inline-size`) and is exactly as wide as it. `.main`
-  is not: the insets take 2 × `--player-inset` off it. Against the *window*
+  as container queries against `.host`, the box that carries the bar at the end
+  of the reader's flow (`container-type: inline-size`) and is exactly as wide
+  as it. `.main` is not: the reader's padding and its scrollbar are both
+  between them. Against the *window*
   this cannot be got right either: the sidebar leaves the layout at 62rem and
   the word panel at 48rem, so between those steps the window narrows while the
   bar **widens**, and a window breakpoint therefore squeezes the row hardest

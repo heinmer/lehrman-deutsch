@@ -210,6 +210,9 @@ export function App() {
       )}
 
       <main className={styles.main}>
+        {/* One section, and the player is inside it: it rides at the end of the
+            reader's flow so that it is the width of the text and not of the
+            column — see Reader's `children`. */}
         <Reader
           text={text}
           image={image}
@@ -220,13 +223,14 @@ export function App() {
           selectedWordId={selectedWord?.id ?? null}
           onSelectWord={selectWord}
           onWarmWord={warmWord}
-        />
-        <PlayerBar
-          narration={narration}
-          voiceId={voice}
-          onSelectVoice={setVoice}
-          onOpenDrawer={openDrawer}
-        />
+        >
+          <PlayerBar
+            narration={narration}
+            voiceId={voice}
+            onSelectVoice={setVoice}
+            onOpenDrawer={openDrawer}
+          />
+        </Reader>
       </main>
 
       {/* Like the sidebar's wrapper: nothing at all while the panel is a

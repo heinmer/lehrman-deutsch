@@ -20,9 +20,7 @@
 }
 
 /* One section, not two: the reader fills this column down to the bottom edge
-   and the player floats *on* it, inset from its corners rather than sitting in
-   a row of its own. The player's host is positioned against this box, which is
-   why it is the only thing here that is positioned. */
+   and the player rides inside it, at the end of its flow. */
 .main {
   display: grid;
   /* Both tracks are explicit for the same reason: an implicit one is sized to
@@ -32,7 +30,6 @@
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   min-width: 0;
-  position: relative;
 }
 
 .error {

@@ -30,6 +30,14 @@ interface Props {
    * be clicked next" — early enough for its recording to be there when it is.
    */
   onWarmWord: (token: WordToken) => void;
+  /**
+   * The player, which rides at the end of this section's flow and sticks to
+   * the bottom of it. It belongs to the scroll box rather than beside it so
+   * that it is the width of the text: a scrollbar that takes layout space
+   * narrows the column, and nothing else could tell the bar by how much. It is
+   * rendered in every state, including the ones with no text to read.
+   */
+  children?: ReactNode;
 }
 
 interface SentenceProps {
@@ -137,6 +145,7 @@ export function Reader({
   selectedWordId,
   onSelectWord,
   onWarmWord,
+  children,
 }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [openTranslations, setOpenTranslations] = useState<ReadonlySet<string>>(NONE_OPEN);
@@ -246,6 +255,7 @@ export function Reader({
             <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />
           </div>
         )}
+        {children}
       </div>
     );
   }
@@ -342,6 +352,7 @@ export function Reader({
           );
         })}
       </article>
+      {children}
     </div>
   );
 }

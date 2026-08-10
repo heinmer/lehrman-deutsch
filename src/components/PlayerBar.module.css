@@ -1,46 +1,49 @@
-/* The bar floats on the reader rather than sitting under it, inset from the
-   reader's corners by `--player-inset`; the reading section runs to the bottom
-   edge of the window and the prose scrolls away underneath. Positioned against
-   `.main`, which is that section's box — the reader is its only in-flow child.
+/* The bar floats on the reader rather than sitting under it: the reading
+   section runs to the bottom edge of the window and the prose scrolls away
+   underneath. It rides at the *end of the reader's own flow* and sticks to the
+   bottom, which is what keeps it the width of the text rather than the width
+   of the section — a scrollbar that takes layout space, as Chrome's does and
+   Firefox's does not, narrows the column and the bar with it. Positioned
+   absolutely against the section it would have run under the scrollbar, and
+   there is no way to ask CSS how wide that is.
 
-   It is also the container the bar's layout answers to, and it is exactly the
-   bar's width, which `.main` no longer is: the insets take 2 × `--player-inset`
-   off it. The window is the wrong thing to measure either way — the sidebar
-   leaves the layout at 62rem and the word panel at 48rem, so between those two
-   the window gets narrower while the bar gets *wider*. The query at the end of
-   this file is left unnamed on purpose: a container *name* is a custom ident
-   shared across two CSS Modules files, and the day the bundler starts scoping
-   those the two halves stop meeting, silently. Here both halves are in this
-   file, which is the other reason the container moved down to it. */
+   What holds it off the section's bottom edge is its own padding, not an
+   offset and not the reader's: it sticks flush and carries the gap inside
+   itself, so the distance is the same while stuck and at rest at the end of
+   the scroll, and the same in browsers that disagree about whether a sticky
+   offset is measured from the scrollport or from inside the container's
+   padding — Chrome adds that padding to the offset, and the bar sat twice as
+   far off the edge as it was asked to.
+
+   It is also the container the bar's layout answers to, being exactly its
+   width. The window is the wrong thing to measure: the sidebar leaves the
+   layout at 62rem and the word panel at 48rem, so between those two the window
+   gets narrower while the bar gets *wider*. The query at the end of this file
+   is left unnamed on purpose: a container *name* is a custom ident shared
+   across two CSS Modules files, and the day the bundler starts scoping those
+   the two halves stop meeting, silently. Here both halves are in this file. */
 .host {
-  position: absolute;
-  left: var(--player-inset);
-  right: var(--player-inset);
-  bottom: var(--player-inset);
+  position: sticky;
+  bottom: 0;
+  padding-bottom: var(--player-inset);
   container-type: inline-size;
 }
 
-/* The reader's own ground, carried down past the bar to the section's bottom
-   edge. Without it the prose scrolls through the gap the bar is inset by and a
-   strip of half a line shows below the player — the bar hides what is behind
-   it, and nothing was hiding what is under it. It fades in over its top edge
-   rather than cutting the text off at a line, which is the one part of this
-   the reader actually sees. Painted before the bar simply by coming first:
-   both are positioned with `z-index: auto`, so document order is the order.
-
-   Only the *bottom* is spread back out. Sideways it stops at the bar's own
-   edges, which are still well inside the reader's padding, so there is no text
-   for it to cover there — and the reader's scrollbar, which is drawn at the
-   very edge, stays whole instead of being cut off by a band lying over it. */
+/* The reader's own ground, carried down past the bar to the bottom of the
+   section. Without it the prose scrolls through the gap the bar is held off
+   the edge by and a strip of half a line shows below the player — the bar
+   hides what is behind it, and nothing was hiding what is under it. It fades
+   in over its top edge rather than cutting the text off at a line, which is
+   the one part of this the reader actually sees. Only the fade hangs outside
+   the host; the rest is its own padding, so there is nothing extra to scroll
+   to. */
 .host::before {
   content: "";
   position: absolute;
   top: calc(var(--player-fade) * -1);
   left: 0;
   right: 0;
-  bottom: calc(var(--player-inset) * -1);
-  /* Its bottom corners sit in the reader's rounded ones. */
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  bottom: 0;
   background: linear-gradient(
     to bottom,
     transparent,
