@@ -46,7 +46,7 @@ export function VoicePicker({ voiceId, onSelect }: Props) {
         aria-label={`Hear ${voice.name}`}
         title={`Hear ${voice.name}`}
       >
-        <Volume2 size={17} strokeWidth={2} />
+        <Volume2 size={19} strokeWidth={2} />
       </button>
     ),
   }));
@@ -59,6 +59,9 @@ export function VoicePicker({ voiceId, onSelect }: Props) {
       selectedId={voiceId}
       onSelect={onSelect}
       trigger="hover"
+      // It is the last thing in the bar: the menu lines up with the bar's own
+      // right edge rather than with the disc, which is a padding inside it.
+      edge="boundary"
     />
   );
 }

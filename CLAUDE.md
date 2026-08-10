@@ -295,8 +295,23 @@ as `/…/` so transcriptions look the same everywhere.
   Which side the menu hangs from is measured, not declared: it flips to the
   control's right edge when the left one would push it out of the nearest
   `[data-popover-boundary]`, so reordering the settings cannot clip a menu.
-  The gap above the control is *padding on the anchor*, not a margin — in hover
+  `edge="boundary"` measures two more distances against that same box and
+  hands them to the CSS as `--popover-shift` and `--popover-lift`: the menu is
+  then placed against the *box's* side and top edges rather than the control's,
+  which is what the voice picker wants — it is the last thing in the bar, and
+  hung off the disc the menu stopped a padding short of the bar's right edge
+  and came to rest on its top one. A control's inset from its host is the
+  host's padding, so it is not something this component can be told in CSS.
+  The gap above is *padding on the anchor*, not a margin — in hover
   mode it is the bridge the pointer crosses, exactly as in `VolumeControl`.
+  **A hover menu closes on a delay, not on `pointerleave`** (`HOVER_GRACE_MS`).
+  The control is a disc and the menu is four times wider, so a pointer heading
+  for an option leaves the control *sideways*, across ground that belongs to
+  neither, and closing there left the list reachable only by going straight up
+  first and then turning. Coming back anywhere inside the root — control or
+  menu — calls the departure off. Widening the bridge is not the alternative:
+  the dead ground is beside the control, in the bar's own row, and an anchor
+  reaching down over it would swallow the clicks meant for the speed strip.
   The list answers to Up/Down/Home/End and, when it was opened by click rather
   than by hover, takes focus to the chosen option — in hover mode it must not,
   or the pointer arriving would steal focus from wherever it was.

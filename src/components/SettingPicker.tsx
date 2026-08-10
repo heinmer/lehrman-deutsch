@@ -3,6 +3,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from "react";
@@ -11,6 +12,24 @@ import styles from "./SettingPicker.module.css";
 
 /** Distance kept between the menu and the edge of its boundary. */
 const EDGE_MARGIN = 8;
+
+/**
+ * How long a menu opened by hover survives the pointer leaving it. The control
+ * is a disc and the menu is several times wider, so a pointer heading straight
+ * for an option leaves the control *sideways* — across the ground beside it,
+ * which belongs to neither — and closing there left the list reachable only by
+ * travelling up first and then turning. Leaving counts only if the pointer is
+ * still away when the grace period is up.
+ */
+const HOVER_GRACE_MS = 260;
+
+interface Placement {
+  align: "start" | "end";
+  /** How far the menu is pushed sideways past the control, out to its boundary. */
+  shift: number;
+  /** How far it is lifted past the control, clear of the boundary's top edge. */
+  lift: number;
+}
 
 export interface PickerOption {
   id: string;
@@ -41,6 +60,15 @@ interface Props {
    * request — the player's voice button, like the sidebar's volume slider.
    */
   trigger?: "click" | "hover";
+  /**
+   * Which edges the menu is placed against: the control's own, or those of the
+   * box it opens inside — the bar, the sidebar. A control sits inset from its
+   * host's edges by that host's padding, so a menu hung off the control stops
+   * short of the side and comes to rest *on* the top edge rather than above
+   * it. The player's voice menu takes the second, being the last thing in a
+   * bar it should clear.
+   */
+  edge?: "control" | "boundary";
 }
 
 /**
@@ -57,9 +85,10 @@ export function SettingPicker({
   selectedId,
   onSelect,
   trigger = "click",
+  edge = "control",
 }: Props) {
   const [open, setOpen] = useState(false);
-  const [align, setAlign] = useState<"start" | "end">("start");
+  const [placement, setPlacement] = useState<Placement>({ align: "start", shift: 0, lift: 0 });
   const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +97,8 @@ export function SettingPicker({
    * when that would take it outside the boundary — which control sits where
    * changes whenever the settings are reordered, so it is not worth deciding
    * by hand. Measured before paint, so the menu never appears on the wrong
-   * side.
+   * side. The distance out to the boundary's own edge is measured here for the
+   * same reason: the padding holding the control off it belongs to the host.
    */
   useLayoutEffect(() => {
     const menu = menuRef.current;
@@ -79,13 +109,27 @@ export function SettingPicker({
     const bounds = boundary?.getBoundingClientRect() ?? {
       left: 0,
       right: window.innerWidth,
+      top: 0,
     };
     const control = root.getBoundingClientRect();
 
     const overflowsRight = control.left + menu.offsetWidth > bounds.right - EDGE_MARGIN;
     const fitsFlipped = control.right - menu.offsetWidth >= bounds.left + EDGE_MARGIN;
-    setAlign(overflowsRight && fitsFlipped ? "end" : "start");
-  }, [open]);
+    const align = overflowsRight && fitsFlipped ? "end" : "start";
+
+    setPlacement({
+      align,
+      shift:
+        edge === "control"
+          ? 0
+          : align === "end"
+            ? bounds.right - control.right
+            : control.left - bounds.left,
+      // Cleared over the whole box, so a bar that has wrapped to two rows is
+      // not something the menu comes down on top of.
+      lift: edge === "control" ? 0 : Math.max(0, control.top - bounds.top),
+    });
+  }, [open, edge]);
 
   useEffect(() => {
     if (!open || trigger === "hover") return undefined;
@@ -137,13 +181,30 @@ export function SettingPicker({
     (chosen ?? items?.[0])?.focus();
   }, [open, trigger]);
 
+  // The pointer is on its way out; see HOVER_GRACE_MS. Coming back — into the
+  // control or anywhere in the menu, both of which are inside the root — calls
+  // the departure off before the timer runs out.
+  const [leaving, setLeaving] = useState(false);
+
+  useEffect(() => {
+    if (!leaving) return undefined;
+    const timer = window.setTimeout(() => {
+      setOpen(false);
+      setLeaving(false);
+    }, HOVER_GRACE_MS);
+    return () => window.clearTimeout(timer);
+  }, [leaving]);
+
   // The menu is a child of the root, so travelling into it never leaves the
   // hover area — and the anchor's padding bridges the gap above the control.
   const hover =
     trigger === "hover"
       ? {
-          onPointerEnter: () => setOpen(true),
-          onPointerLeave: () => setOpen(false),
+          onPointerEnter: () => {
+            setLeaving(false);
+            setOpen(true);
+          },
+          onPointerLeave: () => setLeaving(true),
         }
       : {};
 
@@ -166,7 +227,16 @@ export function SettingPicker({
       </button>
 
       {open && (
-        <div className={styles.anchor} data-align={align}>
+        <div
+          className={styles.anchor}
+          data-align={placement.align}
+          style={
+            {
+              "--popover-shift": `${placement.shift}px`,
+              "--popover-lift": `${placement.lift}px`,
+            } as CSSProperties
+          }
+        >
           <div
             className={styles.menu}
             ref={menuRef}

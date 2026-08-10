@@ -23,26 +23,31 @@
 
 /* Opens upwards: these controls sit at the bottom of the window. The padding
    is the bridge — it keeps the hover area continuous between the control and
-   the menu, so a pointer travelling up never crosses a gap. */
+   the menu, so a pointer travelling up never crosses a gap. It stands the menu
+   clear of the bar it opens from rather than resting on it. `--popover-shift`
+   and `--popover-lift` are the distances out to the boundary's side and top
+   edges, measured by SettingPicker for the hosts that ask to be placed against
+   the box rather than the control, and zero for the rest — so the gap below is
+   held off whichever edge the menu is standing above. */
 .anchor {
   position: absolute;
   bottom: 100%;
-  left: 0;
+  left: calc(var(--popover-shift, 0px) * -1);
   right: auto;
   z-index: 30;
-  padding-bottom: 0.45rem;
+  padding-bottom: calc(0.9rem + var(--popover-lift, 0px));
 }
 
 /* Flipped by SettingPicker when hanging from the left edge would put the menu
    outside the boundary. */
 .anchor[data-align="end"] {
   left: auto;
-  right: 0;
+  right: calc(var(--popover-shift, 0px) * -1);
 }
 
 .menu {
-  min-width: 11rem;
-  padding: 0.4rem;
+  min-width: 13.5rem;
+  padding: 0.5rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--surface-overlay);
@@ -56,11 +61,11 @@
 .option {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
   width: 100%;
-  padding: 0.45rem 0.6rem;
+  padding: 0.6rem 0.75rem;
   border-radius: var(--radius-sm);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   color: var(--text-muted);
   text-align: left;
   /* No longer a button, so it has to ask for the pointer itself. */
