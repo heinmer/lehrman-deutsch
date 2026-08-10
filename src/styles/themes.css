@@ -160,10 +160,11 @@
 }
 
 /**
- * Ink — one deep navy sheet, page and sections alike, with nothing drawn
- * between them. Dusk is navy in layers; this is navy as a single ground, so a
- * long text has no seams running through it. The blue is desaturated enough
- * that white-ish type on it stays comfortable rather than glowing.
+ * Ink — one deep navy sheet, page and reading sections alike, with nothing
+ * drawn between them. Dusk is navy in layers; this is navy as a single ground,
+ * so a long text has no seams running through it. The blue is desaturated
+ * enough that white-ish type on it stays comfortable rather than glowing.
+ * The player is the one section lifted off that sheet — see White.
  */
 :root[data-theme="ink"] {
   color-scheme: dark;
@@ -172,7 +173,7 @@
   --surface-sidebar: #101a2e;
   --surface-reader: #101a2e;
   --surface-panel: #101a2e;
-  --surface-player: #101a2e;
+  --surface-player: #1a2740;
   --surface-inset: rgb(198 214 245 / 0.08);
   /* A clear step above the inset strip, not just above the page: with no drop
      shadow to help, this alone is what marks the selected playback speed. */
@@ -215,7 +216,8 @@
  * out of it, the way a reading lamp or a night-shift filter leaves a page.
  * Because the whole palette is warm, the accents are warm too — brick and
  * olive instead of the blue and green the other themes keep. Cool accents on
- * this ground are exactly the thing the theme exists to avoid.
+ * this ground are exactly the thing the theme exists to avoid. The player is
+ * the one section lifted off the sheet — see White.
  */
 :root[data-theme="paper"] {
   color-scheme: light;
@@ -224,7 +226,7 @@
   --surface-sidebar: #f3ece0;
   --surface-reader: #f3ece0;
   --surface-panel: #f3ece0;
-  --surface-player: #f3ece0;
+  --surface-player: #e9e0cf;
   --surface-inset: rgb(61 47 28 / 0.06);
   --surface-raised: #e9e0cf;
   --surface-overlay: #e9e0cf;
@@ -265,10 +267,17 @@
 }
 
 /**
- * White — the page and every section share one flat white, with nothing drawn
- * between them. What sits *on* that white is not monochrome: body text is a
- * very dark grey rather than pure black, and the accents keep the blue of the
- * other themes, so buttons and badges read as controls instead of ink blots.
+ * White — the page and the three reading sections share one flat white, with
+ * nothing drawn between them. What sits *on* that white is not monochrome:
+ * body text is a very dark grey rather than pure black, and the accents keep
+ * the blue of the other themes, so buttons and badges read as controls instead
+ * of ink blots.
+ *
+ * The player is the single exception, here and in the other one-sheet themes:
+ * it is a bar of controls rather than a stretch of the page, and on a sheet
+ * with no borders and no shadow its ground is the only thing that can say so.
+ * One tinted box against three flush ones is the point — a second one would
+ * put the seams back.
  */
 :root[data-theme="white"] {
   color-scheme: light;
@@ -277,7 +286,7 @@
   --surface-sidebar: #ffffff;
   --surface-reader: #ffffff;
   --surface-panel: #ffffff;
-  --surface-player: #ffffff;
+  --surface-player: #f3f4f8;
   /* A touch stronger than the other light themes: on a white ground nothing
      can be lifted above the page, so the strips and pills have to come down
      to meet what sits on them. */
@@ -321,7 +330,8 @@
 }
 
 /* Black — the same flat sheet inverted, with the same softening: off-white
-   text on true black, and the blue kept for anything interactive. */
+   text on true black, and the blue kept for anything interactive. The player
+   is lifted off the sheet as it is in White. */
 :root[data-theme="black"] {
   color-scheme: dark;
 
@@ -329,7 +339,7 @@
   --surface-sidebar: #000000;
   --surface-reader: #000000;
   --surface-panel: #000000;
-  --surface-player: #000000;
+  --surface-player: #16181f;
   --surface-inset: rgb(219 225 245 / 0.08);
   --surface-raised: #16181f;
   --surface-overlay: #16181f;

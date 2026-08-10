@@ -446,6 +446,15 @@ purpose, along with `--shadow-card: none`: there page and sections share one
 ground and are meant to read as a single sheet, so anything drawn between them
 is a seam.
 
+**The player is the one box those themes do draw.** It keeps a
+`--surface-player` a step off the sheet while the sidebar, the reader and the
+panel stay flush with the page, because it is a bar of controls rather than a
+stretch of the page and, with no border and no shadow to lean on, its ground is
+the only thing that can say so. Exactly one tinted box against three flush ones
+is the arrangement: giving a second section its own ground puts the seams back
+and there is nothing left to tell the controls apart from the prose. The
+scrubber thumb's ring is `--surface-player` too, so it follows on its own.
+
 `--surface-raised` and `--surface-overlay` are both "a step above the page",
 but only the overlay is guaranteed **opaque**. Raised may be a translucent
 white — that is what gives the dark themes their lift — which is fine for
