@@ -19,9 +19,10 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 /**
- * The extra reading the interface has no room for, in front of everything
- * else. Today that is the two word shortcuts; it is the place anything of the
- * same kind belongs.
+ * Whatever the interface has no room to say, in front of everything else.
+ * Today that is one table of shortcuts, under a heading of its own — the
+ * window is titled for the site rather than for its contents, so that the
+ * next thing to go in it is a second section and not a second window.
  */
 export function HelpDialog({ onClose }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -77,15 +78,15 @@ export function HelpDialog({ onClose }: Props) {
       >
         <div className={styles.top}>
           <h2 id="help-title" className={styles.title}>
-            Reading a text
+            About
           </h2>
           <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
-            <X size={22} strokeWidth={2.25} />
+            <X size={24} strokeWidth={2.25} />
           </button>
         </div>
 
         <div className={styles.body}>
-          <h3 className={styles.section}>Playback</h3>
+          <h3 className={styles.section}>Shortcuts</h3>
 
           <dl className={styles.shortcuts}>
             <div className={styles.row}>
@@ -93,15 +94,10 @@ export function HelpDialog({ onClose }: Props) {
                 <kbd>Space</kbd>
               </dt>
               <dd className={styles.what}>
-                Plays and pauses, wherever you are on the page — unless a
-                button has the focus, which answers to the spacebar itself.
+                Plays and pauses the narration, wherever you are on the page.
               </dd>
             </div>
-          </dl>
 
-          <h3 className={styles.section}>Clicking a word</h3>
-
-          <dl className={styles.shortcuts}>
             <div className={styles.row}>
               <dt className={styles.keys}>
                 <kbd>{PRIMARY_KEY}</kbd>
@@ -126,25 +122,7 @@ export function HelpDialog({ onClose }: Props) {
                 is and no recording is played.
               </dd>
             </div>
-
-            <div className={styles.row}>
-              <dt className={styles.keys}>
-                <span>click</span>
-              </dt>
-              <dd className={styles.what}>
-                Opens the word, and then whatever <b>Say word</b> and{" "}
-                <b>Jump</b> are set to below.
-              </dd>
-            </div>
           </dl>
-
-          <p className={styles.note}>
-            Both shortcuts ignore those two settings, so either behaviour is
-            always one click away. From the keyboard, the arrow keys walk the
-            text and <kbd>Enter</kbd> takes the focused word — with{" "}
-            <kbd>{PRIMARY_KEY}</kbd> or <kbd>{OPTION_KEY}</kbd> held for the
-            same two shortcuts.
-          </p>
         </div>
       </div>
     </div>

@@ -30,13 +30,16 @@
   outline: none;
 }
 
+/* The rule under the title belongs to the window rather than to any one
+   section of it: what follows will not always be a table of shortcuts. */
 .top {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   flex: none;
-  padding: 1.35rem 1.35rem 0.75rem 1.75rem;
+  padding: 1.2rem 1.2rem 1.2rem 1.75rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .title {
@@ -46,11 +49,17 @@
   line-height: 1.2;
 }
 
+/* The word panel's close button, to the pixel. It cannot hover onto
+   `--surface-raised` the way that one does, though: the panel's ground is the
+   page, while this card floats on `--surface-overlay`, and in every theme
+   those two are the same colour — the button lit up into exactly what was
+   already under it. `--surface-inset` is the step that works on a floating
+   ground, which is what the menus' options hover onto for the same reason. */
 .close {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 3rem;
+  height: 3rem;
   flex: none;
   border-radius: 50%;
   color: var(--text-muted);
@@ -58,7 +67,7 @@
 }
 
 .close:hover {
-  background: var(--surface-raised);
+  background: var(--surface-inset);
   color: var(--text);
 }
 
@@ -66,7 +75,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 1.75rem 1.75rem;
+  padding: 1.6rem 1.75rem 1.75rem;
 }
 
 .section {
@@ -78,7 +87,8 @@
   color: var(--accent);
 }
 
-/* Every heading but the first: the body's own padding sets that one. */
+/* A second section would want a margin above its heading; the body's own
+   padding sets the first one. */
 .shortcuts + .section {
   margin-top: 1.9rem;
 }
@@ -116,20 +126,6 @@
   font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-muted);
-}
-
-.what b {
-  font-weight: 600;
-  color: var(--text);
-}
-
-.note {
-  margin: 1.75rem 0 0;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--border);
-  font-size: var(--fs-sm);
-  line-height: 1.55;
-  color: var(--text-soft);
 }
 
 /* Scoped to the card: a module only rewrites class names, so a bare `kbd`

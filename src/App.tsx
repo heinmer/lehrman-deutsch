@@ -10,7 +10,7 @@ import { useTheme } from "./hooks/useTheme";
 import { pronunciationClip } from "./lib/pronunciation";
 import { newTextOpened, playClip, setClipVolume, warmClip } from "./lib/clipAudio";
 import type { WordAction } from "./lib/wordAction";
-import { handlesSpace } from "./lib/keys";
+import { ownsSpace } from "./lib/keys";
 import { Sidebar } from "./components/Sidebar";
 import { Reader } from "./components/Reader";
 import { PlayerBar } from "./components/PlayerBar";
@@ -190,19 +190,26 @@ export function App() {
   }, [closePanel, drawerOpen, helpOpen]);
 
   // Space plays and pauses from anywhere, which is what every media player has
-  // taught people to expect — and what a spacebar that only worked while the
-  // play button happened to hold the focus was not. It yields to whatever
-  // answers to it natively (`handlesSpace`) and to the help window, which is
-  // being read rather than listened to.
+  // taught people to expect — and what a spacebar that worked only while the
+  // play button happened to hold the focus was not. Nothing keeps it merely by
+  // sitting in the focus: it is given up by asking for it (`preventDefault`,
+  // which is how the pickers' options take it) or by being something typed
+  // into (`ownsSpace`). Buttons therefore lose it and keep Enter.
   const { toggle } = narration;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== " " || event.repeat) return;
       // A chord belongs to somebody else — Shift+Space is a page up.
       if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
-      if (helpOpen || handlesSpace(event.target)) return;
+      // Already claimed on the way up. React's listeners sit on the root
+      // container, so a component's handler has run by the time this one does.
+      if (event.defaultPrevented) return;
+      // The info window is read rather than listened to.
+      if (helpOpen || ownsSpace(event.target)) return;
 
-      // Otherwise the page scrolls out from under the reader as well.
+      // This suppresses the focused button's own activation as well as the
+      // page scroll: without it the spacebar would play *and* press whatever
+      // the last click left under the focus.
       event.preventDefault();
       toggle();
     };

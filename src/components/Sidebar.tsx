@@ -1,7 +1,7 @@
 import {
   BookOpen,
-  CircleQuestionMark,
   Clock,
+  Info,
   Image,
   ImageOff,
   LocateFixed,
@@ -71,10 +71,10 @@ export function Sidebar({
           type="button"
           className={styles.help}
           onClick={onOpenHelp}
-          aria-label="How to read a text"
-          title="How to read a text"
+          aria-label="About this site"
+          title="About this site"
         >
-          <CircleQuestionMark size={19} strokeWidth={2} />
+          <Info size={19} strokeWidth={2} />
         </button>
       </header>
 

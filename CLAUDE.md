@@ -288,20 +288,31 @@ as `/…/` so transcriptions look the same everywhere.
   alone reads as "hovered" rather than as "off" — which is why "Say word" is a
   speech bubble and not a megaphone: `MegaphoneOff` is too busy at 19px for
   its slash to register.
-- **Space is the player's, everywhere in the page.** A window listener in
-  `App` toggles playback on it, because a spacebar that worked only while the
-  play button happened to hold the focus is a spacebar that does not work. It
-  yields in three cases: a chord (Shift+Space is a page up, and the rest
-  belong to the browser), the help window being open, and a focused element
-  that answers to Space natively — `handlesSpace` (`src/lib/keys.ts`), which
-  is buttons, fields, and every `<input>` but a range. That last exclusion is
-  what keeps the settings and the transport controls operable from the
-  keyboard: on those, Space stays the button's and fires once, not twice.
-  The price is that **a word in the reader answers to Enter and not to
-  Space**, though a `role="button"` would normally take both — and it is worth
-  paying, since the focus after clicking a word *is* that word, which is
-  exactly where the spacebar was wanted. It also `preventDefault`s, or the
-  page scrolls under the reader.
+- **Space is the player's, and nothing keeps it by sitting in the focus.** A
+  window listener in `App` toggles playback on it. It yields in four cases: a
+  chord (Shift+Space is a page up, and the rest belong to the browser), the
+  info window being open, an event whose default was already prevented, and a
+  focused element that is typed into — `ownsSpace` (`src/lib/keys.ts`): a
+  contenteditable, a textarea, a select, and every `<input>` but a range,
+  which ignores Space and answers to the arrows. **Buttons are deliberately
+  not on that list.** Exempting them was the first attempt and it is what the
+  reader notices as broken: a button keeps the focus after being clicked, so
+  Space after changing the theme re-opened the theme menu and Space after
+  closing the info window re-opened the window. Telling a clicked button from
+  a tabbed-to one is what `:focus-visible` is for, and it **cannot be read
+  inside a keydown handler** — pressing a key is itself what makes the focused
+  element focus-visible, so it is already true when the handler runs. That was
+  tried, and it changed nothing; do not reach for it again. A button is
+  reached from the keyboard with Enter instead, which every button here
+  answers to. Two things follow. The handler `preventDefault`s, which
+  suppresses the focused button's own activation as well as the page scroll —
+  without it Space would both play and press. And a component that wants Space
+  says so the ordinary way, by calling `preventDefault` itself: that is how
+  the pickers' `role="option"` divs keep it, and React's listeners sit on the
+  root container, so their handlers have run by the time the window's does.
+  **A word in the reader therefore answers to Enter and not to Space**, though
+  a `role="button"` would normally take both — worth paying, since the focus
+  after clicking a word *is* that word.
 - **Ctrl and Alt on a word replace the settings rather than adjusting them.**
   Ctrl+click reads the text *from* that word — it starts playback even from a
   standstill, and neither opens the word nor speaks it; Alt+click opens the
@@ -315,15 +326,22 @@ as `/…/` so transcriptions look the same everywhere.
   never something only a mouse can reach. `App`'s `selectWord` is the one
   place the three outcomes live; its Ctrl branch is `readFrom`, which is also
   what the panel's "Read from here" calls, so the two cannot drift apart.
-- **The help window is the only modal.** `HelpDialog`, opened from the
-  question mark beside the site's name, is a centred card over a scrim at
-  z-index 60 — in front of both drawers, and Escape reads that same order in
-  `App` (help, then drawer, then panel). It focuses itself on open, hands
-  focus back to whatever opened it, and wraps Tab at both ends, because the
-  page behind it is still in the tab order. Its focus ring is turned off: the
-  card is only a landing place for the keyboard, and the global outline drawn
-  round the whole window reads as a border. It is where anything the
-  interface has no room to explain belongs; today that is the two shortcuts.
+- **The info window is the only modal.** `HelpDialog`, opened from the `i`
+  beside the site's name, is a centred card over a scrim at z-index 60 — in
+  front of both drawers, and Escape reads that same order in `App` (info, then
+  drawer, then panel). It focuses itself on open, hands focus back to whatever
+  opened it, and wraps Tab at both ends, because the page behind it is still
+  in the tab order. Its focus ring is turned off: the card is only a landing
+  place for the keyboard, and the global outline drawn round the whole window
+  reads as a border. It is titled for the site and not for its contents, so
+  that the next thing to go in it is a second section under its own heading
+  rather than a second window; today there is one, *Shortcuts*. Its cross
+  hovers onto `--surface-inset` and not onto `--surface-raised` as the word
+  panel's does: the panel's ground is the page, while this card floats on
+  `--surface-overlay`, and in every theme those two are **the same colour** —
+  the button lit up into exactly what was already under it. Anything sitting
+  on a floating ground has the same problem and the same answer, which is what
+  the pickers' options hover onto.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
