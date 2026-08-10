@@ -5,166 +5,22 @@
  * complete set of the tokens below — components never name a colour directly,
  * so adding a theme here is all it takes for the whole interface to follow.
  *
- * `src/lib/themes.ts` lists the themes for the picker and repeats two of these
- * values as its swatch; `index.html` repeats the ids. Keep all three in step.
+ * `shared/themes.ts` lists the themes for the picker and repeats two of these
+ * values as its swatch; `index.html` gets the ids written into it from that
+ * same file. Keep the two in step.
+ *
+ * Every theme here is a single sheet: page, sidebar, reader and word panel
+ * share one ground, and only the player is lifted off it. The themes that
+ * tinted each section separately were removed; `--island-border` and the two
+ * shadow tokens survive for a theme that wants to draw between sections again,
+ * but nothing today does.
  */
-
-/* Daylight — the pastel default. Also applied when no theme is set. */
-:root,
-:root[data-theme="daylight"] {
-  color-scheme: light;
-
-  --page: #d7dce6;
-  --surface-sidebar: #e7f0e9;
-  --surface-reader: #ffffff;
-  --surface-panel: #f0ebf8;
-  --surface-player: #e8eefa;
-  --surface-inset: rgb(35 38 46 / 0.055);
-  --surface-raised: #ffffff;
-  /* Anything that floats over the page — the theme menu, the volume slider,
-     a tooltip — and must therefore be opaque; `--surface-raised` is allowed
-     to be translucent, which would let the text show through. */
-  --surface-overlay: #ffffff;
-  /* The chosen option inside a segmented strip — currently the playback speed.
-     It has to clear `--surface-inset`, the strip behind it, which is a
-     different job from clearing the page: the one-sheet themes cannot simply
-     reuse `--surface-raised` here, because on their ground "raised" and the
-     strip land on top of each other. */
-  --surface-selected: #ffffff;
-
-  --text: #23262e;
-  --text-muted: #565b68;
-  --text-soft: #767c8a;
-
-  --border: rgb(35 38 46 / 0.09);
-  --track: rgb(35 38 46 / 0.17);
-
-  --accent: #4d5b98;
-  --accent-hover: #3e4c86;
-  --accent-contrast: #ffffff;
-  --accent-secondary: #43806b;
-
-  /* The CEFR badges. Six hues walking green → teal → blue → violet → amber →
-     red, so the levels read as a rising scale and not just six colours; the
-     label sits on the fill, which is why every fill has to clear
-     `--level-contrast` by 4.5:1. Light themes carry the scale in the fill and
-     write on it in white; the dark themes invert that — pale fills, dark
-     label — because a saturated disc on a dark ground goes muddy. */
-  --level-a1: #2e7d51;
-  --level-a2: #12707f;
-  --level-b1: #3a5fa8;
-  --level-b2: #6b4a9e;
-  --level-c1: #a55a17;
-  --level-c2: #a53535;
-  --level-contrast: #ffffff;
-
-  --highlight-word: #f3dfa6;
-  --highlight-sentence: #eff1f6;
-  --selected-word: #dfe3ee;
-
-  /* Behind the drawer on narrow screens; see App.module.css. */
-  --scrim: rgb(35 38 46 / 0.45);
-  --island-border: transparent;
-  --shadow-card: 0 1px 3px rgb(35 38 46 / 0.07), 0 12px 30px rgb(35 38 46 / 0.09);
-  --shadow-raised: 0 2px 6px rgb(35 38 46 / 0.12);
-}
-
-/* Midnight — the pastel dark counterpart. */
-:root[data-theme="midnight"] {
-  color-scheme: dark;
-
-  --page: #0a0b11;
-  --surface-sidebar: #1a231e;
-  --surface-reader: #1c1f27;
-  --surface-panel: #22212d;
-  --surface-player: #1a1d26;
-  --surface-inset: rgb(255 255 255 / 0.05);
-  --surface-raised: rgb(255 255 255 / 0.08);
-  --surface-overlay: #272b37;
-  --surface-selected: rgb(255 255 255 / 0.08);
-
-  --text: #e8eaf0;
-  --text-muted: #aeb3c0;
-  --text-soft: #868c9a;
-
-  --border: rgb(255 255 255 / 0.1);
-  --track: rgb(255 255 255 / 0.2);
-
-  --accent: #98a4d8;
-  --accent-hover: #aab4e4;
-  --accent-contrast: #171922;
-  --accent-secondary: #7fc0a9;
-
-  --level-a1: #7fc79b;
-  --level-a2: #6cc3d0;
-  --level-b1: #93b5ee;
-  --level-b2: #b6a4ef;
-  --level-c1: #e4ad74;
-  --level-c2: #ec9797;
-  --level-contrast: #171922;
-
-  --highlight-word: #6f5c28;
-  --highlight-sentence: rgb(255 255 255 / 0.075);
-  --selected-word: rgb(152 164 216 / 0.22);
-
-  --scrim: rgb(0 0 0 / 0.6);
-  --island-border: rgb(255 255 255 / 0.07);
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 32px rgb(0 0 0 / 0.35);
-  --shadow-raised: 0 2px 8px rgb(0 0 0 / 0.35);
-}
-
-/* Dusk — cool blues, easy on the eyes late at night. */
-:root[data-theme="dusk"] {
-  color-scheme: dark;
-
-  --page: #080b14;
-  /* One ground for the three reading sections; the player is lifted a step so
-     the controls read as a separate surface. */
-  --surface-sidebar: #151c2a;
-  --surface-reader: #151c2a;
-  --surface-panel: #151c2a;
-  --surface-player: #1f293b;
-  --surface-inset: rgb(223 230 242 / 0.055);
-  --surface-raised: rgb(223 230 242 / 0.1);
-  --surface-overlay: #243047;
-  --surface-selected: rgb(223 230 242 / 0.1);
-
-  --text: #dfe6f2;
-  --text-muted: #a3aec4;
-  --text-soft: #7a869e;
-
-  --border: rgb(223 230 242 / 0.11);
-  --track: rgb(223 230 242 / 0.21);
-
-  --accent: #7aa2d8;
-  --accent-hover: #8fb4e6;
-  --accent-contrast: #101623;
-  --accent-secondary: #79c0b0;
-
-  --level-a1: #7fc79b;
-  --level-a2: #6cc3d0;
-  --level-b1: #93b5ee;
-  --level-b2: #b6a4ef;
-  --level-c1: #e4ad74;
-  --level-c2: #ec9797;
-  --level-contrast: #101623;
-
-  --highlight-word: #5c5127;
-  --highlight-sentence: rgb(223 230 242 / 0.06);
-  --selected-word: rgb(122 162 216 / 0.22);
-
-  --scrim: rgb(0 0 0 / 0.62);
-  --island-border: rgb(223 230 242 / 0.08);
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
-  --shadow-raised: 0 2px 8px rgb(0 0 0 / 0.4);
-}
 
 /**
  * Ink — one deep navy sheet, page and reading sections alike, with nothing
- * drawn between them. Dusk is navy in layers; this is navy as a single ground,
- * so a long text has no seams running through it. The blue is desaturated
- * enough that white-ish type on it stays comfortable rather than glowing.
- * The player is the one section lifted off that sheet — see White.
+ * drawn between them: a long text has no seams running through it. The blue is
+ * desaturated enough that white-ish type on it stays comfortable rather than
+ * glowing. The player is the one section lifted off that sheet — see White.
  */
 :root[data-theme="ink"] {
   color-scheme: dark;
@@ -273,12 +129,16 @@
  * the blue of the other themes, so buttons and badges read as controls instead
  * of ink blots.
  *
- * The player is the single exception, here and in the other one-sheet themes:
- * it is a bar of controls rather than a stretch of the page, and on a sheet
- * with no borders and no shadow its ground is the only thing that can say so.
- * One tinted box against three flush ones is the point — a second one would
- * put the seams back.
+ * The player is the single exception, here as in every theme: it is a bar of
+ * controls rather than a stretch of the page, and on a sheet with no borders
+ * and no shadow its ground is the only thing that can say so. One tinted box
+ * against three flush ones is the point — a second one would put the seams
+ * back.
+ *
+ * It is also the fallback applied when nothing has set `data-theme` — the
+ * inline script in index.html normally does, before first paint.
  */
+:root,
 :root[data-theme="white"] {
   color-scheme: light;
 
@@ -292,7 +152,14 @@
      to meet what sits on them. */
   --surface-inset: rgb(26 32 56 / 0.08);
   --surface-raised: #f3f4f8;
+  /* Anything that floats over the page — the theme menu, the volume slider, a
+     tooltip — and must therefore be opaque; `--surface-raised` is only
+     required to be a step above the page and may be translucent. */
   --surface-overlay: #f3f4f8;
+  /* The chosen option inside a segmented strip — currently the playback speed.
+     It has to clear `--surface-inset`, the strip behind it, which is a
+     different job from clearing the page: on one sheet "raised" and that strip
+     land on top of each other, so this cannot simply reuse it. */
   --surface-selected: #ffffff;
 
   --text: #1c1d22;
@@ -309,8 +176,15 @@
   --accent-contrast: #ffffff;
   --accent-secondary: #3f7d68;
 
-  /* A shade deeper than Daylight's: there is no tint under them here, so the
-     discs carry themselves against bare white. */
+  /* The CEFR badges. Six hues walking green → teal → blue → violet → amber →
+     red, so the levels read as a rising scale and not just six colours; the
+     label sits on the fill, which is why every fill has to clear
+     `--level-contrast` by 4.5:1. The light themes carry the scale in the fill
+     and write on it in white; the dark themes invert that — pale fills, dark
+     label — because a saturated disc on a dark ground goes muddy.
+
+     These are deep, because there is no tint under them here: the discs have
+     to carry themselves against bare white. */
   --level-a1: #2b7a4d;
   --level-a2: #0f6c7b;
   --level-b1: #3559a2;
@@ -323,6 +197,7 @@
   --highlight-sentence: #f4f6fc;
   --selected-word: #dde3f4;
 
+  /* Behind the drawer on narrow screens; see App.module.css. */
   --scrim: rgb(0 0 0 / 0.4);
   --island-border: transparent;
   --shadow-card: none;

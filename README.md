@@ -136,11 +136,10 @@ src/
 - While the narration is paused, clicking a word also plays its native
   recording; while it is playing, the click only seeks, so the two never talk
   over each other. The "Say word" toggle in the sidebar turns this off.
-- Seven colour themes, from the picker at the bottom of the sidebar: Midnight,
-  Dusk, Ink and Black, then Daylight, Paper and White. White, Black, Ink and
-  Paper are deliberately flat — page and sections share one background, told
-  apart by hairline borders alone. Paper is the one with warm accents rather
-  than blue.
+- Four colour themes, from the picker at the bottom of the sidebar: Ink and
+  Black, then Paper and White. All four are deliberately flat — page and
+  sections share one background, with only the player bar a step off it. Paper
+  is the one with warm accents rather than blue.
 - The text being read is in the address, so it can be linked to and the back
   button works.
 - The whole interface is keyboard-operable: one word is in the tab order and

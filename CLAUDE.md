@@ -466,12 +466,14 @@ A theme must define *every* token — a missing one is not inherited from anothe
 theme, it simply goes unset and the declaration is dropped, which is silent.
 Renaming a token means renaming it in the components too; grep for it.
 
-`--island-border` separates the sections where the backgrounds cannot: the
-layered themes need it because a drop shadow has nothing to darken. The
-single-sheet themes — White, Black, Ink, Paper — set it to `transparent` on
-purpose, along with `--shadow-card: none`: there page and sections share one
-ground and are meant to read as a single sheet, so anything drawn between them
-is a seam.
+**Every theme is a single sheet.** White, Black, Ink and Paper are all the
+same arrangement: page, sidebar, reader and word panel share one ground, and
+nothing is drawn between them — `--island-border: transparent`, `--shadow-card:
+none`, `--shadow-raised: none` in all four. The themes that gave each section
+its own tint (Midnight, Dusk, Daylight) were removed for that reason; a new
+theme is expected to keep the sheet. The three tokens still exist for one that
+wants to draw between sections again, but a theme setting them is going against
+the grain of the rest.
 
 **The player is the one box those themes do draw.** It keeps a
 `--surface-player` a step off the sheet while the sidebar, the reader and the
@@ -484,7 +486,7 @@ scrubber thumb's ring is `--surface-player` too, so it follows on its own.
 
 `--surface-raised` and `--surface-overlay` are both "a step above the page",
 but only the overlay is guaranteed **opaque**. Raised may be a translucent
-white — that is what gives the dark themes their lift — which is fine for
+white — no theme uses that today, but it is allowed — which is fine for
 something sitting in the layout and wrong for anything floating over it: the
 theme menu and the volume slider both showed the text list through themselves
 until they moved to the overlay token. Anything that floats belongs on
@@ -498,9 +500,9 @@ newsprint reads as a hole.
 
 `--surface-selected` is the chosen option inside a segmented strip — today only
 the playback speed. It has to clear `--surface-inset`, the strip *behind* it,
-which is a different job from clearing the page: on the one-sheet themes
-"raised" and that strip land within a hundredth of each other and the selection
-vanishes. Measure the chip against the strip, not against the ground.
+which is a different job from clearing the page: on one sheet "raised" and that
+strip land within a hundredth of each other and the selection vanishes. Measure
+the chip against the strip, not against the ground.
 
 `--level-a1` … `--level-c2` are the CEFR badges, one hue each so the sidebar
 can be scanned by colour, plus `--level-contrast` for the letters printed on
@@ -525,8 +527,8 @@ back to two literal colours.
 Paper is the one theme whose accents are **not** blue and green. It is a
 newsprint sheet with the blue filtered out of the whole palette, so its accents
 are brick and olive; a cool accent on that warm ground is exactly what the
-theme exists to avoid. Ink is the opposite case and follows the usual rule —
-one deep navy ground where Dusk is navy in layers.
+theme exists to avoid. Ink is the cool counterpart and follows the usual rule —
+one deep navy ground carrying the same blue and green as everything else.
 
 A one-off script that measures WCAG ratios across every theme has repeatedly
 earned its keep — body text at AAA (7:1), and filled accent buttons against the
