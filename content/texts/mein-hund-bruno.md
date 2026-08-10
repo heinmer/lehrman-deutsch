@@ -3,6 +3,7 @@ title: Mein Hund Bruno
 level: A1
 order: 2
 topic: Animals
+image: mein-hund-bruno.webp
 ---
 
 Ich heiße Nina und ich wohne in einer kleinen Stadt. Ich wohne nicht allein. Bei mir wohnt Bruno. Bruno ist mein Hund. Er ist braun und weiß und hat lange Ohren. Bruno ist vier Jahre alt.
