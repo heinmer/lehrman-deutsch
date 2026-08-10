@@ -124,17 +124,18 @@
   margin-bottom: 0.4rem;
 }
 
-/* Set like a description and not a step under it: the note is the sentence the
-   whole table depends on, and reading as fine print was the one thing it could
-   not afford. `--text-soft` came with the small size and had to go with it —
-   measured on these four grounds it is 3.4:1 in Paper and 4.0:1 in White,
-   which is a caption's contrast and not a sentence's. Its place under the
-   heading is what marks it as a note now, not its colour. */
+/* A step *above* a description rather than below one: the note says what the
+   whole table is, and set in the descriptions' own colour it was a seventh
+   sentence of the same weight in a box of six. Its distance from them is
+   upwards, since reading as fine print is the one thing it could not afford —
+   `--text-soft` came with the small size and had to go with it, being 3.4:1 in
+   Paper and 4.0:1 in White, a caption's contrast and not a sentence's. So the
+   note keeps the body colour and the descriptions stay muted under it. */
 .note {
   margin: 0 0 1.05rem;
   font-size: var(--fs-sm);
   line-height: 1.55;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 .rows {

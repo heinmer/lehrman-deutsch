@@ -376,10 +376,13 @@ as `/…/` so transcriptions look the same everywhere.
   The scrim is what tells the card from the page it matches. It is a separate
   token and not a change to the overlay because the pickers, the volume slider
   and the drawer island all float on that one and are right as they are.
-  Its notes are `--text-muted` at `--fs-sm`, the descriptions' own size and
-  colour: `--text-soft` measured 3.4:1 in Paper and 4.0:1 in White, which is a
-  caption's contrast, and a note the tables depend on is not a caption. Its
-  place under the heading is what marks it as a note.
+  Its notes are `--text` at `--fs-sm`, and the tables' descriptions are
+  `--text-muted`: the two carried the same colour at the same size, so the note
+  under a heading read as a seventh sentence rather than as what the table
+  below it is. The step is **upwards** — `--text-soft` measured 3.4:1 in Paper
+  and 4.0:1 in White, which is a caption's contrast, and a note the tables
+  depend on is not a caption. Its place under the heading is still what marks
+  it as a note; the colour only keeps it off the rows.
 - **"Show image" removes the picture, it does not hide it.** The third
   `useToggleSetting`, and the only one that is about the page rather than about
   a click: with it off `App` passes `image={null}` and no `<img>` is rendered,
