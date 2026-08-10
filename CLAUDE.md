@@ -229,6 +229,21 @@ as `/…/` so transcriptions look the same everywhere.
   not. Both
   failures are remembered **against the attempt that produced them**, so asking
   again clears them without anything being reset by hand.
+- **The spinner is late and slow to leave.** A text is one small JSON file, so
+  switching normally finishes in tens of milliseconds and a spinner shown for
+  those reads as something twitching rather than as something loading.
+  `useDelayedFlag` therefore waits 400ms before raising it — locally it is
+  never seen at all — and then holds it 300ms. The **whole loading state** is
+  what is held (`!text || showSpinner` in `Reader`), not the icon inside it:
+  gating only the icon looked right and did nothing, because a text arriving
+  20ms after the spinner replaced the box the spinner lived in and the minimum
+  never bound. The reader therefore waits up to 300ms for a text it already
+  has, which is the deliberate half of the trade. Measured, not eyeballed:
+  throttle the fetch past 400ms and watch a `MutationObserver` on
+  `[role="status"] svg` — the numbers are the only way to tell the two
+  implementations apart. Its box stays in the DOM either way, since it is what
+  fills the section above the player and a short wait is not a reason for the
+  bar to jump.
 - **The build writes a `.br` and a `.gz` beside every compressible file.**
   They are inert unless the host is told to prefer them (`brotli_static` /
   `gzip_static` and friends); where it is, the generated data goes from about

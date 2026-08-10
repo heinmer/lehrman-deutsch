@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { CloudOff, Languages, Loader2, RotateCw } from "lucide-react";
 import type { Sentence, TextDocument, Token, WordToken } from "../../shared/types";
+import { useDelayedFlag } from "../hooks/useDelayedFlag";
 import { assetUrl } from "../lib/assets";
 import { LevelBadge } from "./LevelBadge";
 import styles from "./Reader.module.css";
@@ -171,6 +172,14 @@ export function Reader({
 
   const onFocusWord = useCallback((token: WordToken) => setFocusedWordId(token.id), []);
 
+  // The spinner is held back until the wait is long enough to be worth
+  // explaining. A text is a single small JSON file, so switching normally
+  // finishes in a few milliseconds and nothing is drawn at all. Once it is up
+  // it outstays the load by a little, which is why the *loading state* is held
+  // open below and not merely the icon: a text arriving 20ms after the spinner
+  // would otherwise take it away again, which is the flash being avoided.
+  const showSpinner = useDelayedFlag(!text && !failedSlug);
+
   /** Arrow keys walk the text; Enter and Space choose the word under focus. */
   const onWordKeyDown = useCallback(
     (event: KeyboardEvent<HTMLElement>, token: WordToken) => {
@@ -232,7 +241,7 @@ export function Reader({
     }
   }, [activeSentenceId]);
 
-  if (!text) {
+  if (!text || showSpinner) {
     return (
       <div className={`island ${styles.reader}`} ref={scrollRef}>
         {failedSlug ? (
@@ -251,8 +260,17 @@ export function Reader({
             </button>
           </div>
         ) : (
-          <div className={styles.loading} role="status" aria-label="Loading text">
-            <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />
+          // The box stays whether or not there is a spinner in it: it is what
+          // fills the section above the player, and a wait too short to be
+          // worth a spinner is not a reason for the bar to jump. It is also
+          // the right shape for a live region — present before it has
+          // anything to say, so the spinner arriving is an announcement.
+          <div
+            className={styles.loading}
+            role="status"
+            aria-label={showSpinner ? "Loading text" : undefined}
+          >
+            {showSpinner && <Loader2 size={96} strokeWidth={1.6} className={styles.spinner} />}
           </div>
         )}
         {children}
