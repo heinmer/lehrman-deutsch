@@ -69,6 +69,12 @@ interface Props {
    * bar it should clear.
    */
   edge?: "control" | "boundary";
+  /**
+   * `large` is for a menu that opens over the page rather than inside the
+   * settings footer — the voice list, read from across the reader and carrying
+   * a button in every row. The footer's own menus stay the size of the footer.
+   */
+  size?: "regular" | "large";
 }
 
 /**
@@ -86,6 +92,7 @@ export function SettingPicker({
   onSelect,
   trigger = "click",
   edge = "control",
+  size = "regular",
 }: Props) {
   const [open, setOpen] = useState(false);
   const [placement, setPlacement] = useState<Placement>({ align: "start", shift: 0, lift: 0 });
@@ -240,6 +247,7 @@ export function SettingPicker({
           <div
             className={styles.menu}
             ref={menuRef}
+            data-size={size}
             role="listbox"
             aria-label={name}
             onKeyDown={onMenuKeyDown}

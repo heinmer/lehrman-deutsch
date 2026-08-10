@@ -62,6 +62,7 @@ export function VoicePicker({ voiceId, onSelect }: Props) {
       // It is the last thing in the bar: the menu lines up with the bar's own
       // right edge rather than with the disc, which is a padding inside it.
       edge="boundary"
+      size="large"
     />
   );
 }

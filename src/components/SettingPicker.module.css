@@ -46,8 +46,9 @@
 }
 
 .menu {
-  min-width: 13.5rem;
-  padding: 0.5rem;
+  position: relative;
+  min-width: 11rem;
+  padding: 0.4rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--surface-overlay);
@@ -58,19 +59,68 @@
   box-shadow: var(--shadow-card);
 }
 
+/* What is behind the menu fades out as it comes up to it, exactly as the prose
+   does at the player's top edge — the ring alone cuts the text list, or the
+   paragraph the voice menu covers, off mid-line. Never in the way of what it
+   is drawn over.
+
+   It also has to end sideways, and a band exactly the menu's width ends on a
+   vertical cut: the fade took a word's second syllable and left the first,
+   which is worse than no fade at all. So it hangs its own height out past each
+   side and is masked away over that much, which puts the whole horizontal
+   transition beside the menu rather than above it. */
+.menu::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--popover-fade) * -1);
+  right: calc(var(--popover-fade) * -1);
+  bottom: 100%;
+  height: var(--popover-fade);
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    var(--popover-ground, var(--surface-sidebar)),
+    transparent
+  );
+  --popover-fade-sides: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--popover-fade),
+    #000 calc(100% - var(--popover-fade)),
+    transparent
+  );
+  -webkit-mask-image: var(--popover-fade-sides);
+  mask-image: var(--popover-fade-sides);
+}
+
+/* A menu opening over the reader rather than inside the settings footer: the
+   voice list is read from across the page and every row of it carries a button
+   to press. The sidebar's own menus stay the size of the footer they belong
+   to. */
+.menu[data-size="large"] {
+  min-width: 13.5rem;
+  padding: 0.5rem;
+}
+
 .option {
   display: flex;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
   width: 100%;
-  padding: 0.6rem 0.75rem;
+  padding: 0.45rem 0.6rem;
   border-radius: var(--radius-sm);
-  font-size: var(--fs-md);
+  font-size: var(--fs-sm);
   color: var(--text-muted);
   text-align: left;
   /* No longer a button, so it has to ask for the pointer itself. */
   cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
+}
+
+.menu[data-size="large"] .option {
+  gap: 0.7rem;
+  padding: 0.6rem 0.75rem;
+  font-size: var(--fs-md);
 }
 
 .option:hover {

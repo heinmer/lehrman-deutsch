@@ -304,6 +304,14 @@ as `/…/` so transcriptions look the same everywhere.
   host's padding, so it is not something this component can be told in CSS.
   The gap above is *padding on the anchor*, not a margin — in hover
   mode it is the bridge the pointer crosses, exactly as in `VolumeControl`.
+  `size="large"` is the voice list, which is read from across the reader; the
+  sidebar's menus stay the size of the footer they belong to, so the two sizes
+  are a prop and not a change to the component. **Every popover fades out what
+  is behind it** over `--popover-fade`, in `--popover-ground` — the same band
+  the player draws over the prose, and the reason the voice menu needs no ring.
+  It hangs its own height past each side and is masked away over that much:
+  a band exactly the menu's width ends on a vertical cut, which took the second
+  half of a word and left the first.
   **A hover menu closes on a delay, not on `pointerleave`** (`HOVER_GRACE_MS`).
   The control is a disc and the menu is four times wider, so a pointer heading
   for an option leaves the control *sideways*, across ground that belongs to
@@ -465,7 +473,9 @@ as `/…/` so transcriptions look the same everywhere.
   wrapper, which is exactly as wide as the thumb. The drawn track is inset by
   half a thumb at each end so the fill and the thumb do not drift apart.
   The popover it lives in has no gap above the button — the hover area has to
-  stay continuous, or the slider closes as the pointer travels to it.
+  stay continuous, or the slider closes as the pointer travels to it — and the
+  card is exactly the button's width, so the two read as one control standing
+  up rather than as a card hung above a disc.
 - **Words render as `<span role="button">`, never `<button>`.** Chrome lays
   buttons out as atomic inline boxes, which lets a line break fall between a
   word and the punctuation after it.
@@ -523,6 +533,15 @@ scrubber thumb's ring is `--surface-player` too, so it follows on its own. It
 is also the one ground that has to be **opaque**: the bar floats on the reader
 with the prose scrolling under it, and the `--surface-reader` backdrop behind
 it is what the text disappears into.
+
+Being a tinted box is also why the controls inside it hover onto
+`--surface-player-raised` rather than `--surface-raised`: in every theme but
+Ink those two are the same colour, so a disc pointed at dissolved into the bar
+exactly as it was being reached for. Each theme sets it as a stronger pour of
+the overlay its resting controls are filled with, which is a step from what it
+replaces whatever the bar is made of. The bar maps it to `--control-hover`,
+which is the knob `.control` reads — a host whose own ground is
+`--surface-raised` has to say so, and only the player is one.
 
 `--surface-raised` and `--surface-overlay` are both "a step above the page",
 but only the overlay is guaranteed **opaque**. Raised may be a translucent
