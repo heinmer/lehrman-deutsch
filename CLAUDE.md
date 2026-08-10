@@ -371,7 +371,14 @@ as `/…/` so transcriptions look the same everywhere.
   rest. The host also draws the reader's ground from `--player-fade` above it
   down to that edge, fading in over the top: without it a strip of half a line
   shows *below* the bar. And the article keeps `--player-space` under itself so
-  that the last line comes to rest clear of the fade.
+  that the last line comes to rest clear of the fade. **That fade is the width
+  of the section, not of the bar** — everything else in the reader is the width
+  of the text column, but the ground being carried down belongs to the whole
+  section, and a band stopping at the column's edges left the gutter unfaded on
+  both sides. It reaches out by `--reader-gutter`, which is the reader's own
+  side padding declared as a property for this one purpose, so it lands exactly
+  on the section's padding edge — inside the scrollbar, and with nothing
+  overflowing for the reader to scroll sideways to.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
   grow past its column instead of wrapping inside it — invisible on a wide

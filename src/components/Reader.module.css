@@ -5,14 +5,20 @@
 
    There is no padding under the prose: the player is the last thing in the
    flow, and what holds it off the bottom edge is its own (see PlayerBar). The
-   room the last lines need is the article's. */
+   room the last lines need is the article's.
+
+   The side padding is a property because the player's fade has to reach past
+   it: everything in here is the width of the text column, and the fade is the
+   one thing that has to be the width of the *section*. See `.host::before` in
+   PlayerBar. */
 .reader {
   display: flex;
   flex-direction: column;
   min-height: 0;
   overflow-y: auto;
   background: var(--surface-reader);
-  padding: 3.5rem 2.5rem 0;
+  --reader-gutter: 2.5rem;
+  padding: 3.5rem var(--reader-gutter) 0;
 }
 
 /* The prose fills the whole centre island rather than sitting in a narrow
@@ -225,7 +231,8 @@
 
 @media (max-width: 62rem) {
   .reader {
-    padding: 2.5rem 1.75rem 0;
+    --reader-gutter: 1.75rem;
+    padding-top: 2.5rem;
   }
 }
 

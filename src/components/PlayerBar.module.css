@@ -36,13 +36,22 @@
    in over its top edge rather than cutting the text off at a line, which is
    the one part of this the reader actually sees. Only the fade hangs outside
    the host; the rest is its own padding, so there is nothing extra to scroll
-   to. */
+   to.
+
+   Sideways it hangs out too, by the reader's own gutter (`--reader-gutter`,
+   declared there and inherited): the bar is the width of the text column, but
+   the ground it is carrying down belongs to the whole section, and a fade
+   stopping at the column's edges drew two vertical seams down the padding. The
+   gutter is exactly how far the section's padding edge is, so this reaches it
+   and no further — nothing overflows and the reader gains nothing to scroll
+   sideways to. It stops short of a scrollbar for the same reason the bar does:
+   the padding edge is inside it. */
 .host::before {
   content: "";
   position: absolute;
   top: calc(var(--player-fade) * -1);
-  left: 0;
-  right: 0;
+  left: calc(var(--reader-gutter) * -1);
+  right: calc(var(--reader-gutter) * -1);
   bottom: 0;
   background: linear-gradient(
     to bottom,
