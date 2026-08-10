@@ -84,36 +84,44 @@
 
 /* The foot is deeper than the head: the title has a rule under it holding it
    off its own edge, and the last description has nothing — set level with the
-   sides it came to rest against the bottom of the card. */
+   sides it came to rest against the bottom of the card. The side padding is a
+   property because the sections give it back: a rule that divides them has to
+   reach the card's edges, and only a box that ignores this can draw one. */
 .body {
+  --help-inset: 1.75rem;
+
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 1.6rem 1.75rem 2.6rem;
+  padding: 1.6rem var(--help-inset) 2.6rem;
 }
 
+/* Two sections, and what tells them apart is the *order* of the division: an
+   edge-to-edge rule between them, exactly as under the title, against hairlines
+   inside a table that stop where its text does. A rule inset like the rows' own
+   read as one more row — which is what it was tried as first. */
+.block + .block {
+  margin: 1.9rem calc(var(--help-inset) * -1) 0;
+  padding: 1.9rem var(--help-inset) 0;
+  border-top: 1px solid var(--track);
+}
+
+/* A step above the prose it heads, where it used to be level with it: at the
+   size of the descriptions, the caps and the accent were the only things saying
+   this was a heading and not a line of text. */
 .section {
   margin: 0 0 1.1rem;
-  font-size: var(--fs-sm);
+  font-size: var(--fs-md);
   font-weight: 600;
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--accent);
 }
 
-/* A heading with a line under it belongs to that line, not to the table: the
-   note closes the gap the heading would otherwise hold open. */
+/* A heading followed by a note belongs to the note and not to the table below
+   it, so it closes the gap it would otherwise hold open. */
 .section:has(+ .note) {
   margin-bottom: 0.4rem;
-}
-
-/* A rule between the sections, and the same one the rows are divided by: what
-   separates the two tables is the space it is carried in, which is a table row's
-   twice over. The body's own padding sets the first heading's margin. */
-.rows + .section {
-  margin-top: 1.9rem;
-  padding-top: 1.9rem;
-  border-top: 1px solid var(--track);
 }
 
 /* Set like a description and not a step under it: the note is the sentence the

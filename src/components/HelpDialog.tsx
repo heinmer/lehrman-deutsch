@@ -88,90 +88,98 @@ export function HelpDialog({ onClose }: Props) {
         </div>
 
         <div className={styles.body}>
-          <h3 className={styles.section}>Settings</h3>
-          <p className={styles.note}>
-            Two of the sidebar's toggles, for what a plain click on a word does.
-            It always opens the word.
-          </p>
+          {/* Each section is its own box so that the line between them can be
+              drawn by the box and reach the card's edges — a division of a
+              different order from the hairlines inside a table, which stop at
+              the text. */}
+          <section className={styles.block}>
+            <h3 className={styles.section}>Settings</h3>
+            <p className={styles.note}>
+              Two of the sidebar's toggles, for what a plain click on a word
+              does. It always opens the word.
+            </p>
 
-          <dl className={styles.rows}>
-            <div className={styles.row}>
-              {/* The sidebar's own icons, so a row can be found by its shape
-                  rather than by reading the footer for its label. */}
-              <dt className={styles.setting}>
-                <MessageCircle size={17} strokeWidth={2} />
-                Say word
-              </dt>
-              <dd className={styles.what}>
-                Speaks the word in a native speaker's voice. Held back while the
-                narration runs, so the two never overlap.
-              </dd>
-            </div>
+            <dl className={styles.rows}>
+              <div className={styles.row}>
+                {/* The sidebar's own icons, so a row can be found by its shape
+                    rather than by reading the footer for its label. */}
+                <dt className={styles.setting}>
+                  <MessageCircle size={17} strokeWidth={2} />
+                  Say word
+                </dt>
+                <dd className={styles.what}>
+                  Speaks the word in a native speaker's voice. Held back while
+                  the narration runs, so the two never overlap.
+                </dd>
+              </div>
 
-            <div className={styles.row}>
-              <dt className={styles.setting}>
-                <LocateFixed size={17} strokeWidth={2} />
-                Jump
-              </dt>
-              <dd className={styles.what}>
-                Moves the narration to that word, without starting or stopping
-                it.
-              </dd>
-            </div>
-          </dl>
+              <div className={styles.row}>
+                <dt className={styles.setting}>
+                  <LocateFixed size={17} strokeWidth={2} />
+                  Jump
+                </dt>
+                <dd className={styles.what}>
+                  Moves the narration to that word, without starting or stopping
+                  it.
+                </dd>
+              </div>
+            </dl>
+          </section>
 
-          <h3 className={styles.section}>Shortcuts</h3>
-          <p className={styles.note}>
-            Each names a whole behaviour, whatever the settings above say.
-          </p>
+          <section className={styles.block}>
+            <h3 className={styles.section}>Shortcuts</h3>
+            <p className={styles.note}>
+              Each names a whole behaviour, whatever the settings above say.
+            </p>
 
-          <dl className={styles.rows}>
-            <div className={styles.row}>
-              <dt className={styles.keys}>
-                <kbd>Space</kbd>
-              </dt>
-              <dd className={styles.what}>
-                Plays and pauses the narration, wherever you are on the page.
-              </dd>
-            </div>
+            <dl className={styles.rows}>
+              <div className={styles.row}>
+                <dt className={styles.keys}>
+                  <kbd>Space</kbd>
+                </dt>
+                <dd className={styles.what}>
+                  Plays and pauses the narration, wherever you are on the page.
+                </dd>
+              </div>
 
-            <div className={styles.row}>
-              <dt className={styles.keys}>
-                <kbd>{PRIMARY_KEY}</kbd>
-                <span className={styles.plus}>+</span>
-                <span>click</span>
-              </dt>
-              {/* Not "on the right": below 48rem the panel is a drawer. */}
-              <dd className={styles.what}>
-                Opens the word only. Nothing is spoken and nothing moves.
-              </dd>
-            </div>
+              <div className={styles.row}>
+                <dt className={styles.keys}>
+                  <kbd>{PRIMARY_KEY}</kbd>
+                  <span className={styles.plus}>+</span>
+                  <span>click</span>
+                </dt>
+                {/* Not "on the right": below 48rem the panel is a drawer. */}
+                <dd className={styles.what}>
+                  Opens the word only. Nothing is spoken and nothing moves.
+                </dd>
+              </div>
 
-            <div className={styles.row}>
-              <dt className={styles.keys}>
-                <kbd>{OPTION_KEY}</kbd>
-                <span className={styles.plus}>+</span>
-                <span>click</span>
-              </dt>
-              <dd className={styles.what}>
-                Speaks the word only, over the narration if it is running.
-              </dd>
-            </div>
+              <div className={styles.row}>
+                <dt className={styles.keys}>
+                  <kbd>{OPTION_KEY}</kbd>
+                  <span className={styles.plus}>+</span>
+                  <span>click</span>
+                </dt>
+                <dd className={styles.what}>
+                  Speaks the word only, over the narration if it is running.
+                </dd>
+              </div>
 
-            <div className={styles.row}>
-              <dt className={styles.keys}>
-                <kbd>{PRIMARY_KEY}</kbd>
-                <span className={styles.plus}>+</span>
-                <kbd>{OPTION_KEY}</kbd>
-                <span className={styles.plus}>+</span>
-                <span>click</span>
-              </dt>
-              <dd className={styles.what}>
-                Reads the text from that word, starting playback if it is
-                paused.
-              </dd>
-            </div>
-          </dl>
+              <div className={styles.row}>
+                <dt className={styles.keys}>
+                  <kbd>{PRIMARY_KEY}</kbd>
+                  <span className={styles.plus}>+</span>
+                  <kbd>{OPTION_KEY}</kbd>
+                  <span className={styles.plus}>+</span>
+                  <span>click</span>
+                </dt>
+                <dd className={styles.what}>
+                  Reads the text from that word, starting playback if it is
+                  paused.
+                </dd>
+              </div>
+            </dl>
+          </section>
         </div>
       </div>
     </div>

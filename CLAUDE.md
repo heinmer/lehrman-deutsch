@@ -348,8 +348,18 @@ as `/…/` so transcriptions look the same everywhere.
   the exceptions to them — which is the one thing about those four shortcuts a
   reader cannot work out by trying them. The rows are separated by a rule and
   not only by space: six descriptions of one length in one colour read as a
-  paragraph, and which key goes with which sentence is the whole point. Its
-  cross hovers onto `--surface-inset` and not onto `--surface-raised` as the word
+  paragraph, and which key goes with which sentence is the whole point.
+  **Two rules of different orders, then, and that is what separates the
+  sections**: the one between them runs the full width of the card, as the one
+  under the title does, while the ones inside a table stop where its text does.
+  Each section is therefore a box of its own (`.block`) which gives the body's
+  side padding back with a negative margin — `--help-inset` exists so the two
+  cannot drift — since only a box that reaches the card's edges can draw a line
+  along them. An inset rule between the sections was tried first and read as
+  one more table row, space around it or not; the headings went up a step to
+  `--fs-md` at the same time, because at the size of the descriptions their
+  caps and their colour were doing all the work.
+  Its cross hovers onto `--surface-inset` and not onto `--surface-raised` as the word
   panel's does: the panel's ground is the page, while this card floats on
   `--surface-overlay`, and in every theme those two are **the same colour** —
   the button lit up into exactly what was already under it. Anything sitting
