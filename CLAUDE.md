@@ -657,7 +657,17 @@ as `/…/` so transcriptions look the same everywhere.
   `--control-height` square and the pill is absolute inside it, so opening
   shifts nothing; `.slot` is the room the slider stands in, zero-height and
   clipped while shut, which is why it carries a little space *under* the track
-  as well — the input's focus ring is inside that clip. The pill's ground steps
+  as well — the input's focus ring is inside that clip. That slot then **hangs
+  down over the top of the disc** once it is open, because the two boxes
+  meeting left some 25px of nothing between the track and the icon: the last
+  stretch of the slider is the thumb's travel and the top of the button is the
+  padding round a 19px icon in a 3rem circle, and neither can be taken away, so
+  they overlap instead. The button is lifted above the overhang (`z-index`) so
+  the disc keeps its whole click target — it has no ground of its own, so the
+  track still shows through it, and what the slider gives up there is the
+  couple of percent at the bottom of its travel. The overlap belongs to the
+  open state alone: at rest it would take the disc below `--control-height` and
+  out of step with the rest of the footer. The pill's ground steps
   from `--surface-inset` to `--surface-overlay` as it opens, because open it
   floats over the text list and only the overlay is guaranteed opaque; its rim
   and the band that clears the settings behind it are drawn on a pseudo-element

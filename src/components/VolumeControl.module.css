@@ -59,25 +59,41 @@
 
 /* The room the slider stands in: nothing at all until the pill opens. The
    height is the track plus the space above it and a little under, which the
-   focus ring on the input needs, this box being clipped. */
+   focus ring on the input needs, this box being clipped.
+
+   It then hangs down over the top of the disc, because the two boxes meeting
+   left a band of nothing between the track and the icon: the last stretch of
+   the slider is the thumb's travel, and the top of the button is the padding
+   round a 19px icon in a 3rem circle. Neither can be taken away, so they
+   overlap instead — some 25px of gap against 15. The overlap comes with the
+   opening and not before it: at rest it would take the disc below
+   `--control-height` and out of step with every other control in the footer. */
 .slot {
   display: flex;
   justify-content: center;
   height: 0;
   overflow: hidden;
   visibility: hidden;
-  transition: height 150ms ease, visibility 150ms;
+  transition: height 150ms ease, margin-bottom 150ms ease, visibility 150ms;
 }
 
 .root:hover .slot,
 .root:has(:focus-visible) .slot {
   height: 7.6rem;
+  margin-bottom: -0.75rem;
   visibility: visible;
 }
 
 /* The icon under it. Not a `.control`: the ground belongs to the pill now, and
-   a disc of its own inside it would read as a button in a box. */
+   a disc of its own inside it would read as a button in a box.
+
+   Lifted over the slider's overhang, so the disc keeps its whole click target
+   and the strip they share is the button's. It has no ground of its own, so
+   the track shows through it; what the slider loses there is the couple of
+   percent at the bottom of its travel, and dragging into it still works. */
 .button {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
