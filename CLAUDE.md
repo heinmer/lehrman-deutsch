@@ -659,6 +659,32 @@ as `/…/` so transcriptions look the same everywhere.
   `timeupdate` fires ~4x a second — far too coarse to follow words.
 - **Theme is applied by an inline script in `index.html`** before first paint;
   `useTheme` only keeps it in sync afterwards.
+- **The mark and the name are one lockup**, which is what `.brand` in the
+  sidebar's header is for. The mark is drawn in `currentColor` and handed
+  `--accent`, the same colour the name takes, and set to the name's cap height
+  — `0.72` of `--fs-md`, where DM Sans's capitals reach. What holds the two
+  together is `align-items: baseline` on that wrapper and not a nudge: centred
+  on the name's line box the mark sat a pixel low, because a line box carries
+  the descender space under the baseline and so its middle is below the middle
+  of the cap band. The mark has no baseline of its own, so its bottom edge is
+  what lands on the name's, and the numbers then need no maintaining. It has
+  to be a **wrapper**: baseline alignment means nothing to a lone item — it
+  simply goes to cross-start — and putting the whole header in the group would
+  drag the name up to meet the taller `i` button.
+- **The favicon is three files and one of them switches colour.**
+  `public/favicon.svg` carries a `prefers-color-scheme` rule in an inline
+  `<style>`, so it is the White theme's ink on a light interface and the Black
+  theme's on a dark one; current Firefox and Chromium honour it, and it is the
+  only one of the three that can, a raster having no way to ask. `favicon.ico`
+  (16 and 32, PNG payloads) is therefore drawn in an accent halfway between
+  the one the light themes use and the one the dark themes use, clearing about
+  3.9:1 on a white tab strip and 4.2:1 on a dark one rather than being right
+  on one and invisible on the other. `apple-touch-icon.png` is opaque with a
+  ground of its own, because iOS puts it on a home screen. All three are
+  hand-placed in `public/` — nothing generates them — and Vite rebases their
+  `href`s in `index.html` against `base`, so a subpath build needs no help.
+  The path in `favicon.svg` is a second copy of the one in `Logo.tsx`;
+  redrawing the mark means changing both.
 - The word panel's column is always in the grid, so opening it never shifts the
   text.
 

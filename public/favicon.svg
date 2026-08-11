@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 540">
+  <!--
+    The same mark as src/components/Logo.tsx, centred in a square with a
+    little air at the sides: a tab is 16px and the mark is 5:3, so it fills
+    the width and about half the height. Redrawing the logo means changing
+    both files — a static asset cannot be handed the component's constant.
+
+    A favicon has no page to inherit a colour from, so this one asks the
+    browser instead: the ink of the White theme on a light interface, the ink
+    of the Black theme on a dark one. Current Firefox and Chromium honour it.
+    Anything that does not falls back to favicon.ico, which cannot switch and
+    so is neither — see index.html.
+  -->
+  <style>
+    path { fill: #1c1d22 }
+    @media (prefers-color-scheme: dark) { path { fill: #e7e9f0 } }
+  </style>
+  <path transform="translate(20 120)" d="M0 0H100V200H200V0H400L500 100L300 300L200 200V300H100L0 200ZM300 100V200L400 100ZM500 200V300H400Z"/>
+</svg>

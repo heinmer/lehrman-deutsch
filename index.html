@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lehrman-Deutsch</title>
+
+    <!--
+      Three files, in the order a browser reads them. The .ico is declared
+      with a size so that a browser taking the SVG does not fetch it as well;
+      it is the fallback for anything that cannot use one, and being a single
+      raster it cannot follow the interface's colour scheme the way favicon.svg
+      does — it is drawn in the accent halfway between the one the light themes
+      use and the one the dark themes use, which clears about 3.9:1 on a white
+      tab strip and 4.2:1 on a dark one. The touch icon is opaque with a ground
+      of its own, because iOS puts it on a home screen rather than in a tab.
+    -->
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <script>
       // Applied before first paint so the page never flashes the wrong theme.
       // The placeholder below is filled in from shared/themes.ts by a Vite
