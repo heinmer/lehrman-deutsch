@@ -461,7 +461,8 @@ as `/…/` so transcriptions look the same everywhere.
   and came to rest on its top one. A control's inset from its host is the
   host's padding, so it is not something this component can be told in CSS.
   The gap above is *padding on the anchor*, not a margin — in hover
-  mode it is the bridge the pointer crosses, exactly as in `VolumeControl`.
+  mode it is the bridge the pointer crosses. (The volume control needs no such
+  bridge: it is one box that grows rather than a card opened above a disc.)
   `size="large"` is the voice list, which is read from across the reader; the
   sidebar's menus stay the size of the footer they belong to, so the two sizes
   are a prop and not a change to the component. **A menu in the sidebar fades
@@ -641,10 +642,25 @@ as `/…/` so transcriptions look the same everywhere.
   slider therefore keeps the native track transparent and draws its own on the
   wrapper, which is exactly as wide as the thumb. The drawn track is inset by
   half a thumb at each end so the fill and the thumb do not drift apart.
-  The popover it lives in has no gap above the button — the hover area has to
-  stay continuous, or the slider closes as the pointer travels to it — and the
-  card is exactly the button's width, so the two read as one control standing
-  up rather than as a card hung above a disc.
+- **The volume control is one box that grows, not a card above a disc.** The
+  disc stands up into a pill carrying the slider over the icon, the way a
+  player's volume does. It was a popover once, and every difficulty it had was
+  the gap: the hover area had to stay continuous or the slider closed as the
+  pointer travelled to it, and the card had to be exactly the button's width
+  for the two to read as one control at all. Growing removes both. What holds
+  it together: `.root` keeps the disc's place in the footer at
+  `--control-height` square and the pill is absolute inside it, so opening
+  shifts nothing; `.slot` is the room the slider stands in, zero-height and
+  clipped while shut, which is why it carries a little space *under* the track
+  as well — the input's focus ring is inside that clip. The pill's ground steps
+  from `--surface-inset` to `--surface-overlay` as it opens, because open it
+  floats over the text list and only the overlay is guaranteed opaque; its rim
+  and the band that clears the settings behind it are drawn on a pseudo-element
+  and faded in with it, a disc among its like having neither. The icon is not a
+  `.control` — the ground belongs to the pill now, and a disc of its own inside
+  it read as a button in a box.
+  Keyboard focus holds it open, but `:focus-visible` and not `:focus-within`:
+  focus left behind by a drag would pin it open after the pointer had gone.
 - **Words render as `<span role="button">`, never `<button>`.** Chrome lays
   buttons out as atomic inline boxes, which lets a line break fall between a
   word and the punctuation after it.

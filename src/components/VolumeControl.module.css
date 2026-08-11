@@ -1,70 +1,103 @@
+/* Holds the disc's place in the footer. The pill grows out of it upwards and
+   is taken out of the flow, so opening it moves nothing. */
 .root {
   position: relative;
-  display: inline-flex;
-  flex: none;
-}
-
-/* The pill control, squared off into a disc. */
-.button {
   width: var(--control-height);
-  padding: 0;
-  justify-content: center;
+  height: var(--control-height);
   flex: none;
 }
 
-.button[data-muted="true"] {
-  color: var(--text-soft);
-}
-
-/* Opens upwards, like the theme menu: the control sits at the bottom of the
-   sidebar. The padding is the bridge — it keeps the hover area continuous
-   between the button and the card, so the pointer never crosses a gap. */
-.popover {
+/* The control itself: a disc at rest, standing up into a pill as it is reached
+   for. It grows upwards because these controls sit at the bottom of the
+   sidebar, and it is one box rather than a card over a button so that there is
+   no gap between the icon and the track. */
+.shell {
   position: absolute;
-  bottom: 100%;
-  left: 50%;
+  bottom: 0;
+  left: 0;
   z-index: 30;
-  transform: translateX(-50%);
-  padding-bottom: 0.4rem;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 130ms ease, visibility 130ms;
-}
-
-/* Keyboard focus keeps it open, but focus left behind by a drag must not:
-   `:focus-within` would pin the slider open after the pointer had gone. */
-.root:hover .popover,
-.root:has(:focus-visible) .popover {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* Exactly the width of the button it opens from, so the two read as one
-   control standing up rather than as a card hung above a disc. What it holds
-   is a slider as wide as its own thumb, which centres inside whatever this
-   is. */
-.card {
-  position: relative;
   display: flex;
-  justify-content: center;
-  width: var(--control-height);
-  padding: 0.7rem 0;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border);
-  background: var(--surface-overlay);
-  box-shadow: var(--shadow-card);
+  background: var(--surface-inset);
+  transition: background-color 130ms ease;
 }
 
-/* The settings it opens over, faded out around the whole card — the same
-   separator the menus draw, in the sidebar's own ground; see SettingPicker for
-   why it is a shadow on a pseudo-element. */
-.card::before {
+/* Open, it floats over the text list, so it takes the ground that is
+   guaranteed opaque. Keyboard focus holds it open, but focus left behind by a
+   drag must not: `:focus-within` would pin the slider open after the pointer
+   had gone. */
+.root:hover .shell,
+.root:has(:focus-visible) .shell {
+  background: var(--surface-overlay);
+}
+
+/* Its rim, and the band that clears the settings behind it — both hard rings
+   outside the pill, and neither drawn while it is only a disc among its like.
+   See SettingPicker for why the band is a shadow on a pseudo-element and why
+   it is the sidebar's own ground, thinned. */
+.shell::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  box-shadow: var(--popover-fade) var(--surface-sidebar);
+  opacity: 0;
+  transition: opacity 130ms ease;
+  box-shadow:
+    0 0 0 1px var(--border),
+    var(--popover-fade) var(--surface-sidebar);
+}
+
+.root:hover .shell::before,
+.root:has(:focus-visible) .shell::before {
+  opacity: 1;
+}
+
+/* The room the slider stands in: nothing at all until the pill opens. The
+   height is the track plus the space above it and a little under, which the
+   focus ring on the input needs, this box being clipped. */
+.slot {
+  display: flex;
+  justify-content: center;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+  transition: height 150ms ease, visibility 150ms;
+}
+
+.root:hover .slot,
+.root:has(:focus-visible) .slot {
+  height: 7.6rem;
+  visibility: visible;
+}
+
+/* The icon under it. Not a `.control`: the ground belongs to the pill now, and
+   a disc of its own inside it would read as a button in a box. */
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: var(--control-height);
+  flex: none;
+  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  transition: color 130ms ease;
+}
+
+/* The pill is what lights up; the icon follows it, as it would in any other
+   control here. */
+.root:hover .button,
+.root:has(:focus-visible) .button {
+  color: var(--text);
+}
+
+/* Muted outranks that — it is the state, not the pointer. */
+.root .button[data-muted="true"] {
+  color: var(--text-soft);
 }
 
 /* As wide as the thumb, so the thumb fills it and reads as centred. */
@@ -72,6 +105,8 @@
   position: relative;
   width: 1.25rem;
   height: 6.5rem;
+  margin-top: 0.8rem;
+  flex: none;
 }
 
 /* The track. Inset by half a thumb at each end so that it spans exactly the

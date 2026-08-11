@@ -14,29 +14,21 @@ function VolumeIcon({ level }: { level: number }) {
 
 /**
  * The output level for both the narration and the word clips: a round button
- * that mutes on click, with a vertical slider that opens on hover. The
- * slider's wrapper reaches down to the button so the pointer can travel
- * between them without crossing a gap and dismissing it.
+ * that mutes on click, and grows upwards on hover into a pill carrying a
+ * vertical slider above the icon. One box rather than a card opened over the
+ * disc — so there is no gap for the pointer to cross on its way to the track,
+ * and nothing to bridge.
  */
 export function VolumeControl({ volume, muted, effective, setVolume, toggleMuted }: VolumeSetting) {
   const percent = Math.round(effective * 100);
 
   return (
     <div className={styles.root}>
-      <button
-        type="button"
-        className={`control ${styles.button}`}
-        data-muted={muted}
-        onClick={toggleMuted}
-        aria-label={muted ? `Unmute (volume ${Math.round(volume * 100)}%)` : "Mute"}
-        title={muted ? "Muted" : `Volume ${percent}%`}
-      >
-        <VolumeIcon level={effective} />
-      </button>
-
-      <div className={styles.popover}>
-        {/* --fill paints the part of the track below the thumb. */}
-        <div className={styles.card} style={{ "--fill": `${percent}%` } as CSSProperties}>
+      {/* --fill paints the part of the track below the thumb. */}
+      <div className={styles.shell} style={{ "--fill": `${percent}%` } as CSSProperties}>
+        {/* The room the pill grows into: zero-height while shut, so the disc
+            is exactly the size of every other control in the footer. */}
+        <div className={styles.slot}>
           {/* The track is drawn by the wrapper: Chromium lays a vertical
               slider's own track out against the inline edge, which leaves the
               thumb off centre. */}
@@ -53,6 +45,17 @@ export function VolumeControl({ volume, muted, effective, setVolume, toggleMuted
             />
           </div>
         </div>
+
+        <button
+          type="button"
+          className={styles.button}
+          data-muted={muted}
+          onClick={toggleMuted}
+          aria-label={muted ? `Unmute (volume ${Math.round(volume * 100)}%)` : "Mute"}
+          title={muted ? "Muted" : `Volume ${percent}%`}
+        >
+          <VolumeIcon level={effective} />
+        </button>
       </div>
     </div>
   );
