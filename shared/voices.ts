@@ -19,10 +19,10 @@ export interface VoiceInfo {
    * describing how it reads is over before the ear has settled on it.
    *
    * A second sentence buys the engine's pause at a full stop, and what that
-   * costs depends on the voice: measured on these clips the break is 0.52s
+   * costs depends on the voice: measured on these clips the break is 0.53s
    * for Seraphina and 1.14s for Killian, whose silences run as long as
    * Conrad's — long enough that the clip sounds finished and then starts
-   * talking again. A comma is worth about 0.22s in either of them.
+   * talking again. A comma is worth 0.2s to 0.3s in either of them.
    */
   sample: string;
 }
@@ -37,7 +37,7 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-SeraphinaMultilingualNeural",
     name: "Seraphina",
-    sample: "Hi, ich bin Seraphina. Lass uns lesen!",
+    sample: "Hi, ich heiße Seraphina. Lass uns lesen!",
   },
   {
     id: "de-DE-FlorianMultilingualNeural",
