@@ -105,13 +105,16 @@ export function HelpDialog({ onClose }: Props) {
               the text. */}
           <section className={styles.block}>
             <h3 className={styles.section}>What is Lehrman-Deutsch?</h3>
-            {/* Answered in a noun phrase, the way the other two notes are
-                written — and the way a question of this shape is answered out
-                loud. The heading has just named the thing, so the sentence
-                does not name it again. */}
+            {/* What it is, then the one move the whole thing turns on. The
+                heading has just named the site, so the sentence says "This is"
+                rather than naming it twice. It stays a note like the two below
+                it: a paragraph that has to be read before the tables are
+                reached is no longer one. */}
             <p className={styles.note}>
-              A reader for learning German: short texts, read aloud from
-              beginning to end, with the word being spoken lit as it goes.
+              This is a reader for learning German: short texts, read aloud from
+              beginning to end, with the word being spoken lit as it goes. Click
+              any word for its pronunciation, its part of speech and what it
+              means in English, and to hear a native speaker say it.
             </p>
           </section>
 

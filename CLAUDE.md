@@ -362,12 +362,14 @@ as `/…/` so transcriptions look the same everywhere.
   one to show. The first is only the first two of those, which is the whole
   reason it does not need a treatment of its own: a lead paragraph set larger
   and darker was tried and it made the opening a different kind of thing from
-  the sections under it, when what it is is the first of them. It answers in a
-  noun phrase, as the other two notes are written and as a question of that
-  shape is answered out loud, and it does not repeat the name the heading has
-  just given. `.note:last-child` drops the margin that would otherwise stand
-  before a table, so a section that is all note sits level between the rules
-  either side of it. **The settings come before the shortcuts**, because they
+  the sections under it, when what it is is the first of them. Its note is one
+  paragraph of two sentences — what the site is, then the one move the whole
+  thing turns on — and it does not want a third: a note long enough to have to
+  be read before the tables are reached is no longer a note. It says "This is"
+  rather than naming the site the heading has just named.
+  `.note:last-child` drops the margin that would otherwise stand before a
+  table, so a section that is all note sits level between the rules either side
+  of it. **The settings come before the shortcuts**, because they
   are what a plain click does and the modifiers read as the exceptions to them
   — which is the one thing about those four shortcuts a reader cannot work out
   by trying them.
