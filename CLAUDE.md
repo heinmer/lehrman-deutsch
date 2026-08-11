@@ -661,8 +661,12 @@ as `/…/` so transcriptions look the same everywhere.
   `useTheme` only keeps it in sync afterwards.
 - **The mark and the name are one lockup**, which is what `.brand` in the
   sidebar's header is for. The mark is drawn in `currentColor` and handed
-  `--accent`, the same colour the name takes, and set to the name's cap height
-  — `0.72` of `--fs-md`, where DM Sans's capitals reach. What holds the two
+  `--accent`, the same colour the name takes, and set a touch over the name's
+  cap height — `0.82` of `--fs-md`, against the `0.72` where DM Sans's
+  capitals reach, because level with the L it read as timid. The extra height
+  is spent upwards, the baseline being shared. `0.90` is the ceiling: past it
+  the mark is taller than the h1's own box and the header stops being the
+  height of the `i` button in it. What holds the two
   together is `align-items: baseline` on that wrapper and not a nudge: centred
   on the name's line box the mark sat a pixel low, because a line box carries
   the descender space under the baseline and so its middle is below the middle

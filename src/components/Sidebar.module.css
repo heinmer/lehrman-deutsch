@@ -33,14 +33,18 @@
   min-width: 0;
 }
 
-/* Set to the name's cap height, so with the baselines shared the mark stands
-   exactly as tall as the L beside it. 0.72 of the size is where DM Sans's
-   capitals reach. The width follows from the viewBox — the mark is 5:3, so it
-   comes out about twice as wide as tall, and that is the lockup rather than
-   something to correct. */
+/* A touch over the name's cap height, which DM Sans reaches at 0.72 of the
+   size: at exactly that the mark measured level with the L and read as
+   timid, being a plain block against letterforms with some air in them.
+   Sharing a baseline means the extra height is spent upwards, over the
+   capitals, which is where it is wanted. 0.90 is the ceiling and not a matter
+   of taste — past it the mark stands taller than the h1's own box, and the
+   header stops being the height of the button in it. The width follows from
+   the viewBox: the mark is 5:3, so it comes out about twice as wide as tall,
+   and that is the lockup rather than something to correct. */
 .logo {
   flex: none;
-  height: calc(var(--fs-md) * 0.72);
+  height: calc(var(--fs-md) * 0.82);
   width: auto;
   color: var(--accent);
 }
