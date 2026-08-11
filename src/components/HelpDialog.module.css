@@ -179,6 +179,11 @@
      full strength, so they compound to a step above whatever is under them
      rather than matching a fill that happens to be named the same. */
   --help-fill: color-mix(in srgb, var(--surface-inset) 45%, transparent);
+  /* The banded row, which exists only in the stacked layout below — see the
+     media query at the end of the file. Roughly twice the fill and still short
+     of a full pour, so that a `kbd` chip standing on it is a step above its
+     ground exactly as it is on an unbanded row. */
+  --help-band: color-mix(in srgb, var(--surface-inset) 85%, transparent);
 
   margin: 0;
   border: 1px solid var(--help-line);
@@ -290,17 +295,42 @@
 }
 
 /* Narrower than the card can be: the two columns stop reading as a pair and
-   the key sits over its own description instead. The rule between them has to
-   turn with them — left where it was it would be a line hanging down the middle
-   of a cell that no longer has anything on its right. */
+   the key sits over its own description instead.
+
+   Stacked, the pairing is what goes: every boundary in the table is one
+   hairline of the same weight, so nothing says which lines hold a row together
+   and which divide one row from the next — the table reads as ten unrelated
+   lines rather than as five rows of two. The line between the columns turned
+   into a line between the rows, and *that* is what has to be undone rather than
+   merely reoriented. So the row is put back together the other way round: the
+   line inside it goes entirely, since the key is now a heading standing over
+   its own description and does not need a rule to say so, and alternate rows
+   carry a ground instead. The band is the pairing; the rule between the rows is
+   then the only line left and can only mean one thing.
+
+   Banding was tried in the two-column layout and turned down — the rules there
+   already say where a row ends, and a ground changing under every other one was
+   one stripe too many. It earns its keep here for precisely the reason it did
+   not there. */
 @media (max-width: 30rem) {
   .row {
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .row:nth-child(even) {
+    background: var(--help-band);
+  }
+
+  /* The pair closes up as the line between it goes: a cell's worth of padding
+     top and bottom held the description a whole row's gap away from the key it
+     belongs to, which the band would then have had to argue with. */
   .keys,
   .setting {
     border-right: none;
-    border-bottom: 1px solid var(--help-line);
+    padding-bottom: 0.2rem;
+  }
+
+  .what {
+    padding-top: 0;
   }
 }

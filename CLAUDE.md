@@ -395,15 +395,31 @@ as `/…/` so transcriptions look the same everywhere.
     compounding to a step above whatever is under them. The rows were banded
     between this and the full pour for a while and it was one stripe too many —
     the rules already say where a row ends, and a ground changing under every
-    other one made the table busier than the six sentences in it.
+    other one made the table busier than the six sentences in it. That holds
+    while the table has two columns; stacked it is exactly backwards, which is
+    the bullet below.
   - **The cells stretch; the rules are borders on them.** The column rule is a
     `border-right` on the left cell, so that cell has to reach the row's full
     height — baseline-aligned it drew the line a third of the way down. The key
     is then centred down its row with `align-content`, which needs
     `flex-wrap: wrap` to have any effect at all; `align-items` still sets the
-    chips of a chord on one baseline. Below 30rem the row stacks and that
-    border has to turn with it, or it hangs down the middle of a cell with
-    nothing to its right.
+    chips of a chord on one baseline. Below 30rem the row stacks, and that
+    border does not turn with it — see below.
+  - **Stacked, the pairing is carried by a band and not by the rules.** Turning
+    the column rule into a second horizontal one was the first answer and it is
+    what made the narrow table hard to read: every boundary was then one
+    hairline of the same weight, so nothing said which lines held a row together
+    and which divided one row from the next, and five rows of two read as ten
+    unrelated lines. So below 30rem the line inside a row goes entirely — the
+    key is a heading standing over its own description there, and the pair
+    closes up (`padding-bottom` on the key, none on the description) now that
+    two cells' padding no longer holds them a row's gap apart — and
+    `.row:nth-child(even)` takes `--help-band` instead. The rule between the
+    rows is then the only line left in the table and can only mean one thing.
+    The band is `--surface-inset` at 85%, roughly twice the fill and still short
+    of a full pour, so a `kbd` chip is a step above its ground on a banded row
+    exactly as it is on a plain one. Banding is confined to that media query on
+    purpose: it is the answer to a problem the two-column table does not have.
   - **The left column is sized to the longest chord *plus the cell padding*.**
     10.5rem was right while the column was bare and broke `Ctrl+Alt+click` over
     two lines the moment the cells were given padding. Assert it rather than
