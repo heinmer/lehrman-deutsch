@@ -34,15 +34,17 @@
   --player-inset: 1.25rem;
   --player-fade: 1.75rem;
   --player-space: 3rem;
-  /* The same idea all round rather than along one edge: what a popover clears
-     out of the ground it covers, so the text list gives way to the theme menu
-     instead of running into it. Offsets, blur and spread of the shadow that
-     draws it — the colour follows at the point of use, from the ground it
-     opens over (`--popover-ground`, set by the host, and `transparent` in the
-     player, where nothing is drawn round the menu at all). Held close to the
-     box and only slightly soft: spread wider than blur, or the band reads as a
-     smudge rather than as an edge. */
-  --popover-fade: 0 0 0.35rem 0.45rem;
+  /* What a popover clears out of the ground it covers, so the text list gives
+     way to the theme menu instead of running into it: a thin band round the
+     whole box, drawn as a hard-edged shadow of this width. The colour follows
+     at the point of use — the ground it opens over (`--popover-ground`, set by
+     the host, and `transparent` in the player, where nothing is drawn round the
+     menu at all), thinned by `--popover-veil` so that what is under it stays
+     legible as something covered. A band with an edge and not a fade: the
+     popover's own rim then stands on a strip of the page rather than on
+     whatever happened to be behind it. */
+  --popover-ring: 0.35rem;
+  --popover-veil: 72%;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;
 }

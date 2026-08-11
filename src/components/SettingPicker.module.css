@@ -55,24 +55,31 @@
   box-shadow: var(--shadow-card);
 }
 
-/* The settings the menu covers are faded out around it, the way the prose
-   fades out under the player — but on every side, since a menu is a box in the
-   middle of a list and not an edge of the layout. It is a shadow cast in the
-   ground the menu opens over rather than a colour of its own, so it reads as
-   the sidebar giving way and not as a border in the wrong colour, which is
-   what the hard ring it replaces looked like.
+/* The settings the menu covers are washed out around it, on every side, since
+   a menu is a box in the middle of a list and not an edge of the layout. It is
+   the ground the menu opens over, thinned, rather than a colour of its own, so
+   it reads as the sidebar giving way and not as a border in the wrong colour.
 
-   Behind the menu's own opaque ground, so only the part outside is ever seen,
-   and on a pseudo-element rather than on the box: `--shadow-card` is `none` in
-   every theme, and `none` in a list of shadows invalidates the declaration.
-   The player passes `transparent` — see PlayerBar. */
+   A band with an edge of its own: a hard-edged shadow, rounded with the menu
+   because the pseudo-element inherits its corners and a spread grows the radius
+   along with it. Over the plain ground it is invisible by construction, having
+   nothing to cover and being that ground's own colour. Behind the menu's own
+   opaque ground, so only the part outside is ever seen, and on a
+   pseudo-element rather than on the box: `--shadow-card` is `none` in every
+   theme, and `none` in a list of shadows invalidates the declaration. The
+   player passes `transparent` — see PlayerBar. */
 .menu::before {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  box-shadow: var(--popover-fade) var(--popover-ground, var(--surface-sidebar));
+  box-shadow: 0 0 0 var(--popover-ring)
+    color-mix(
+      in srgb,
+      var(--popover-ground, var(--surface-sidebar)) var(--popover-veil),
+      transparent
+    );
 }
 
 /* A menu opening over the reader rather than inside the settings footer: the

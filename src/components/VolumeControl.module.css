@@ -48,7 +48,8 @@
   transition: opacity 130ms ease;
   box-shadow:
     0 0 0 1px var(--border),
-    var(--popover-fade) var(--surface-sidebar);
+    0 0 0 calc(1px + var(--popover-ring))
+      color-mix(in srgb, var(--surface-sidebar) var(--popover-veil), transparent);
 }
 
 .root:hover .shell::before,

@@ -465,13 +465,18 @@ as `/…/` so transcriptions look the same everywhere.
   bridge: it is one box that grows rather than a card opened above a disc.)
   `size="large"` is the voice list, which is read from across the reader; the
   sidebar's menus stay the size of the footer they belong to, so the two sizes
-  are a prop and not a change to the component. **A menu in the sidebar fades
-  the settings it covers out around itself** — `--popover-fade` is the reach of
-  that band and `--popover-ground` its colour — the separator the player draws
-  over the prose, wrapped round the whole box, since a menu is in the middle of
-  a list and not at an edge of the layout. Held close to the box, with the
-  spread wider than the blur: a soft wide one read as a smudge rather than as
-  an edge. It is a shadow cast in that ground rather than a colour
+  are a prop and not a change to the component. **A menu in the sidebar washes
+  the settings it covers out around itself** — `--popover-ring` is the width of
+  that band, `--popover-veil` how much of the ground it carries and
+  `--popover-ground` which ground that is — wrapped round the whole box, since a
+  menu is in the middle of a list and not at an edge of the layout. It is a
+  **band with an edge**, a hard-edged shadow and not a fade: the menu's own rim
+  then stands on a strip of the page rather than on whatever happened to be
+  behind it. It was a soft gradient once and read as a smudge round the box.
+  Thin, and translucent so that what is under it stays legible as something
+  covered — over the plain ground, where it has nothing to cover, it is
+  invisible by construction, being that ground's own colour.
+  It is a shadow cast in that ground rather than a colour
   of its own, on a pseudo-element behind the menu: `--shadow-card` is `none` in
   every theme, and `none` in a list of shadows invalidates the declaration. The
   player passes `transparent` and its menu has nothing drawn round it at all.
@@ -584,9 +589,9 @@ as `/…/` so transcriptions look the same everywhere.
   two there for exactly this reason.
 - **The player bar sets `overflow: visible`**, against `.island`, because the
   voice menu opens out of it; nothing else in the bar overflows. It also sets
-  `--popover-ground: transparent`: the sidebar's menus fade the settings they
+  `--popover-ground: transparent`: the sidebar's menus wash the settings they
   cover out around themselves, but this one opens over the reader, where that
-  would only be a smudge round a box that is already floating.
+  would only be a band of ground round a box that is already floating.
 - **A voice can be heard before it is chosen.** Each option carries a preview
   button, which is why an option is a `<div role="option">` rather than a
   button — a button cannot contain one. It plays through `clipAudio`, the same
