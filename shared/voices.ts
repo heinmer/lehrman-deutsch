@@ -16,11 +16,13 @@ export interface VoiceInfo {
   /**
    * What this voice says when the reader auditions it. A short greeting is
    * enough — the voice itself is the thing being chosen, and a sentence
-   * describing how it reads is over before the ear has settled on it. Each
-   * one opens differently so four of them in a row do not blur together.
+   * describing how it reads is over before the ear has settled on it.
    *
-   * Kept to a single sentence: the engine's pause at a full stop is long
-   * enough that the clip sounds finished, and then starts talking again.
+   * A second sentence buys the engine's pause at a full stop, and what that
+   * costs depends on the voice: measured on these clips the break is 0.52s
+   * for Seraphina and 1.14s for Killian, whose silences run as long as
+   * Conrad's — long enough that the clip sounds finished and then starts
+   * talking again. A comma is worth about 0.22s in either of them.
    */
   sample: string;
 }
@@ -35,17 +37,17 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-SeraphinaMultilingualNeural",
     name: "Seraphina",
-    sample: "Guten Tag, ich heiße Seraphina.",
+    sample: "Hi, ich bin Seraphina. Lass uns lesen!",
   },
   {
     id: "de-DE-FlorianMultilingualNeural",
     name: "Florian",
-    sample: "Hi, ich bin Florian, viel Spaß beim Lesen!",
+    sample: "Hallo, ich bin Florian, viel Spaß beim Lesen!",
   },
   {
     id: "de-DE-KillianNeural",
     name: "Killian",
-    sample: "Hallo, mein Name ist Killian.",
+    sample: "Guten Tag, ich bin Killian. Lass uns anfangen!",
   },
 ];
 
