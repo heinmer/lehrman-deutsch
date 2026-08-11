@@ -675,6 +675,17 @@ as `/…/` so transcriptions look the same everywhere.
   to be a **wrapper**: baseline alignment means nothing to a lone item — it
   simply goes to cross-start — and putting the whole header in the group would
   drag the name up to meet the taller `i` button.
+  **Centring the overshoot instead was considered and turned down.** Hanging
+  the mark half its excess below the line, so that it clears the capitals top
+  and bottom, is the right treatment for a mark that reads as an object; this
+  one reads as letters — a monogram of the two the name starts with, with a
+  flat foot, beside a wordmark that has no descenders — so the foot of its L
+  belongs on the line the word's L stands on, and dropped below it the two
+  read as misaligned rather than as balanced. It does not come out symmetric
+  anyway: DM Sans's nominal cap height is 13.0px against 12.56px of actual
+  ink at this size, so an honest centring takes its constant from a
+  rasterisation and moves with the size, while a baseline needs no constant
+  at all.
 - **The favicon is three files and one of them switches colour.**
   `public/favicon.svg` carries a `prefers-color-scheme` rule in an inline
   `<style>`, so it is the White theme's ink on a light interface and the Black
