@@ -109,41 +109,6 @@
   border-top: 1px solid var(--track);
 }
 
-/* The window's opening line, and the one block carrying no heading: the card is
-   called About and this is the answer to it, so a heading over it would only be
-   the title said twice. It is set a step above everything else in the body —
-   the tables are reference and this is the sentence someone who has just
-   arrived is actually looking for, so it is the one thing here printed at
-   `--text` rather than muted. */
-.lead {
-  margin: 0 0 0.75rem;
-  font-size: var(--fs-md);
-  line-height: 1.55;
-  color: var(--text);
-}
-
-/* What to do with it, at a note's size and colour: the sentence under the claim
-   and not level with it. */
-.intro {
-  margin: 0;
-  font-size: var(--fs-sm);
-  line-height: 1.6;
-  color: var(--text-muted);
-}
-
-/* The reader's own translate toggle, shown rather than described. It takes the
-   colour of the line it sits in — it is doing a word's work there, and a step
-   off the prose would read as a bullet dropped into the middle of a sentence.
-   The nudge is what puts it on the text's optical centre; an SVG otherwise
-   stands on the baseline and hangs below the line it is in. */
-.glyph {
-  white-space: nowrap;
-}
-
-.glyph svg {
-  vertical-align: -0.18em;
-}
-
 /* A step above the prose it heads, where it used to be level with it: at the
    size of the descriptions, the caps and the accent were the only things saying
    this was a heading and not a line of text. */
@@ -173,6 +138,14 @@
   font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-muted);
+}
+
+/* That margin is the gap before a table, and the opening section has none: it
+   is a heading and a sentence and nothing else. Left in, it stood the rule
+   below it a third further from the note than the note is from the rule above
+   — a section that is all note has to sit level between its own divisions. */
+.note:last-child {
+  margin-bottom: 0;
 }
 
 /* A table drawn as one: a filled box with its own outline and rounded corners,
