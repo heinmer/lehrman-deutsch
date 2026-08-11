@@ -14,9 +14,10 @@ export interface VoiceInfo {
   /** Shown in the picker. */
   name: string;
   /**
-   * What this voice says when the reader auditions it. Each one mentions
-   * something true about how it reads, since that is the thing being chosen,
-   * and each opens differently so four of them in a row do not blur together.
+   * What this voice says when the reader auditions it. A short greeting is
+   * enough — the voice itself is the thing being chosen, and a sentence
+   * describing how it reads is over before the ear has settled on it. Each
+   * one opens differently so four of them in a row do not blur together.
    *
    * Kept to a single sentence: the engine's pause at a full stop is long
    * enough that the clip sounds finished, and then starts talking again.
@@ -29,22 +30,22 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-ConradNeural",
     name: "Conrad",
-    sample: "Ich bin Conrad und lese Ihnen die Texte ruhig und deutlich vor.",
+    sample: "Hallo, ich bin Conrad, schön, dass du da bist.",
   },
   {
     id: "de-DE-SeraphinaMultilingualNeural",
     name: "Seraphina",
-    sample: "Mein Name ist Seraphina und auch schwierige Wörter spreche ich sauber aus.",
+    sample: "Guten Tag, ich heiße Seraphina.",
   },
   {
     id: "de-DE-FlorianMultilingualNeural",
     name: "Florian",
-    sample: "Hier spricht Florian, mit etwas mehr Tempo als die anderen drei.",
+    sample: "Hi, ich bin Florian, viel Spaß beim Lesen!",
   },
   {
     id: "de-DE-KillianNeural",
     name: "Killian",
-    sample: "Bei mir, dem Killian, bekommt jeder einzelne Satz ein wenig mehr Zeit.",
+    sample: "Hallo, mein Name ist Killian.",
   },
 ];
 
