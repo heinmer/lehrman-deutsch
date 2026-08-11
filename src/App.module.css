@@ -52,9 +52,13 @@
   border-radius: var(--radius-sm);
 }
 
-/* Only ever rendered while the drawer is open. It sits above the word panel,
-   because the drawer is in front of it — Escape reads the same order. */
+/* Rendered while the drawer is open and shown only where the drawer exists:
+   above 62rem the sidebar is back in the layout, and a scrim left over a
+   window with no drawer in front of it darkened the page until it was
+   clicked. It sits above the word panel, because the drawer is in front of
+   it — Escape reads the same order. */
 .scrim {
+  display: none;
   position: fixed;
   inset: 0;
   z-index: 48;
@@ -85,6 +89,10 @@
 @media (max-width: 62rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
+  }
+
+  .scrim {
+    display: block;
   }
 
   .aside {
