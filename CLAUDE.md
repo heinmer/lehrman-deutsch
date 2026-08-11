@@ -290,7 +290,8 @@ as `/…/` so transcriptions look the same everywhere.
   its slash to register.
 - **Space is the player's, and nothing keeps it by sitting in the focus.** A
   window listener in `App` toggles playback on it. It yields in four cases: a
-  chord (Shift+Space is a page up, and the rest belong to the browser), the
+  chord it does not claim (Shift+Space is a page up, and the rest belong to the
+  browser), the
   info window being open, an event whose default was already prevented, and a
   focused element that is typed into — `ownsSpace` (`src/lib/keys.ts`): a
   contenteditable, a textarea, a select, and every `<input>` but a range,
@@ -313,6 +314,19 @@ as `/…/` so transcriptions look the same everywhere.
   **A word in the reader therefore answers to Enter and not to Space**, though
   a `role="button"` would normally take both — worth paying, since the focus
   after clicking a word *is* that word.
+- **Ctrl+Space is the one chord that handler claims**, and it reads the text
+  from the top: `seek(0)` and `play()`, which is Ctrl+Alt+click made of the
+  whole text rather than of a word. It plays from a standstill for the same
+  reason that one does — asking to be read the text is asking to hear it — and
+  the restart button is deliberately *not* this, since seeking never changes
+  play state. It opens nothing: the first word is not selected, so the panel
+  keeps whatever is in it. **Ctrl and not Cmd**, unlike the modifiers on a
+  word: Cmd+Space is Spotlight and never reaches a page, so a Mac keeps the
+  same key as everywhere else — which is why `HelpDialog` prints `⌃` there and
+  `⌘` in the rows below it. Alt is *excluded* rather than merely unread,
+  because AltGr reports itself as Ctrl+Alt and on a German layout the right Alt
+  is AltGr. The two conflicts it does have are the OS's and out of reach:
+  macOS switches input source on it by default, as does a Windows CJK IME.
 - **The modifiers on a word replace the settings rather than adjusting them.**
   Ctrl+click opens the word and touches nothing else; Alt+click speaks it and
   touches nothing else; Ctrl+Alt+click reads the text *from* it, starting

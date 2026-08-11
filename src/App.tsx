@@ -106,6 +106,15 @@ export function App() {
     [wordStart, seek, play],
   );
 
+  // Ctrl+Space, and the same request as "Read from here" made of the whole
+  // text: seek(0) on its own is the restart button, which leaves a paused
+  // reading paused, and asking for the text from the keyboard is asking to
+  // hear it. Nothing is opened — the first word is not selected.
+  const readFromStart = useCallback(() => {
+    seek(0);
+    play();
+  }, [seek, play]);
+
   const speak = useCallback(
     (token: WordToken) => {
       const clip = pronunciationClip(text?.dictionary[token.key] ?? null);
@@ -208,12 +217,21 @@ export function App() {
   // sitting in the focus: it is given up by asking for it (`preventDefault`,
   // which is how the pickers' options take it) or by being something typed
   // into (`ownsSpace`). Buttons therefore lose it and keep Enter.
+  //
+  // Ctrl+Space is the one chord the player takes as well, and it starts the
+  // text over. Ctrl and not Cmd, unlike the modifiers on a word: Cmd+Space is
+  // Spotlight and never reaches a page, so a Mac keeps the same key as
+  // everywhere else. Alt is excluded rather than ignored, because AltGr — the
+  // right Alt on a German layout — reports itself as Ctrl+Alt.
   const { toggle } = narration;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== " " || event.repeat) return;
-      // A chord belongs to somebody else — Shift+Space is a page up.
-      if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+
+      const fromStart = event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
+      const plain = !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
+      // Every other chord belongs to somebody else — Shift+Space is a page up.
+      if (!fromStart && !plain) return;
       // Already claimed on the way up. React's listeners sit on the root
       // container, so a component's handler has run by the time this one does.
       if (event.defaultPrevented) return;
@@ -224,11 +242,12 @@ export function App() {
       // page scroll: without it the spacebar would play *and* press whatever
       // the last click left under the focus.
       event.preventDefault();
-      toggle();
+      if (fromStart) readFromStart();
+      else toggle();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [helpOpen, toggle]);
+  }, [helpOpen, toggle, readFromStart]);
 
   // The index is the one thing there is no working around: no list, no route.
   if (indexError) {

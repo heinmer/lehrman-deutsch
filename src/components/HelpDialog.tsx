@@ -14,6 +14,11 @@ interface Props {
 const APPLE = /Mac|iP(hone|ad|od)/.test(navigator.userAgent);
 const PRIMARY_KEY = APPLE ? "⌘" : "Ctrl";
 const OPTION_KEY = APPLE ? "⌥" : "Alt";
+/**
+ * Ctrl+Space is Ctrl on a Mac too — Cmd+Space is Spotlight — so this is the
+ * one row that names the Control key itself rather than the primary modifier.
+ */
+const CONTROL_KEY = APPLE ? "⌃" : "Ctrl";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -139,6 +144,18 @@ export function HelpDialog({ onClose }: Props) {
                 </dt>
                 <dd className={styles.what}>
                   Plays and pauses the narration, wherever you are on the page.
+                </dd>
+              </div>
+
+              <div className={styles.row}>
+                <dt className={styles.keys}>
+                  <kbd>{CONTROL_KEY}</kbd>
+                  <span className={styles.plus}>+</span>
+                  <kbd>Space</kbd>
+                </dt>
+                <dd className={styles.what}>
+                  Reads the text from the beginning, starting playback if it is
+                  paused.
                 </dd>
               </div>
 
