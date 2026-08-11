@@ -13,16 +13,14 @@
   color: var(--text);
 }
 
-.logo {
-  color: var(--accent-secondary);
-  flex: none;
-}
-
+/* The name carries the theme's accent, which is what the mark beside it used
+   to do — with the icon gone it is the only colour the header has. */
 .title {
   margin: 0;
   font-size: var(--fs-md);
   font-weight: 600;
   line-height: 1.2;
+  color: var(--accent);
 }
 
 /* Sized to the icon rather than to the pill controls in the footer: this sits
