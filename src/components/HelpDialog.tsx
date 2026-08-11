@@ -1,5 +1,5 @@
 import { useEffect, useRef, type KeyboardEvent, type MouseEvent } from "react";
-import { LocateFixed, MessageCircle, X } from "lucide-react";
+import { Languages, LocateFixed, MessageCircle, X } from "lucide-react";
 import styles from "./HelpDialog.module.css";
 
 interface Props {
@@ -25,11 +25,17 @@ const FOCUSABLE =
 
 /**
  * Whatever the interface has no room to say, in front of everything else.
- * Today that is two tables under headings of their own — the window is titled
- * for the site rather than for its contents, so that the next thing to go in
- * it is a third section and not a second window. The settings come first
- * because they are what a plain click does; the shortcuts read as the
- * exceptions to them, which is what the note under that heading says.
+ * Today that is a paragraph saying what the site is, then two tables under
+ * headings of their own — the window is titled for the site rather than for
+ * its contents, so that the next thing to go in it is a fourth section and not
+ * a second window. The settings come before the shortcuts because they are
+ * what a plain click does; the shortcuts read as the exceptions to them, which
+ * is what the note under that heading says.
+ *
+ * The opening block is the one section with no heading, and deliberately: the
+ * window is called About and this is the answer to it, so a heading over it
+ * would only be the title said twice. It comes first because a reader who has
+ * just landed does not yet know what the toggles are toggling.
  */
 export function HelpDialog({ onClose }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -97,6 +103,30 @@ export function HelpDialog({ onClose }: Props) {
               drawn by the box and reach the card's edges — a division of a
               different order from the hairlines inside a table, which stop at
               the text. */}
+          <section className={styles.block}>
+            <p className={styles.lead}>
+              Lehrman-Deutsch is a reader for learning German: short texts, read
+              aloud from beginning to end, with the word being spoken lit as it
+              goes.
+            </p>
+            <p className={styles.intro}>
+              Pick a text in the sidebar — they are ordered as a course, from A1
+              upwards. Click any word for its pronunciation, its part of speech
+              and what it means in English, and hear it said by a native
+              speaker;{" "}
+              {/* An inline SVG is an atomic box, so a line may break in front
+                  of it whether or not there is a space — the same thing that
+                  keeps the reader's own toggle tied to its last word. Here the
+                  icon is mid-sentence, so it is the word before it that would
+                  be left hanging, and the two travel together. */}
+              <span className={styles.glyph}>
+                the <Languages size={15} strokeWidth={2} />
+              </span>{" "}
+              at the end of a paragraph translates it. The bar under the text
+              chooses the voice and the speed.
+            </p>
+          </section>
+
           <section className={styles.block}>
             <h3 className={styles.section}>Settings</h3>
             <p className={styles.note}>

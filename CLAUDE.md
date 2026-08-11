@@ -356,11 +356,22 @@ as `/…/` so transcriptions look the same everywhere.
   place for the keyboard, and the global outline drawn round the whole window
   reads as a border. It is titled for the site and not for its contents, so
   that the next thing to go in it is a section under its own heading rather
-  than a second window; today there are two, *Settings* and *Shortcuts*, each
-  a table with a note under its heading. **The settings come
-  first**, because they are what a plain click does and the modifiers read as
-  the exceptions to them — which is the one thing about those four shortcuts a
-  reader cannot work out by trying them.
+  than a second window; today there are three. **The first says what the site
+  is**, and is the one section with no heading over it — the window is called
+  About and that paragraph is the answer to it, so a heading would be the
+  title said twice. It comes first because someone who has just landed does
+  not yet know what the toggles below are toggling, and it is the one thing in
+  the body printed at `--text` rather than muted: the tables are reference,
+  this is the sentence a new reader is looking for. It names the reader's
+  three moves — pick a text, click a word, translate a paragraph — and shows
+  the translate toggle's own icon rather than describing it, tied to the word
+  before it by a `nowrap` span for the reason the reader's own toggle is (an
+  inline SVG is an atomic box and a line may break in front of it, space or
+  no space). *Settings* and *Shortcuts* follow, each a table with a note under
+  its heading. **The settings come before the shortcuts**, because they are
+  what a plain click does and the modifiers read as the exceptions to them —
+  which is the one thing about those four shortcuts a reader cannot work out
+  by trying them.
 - **Its tables are drawn as tables**, in `HelpDialog.module.css`: a rounded box
   with an outline, one fill, and a rule between the two columns as well as
   between every pair of rows. They were a hairline between rows and nothing
