@@ -15,6 +15,7 @@ import type { ThemeControls } from "../hooks/useTheme";
 import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
+import { Logo } from "./Logo";
 import { ThemePicker } from "./ThemePicker";
 import { VolumeControl } from "./VolumeControl";
 import styles from "./Sidebar.module.css";
@@ -62,7 +63,13 @@ export function Sidebar({
     // tooltips, the pickers' menus — measures itself against this.
     <aside className={`island ${styles.sidebar}`} data-popover-boundary>
       <header className={styles.header}>
-        <h1 className={styles.title}>Lehrman-Deutsch</h1>
+        {/* The mark and the name are one lockup, aligned to a shared baseline
+            — which is why they are wrapped rather than sitting in the header
+            beside the button, whose own alignment is not theirs. */}
+        <div className={styles.brand}>
+          <Logo className={styles.logo} />
+          <h1 className={styles.title}>Lehrman-Deutsch</h1>
+        </div>
         {/* Beside the name rather than off at the edge: it is about the whole
             site, not about the list underneath it. */}
         <button

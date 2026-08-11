@@ -13,8 +13,40 @@
   color: var(--text);
 }
 
-/* The name carries the theme's accent, which is what the mark beside it used
-   to do — with the icon gone it is the only colour the header has. */
+/* Set to the name's cap height rather than to its line box. The mark is flat
+   along the top and the bottom while the letters beside it are not, so at the
+   full 1.2 leading it stood a clear step taller than the word it belongs to;
+   0.72 of the size is where DM Sans's capitals reach. Its width follows from
+   the viewBox — the mark is 5:3, so it comes out about twice as wide as tall,
+   and that is the lockup rather than something to correct. */
+/* Baseline and not centre. Centred on the name's line box the mark sat a
+   pixel low — a line box carries the descender space under the baseline, so
+   its middle is below the middle of the band the capitals occupy. Aligning
+   the two baselines instead needs no number: the mark has none of its own, so
+   its bottom edge is what lands on the name's. Both children have to be in
+   the group for it to mean anything, which is what this element is for; the
+   button beside it is centred on the header as before. */
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* Set to the name's cap height, so with the baselines shared the mark stands
+   exactly as tall as the L beside it. 0.72 of the size is where DM Sans's
+   capitals reach. The width follows from the viewBox — the mark is 5:3, so it
+   comes out about twice as wide as tall, and that is the lockup rather than
+   something to correct. */
+.logo {
+  flex: none;
+  height: calc(var(--fs-md) * 0.72);
+  width: auto;
+  color: var(--accent);
+}
+
+/* The name carries the theme's accent, so the mark beside it is the same
+   colour: the two are one lockup and the header's only colour. */
 .title {
   margin: 0;
   font-size: var(--fs-md);
