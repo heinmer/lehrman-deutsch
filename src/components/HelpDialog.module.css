@@ -179,11 +179,6 @@
      full strength, so they compound to a step above whatever is under them
      rather than matching a fill that happens to be named the same. */
   --help-fill: color-mix(in srgb, var(--surface-inset) 45%, transparent);
-  /* The banded row, which exists only in the stacked layout below — see the
-     media query at the end of the file. Roughly twice the fill and still short
-     of a full pour, so that a `kbd` chip standing on it is a step above its
-     ground exactly as it is on an unbanded row. */
-  --help-band: color-mix(in srgb, var(--surface-inset) 85%, transparent);
 
   margin: 0;
   border: 1px solid var(--help-line);
@@ -297,33 +292,25 @@
 /* Narrower than the card can be: the two columns stop reading as a pair and
    the key sits over its own description instead.
 
-   Stacked, the pairing is what goes: every boundary in the table is one
+   Stacked, the pairing is what goes, and turning the column rule into a second
+   horizontal one is what loses it: every boundary in the table is then one
    hairline of the same weight, so nothing says which lines hold a row together
-   and which divide one row from the next — the table reads as ten unrelated
-   lines rather than as five rows of two. The line between the columns turned
-   into a line between the rows, and *that* is what has to be undone rather than
-   merely reoriented. So the row is put back together the other way round: the
-   line inside it goes entirely, since the key is now a heading standing over
-   its own description and does not need a rule to say so, and alternate rows
-   carry a ground instead. The band is the pairing; the rule between the rows is
-   then the only line left and can only mean one thing.
+   and which divide one row from the next — five rows of two read as ten
+   unrelated lines. The line inside a row is therefore dropped rather than
+   reoriented. The key is a heading standing over its own description here and
+   needs no rule to say so, and the rule between the rows is then the only line
+   left in the table and can only mean one thing.
 
-   Banding was tried in the two-column layout and turned down — the rules there
-   already say where a row ends, and a ground changing under every other one was
-   one stripe too many. It earns its keep here for precisely the reason it did
-   not there. */
+   What holds the pair together in its place is the space around it, so the
+   space has to be told apart: two cells' padding meeting held the description a
+   whole row's gap from the key it belongs to, which is the same gap that
+   divides one row from the next. Closed up, the pair is nearer to itself than
+   to anything else, which is all the pairing has to say. */
 @media (max-width: 30rem) {
   .row {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .row:nth-child(even) {
-    background: var(--help-band);
-  }
-
-  /* The pair closes up as the line between it goes: a cell's worth of padding
-     top and bottom held the description a whole row's gap away from the key it
-     belongs to, which the band would then have had to argue with. */
   .keys,
   .setting {
     border-right: none;
