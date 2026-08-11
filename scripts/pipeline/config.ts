@@ -35,7 +35,7 @@ export const DEFAULT_RATE = "-10%";
  * modest; see scripts/pipeline/http.ts for the throttling that goes with this.
  */
 export const USER_AGENT =
-  "texts-in-german/0.1 (personal offline German reading trainer; non-commercial)";
+  "lehrman-deutsch/0.1 (personal offline German reading trainer; non-commercial)";
 
 /** Wiktextract dumps of English Wiktionary's German entries. */
 export const KAIKKI_BASE = "https://kaikki.org/dictionary/German/meaning";

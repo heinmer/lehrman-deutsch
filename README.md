@@ -1,4 +1,4 @@
-# Texts in German
+# Lehrman-Deutsch
 
 A local reading trainer for German: short texts, narrated end to end, with
 every word clickable for pronunciation, IPA, part of speech and English
@@ -160,7 +160,7 @@ The app is static, and everything it asks for is resolved against the base it
 is served from, so a prefix is one variable:
 
 ```bash
-BASE_PATH=/texts-in-german/ npm run build   # dist/ then lives under that path
+BASE_PATH=/lehrman-deutsch/ npm run build   # dist/ then lives under that path
 ```
 
 The build also writes a `.br` and a `.gz` next to every compressible file.

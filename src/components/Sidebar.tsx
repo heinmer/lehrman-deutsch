@@ -64,7 +64,7 @@ export function Sidebar({
     <aside className={`island ${styles.sidebar}`} data-popover-boundary>
       <header className={styles.header}>
         <BookOpen size={24} strokeWidth={1.75} className={styles.logo} />
-        <h1 className={styles.title}>Texts in German</h1>
+        <h1 className={styles.title}>Lehrman-Deutsch</h1>
         {/* Beside the name rather than off at the edge: it is about the whole
             site, not about the list underneath it. */}
         <button

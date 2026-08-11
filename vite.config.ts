@@ -108,7 +108,7 @@ export default defineConfig({
   /**
    * Where the site will be served from. Everything the app requests is built
    * from this (see src/lib/assets.ts), so deploying under a prefix — a project
-   * page, a preview URL, a proxy — is `BASE_PATH=/texts-in-german/ npm run
+   * page, a preview URL, a proxy — is `BASE_PATH=/lehrman-deutsch/ npm run
    * build` and nothing else.
    */
   base: process.env.BASE_PATH ?? "/",

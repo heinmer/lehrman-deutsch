@@ -11,7 +11,7 @@ import {
 
 /** Writes the given files into a throwaway directory and loads them. */
 async function load(files: Record<string, string>) {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "texts-in-german-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "lehrman-deutsch-"));
   try {
     for (const [name, body] of Object.entries(files)) {
       await fs.writeFile(path.join(dir, name), body, "utf8");

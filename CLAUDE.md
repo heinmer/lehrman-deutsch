@@ -265,7 +265,7 @@ as `/…/` so transcriptions look the same everywhere.
   `BASE_URL`. Under a prefix — a project page, a preview deploy, a proxy — a
   leading slash points at the host root and every request 404s, silently in the
   case of a word recording. `vite.config.ts` takes the prefix from `BASE_PATH`,
-  so a subpath build is `BASE_PATH=/texts-in-german/ npm run build`. Clips stay
+  so a subpath build is `BASE_PATH=/lehrman-deutsch/ npm run build`. Clips stay
   *keyed* by the raw path; only the request is resolved.
 
 - **Switching voice carries the position by word, not by time.** Second 40 of
