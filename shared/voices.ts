@@ -18,11 +18,13 @@ export interface VoiceInfo {
    * enough — the voice itself is the thing being chosen, and a sentence
    * describing how it reads is over before the ear has settled on it.
    *
-   * A second sentence buys the engine's pause at a full stop, and what that
-   * costs depends on the voice: measured on these clips the break is 0.53s
-   * for Seraphina and 1.14s for Killian, whose silences run as long as
-   * Conrad's — long enough that the clip sounds finished and then starts
-   * talking again. A comma is worth 0.2s to 0.3s in either of them.
+   * A second clause is free; a second *sentence* is what costs. The engine's
+   * pause at a full stop measured 0.53s for Seraphina and 1.14s for Killian,
+   * whose silences run as long as Conrad's — long enough that the clip sounds
+   * finished and then starts talking again. The same words joined by a comma
+   * pause 0.19s and 0.12s instead, which is why the greetings that are in two
+   * parts are written that way: German lets two main clauses share a comma,
+   * and the second of them may be an imperative.
    */
   sample: string;
 }
@@ -37,7 +39,7 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-SeraphinaMultilingualNeural",
     name: "Seraphina",
-    sample: "Hi, ich heiße Seraphina. Lass uns lesen!",
+    sample: "Hi, ich heiße Seraphina, lass uns lesen!",
   },
   {
     id: "de-DE-FlorianMultilingualNeural",
@@ -47,7 +49,7 @@ export const VOICES: readonly VoiceInfo[] = [
   {
     id: "de-DE-KillianNeural",
     name: "Killian",
-    sample: "Guten Tag, ich bin Killian. Lass uns anfangen!",
+    sample: "Guten Tag, ich bin Killian, lass uns anfangen!",
   },
 ];
 
