@@ -229,28 +229,21 @@ compressed already.
 
 ## Licence
 
-**The code is AGPL-3.0** — everything under `scripts/`, `src/`, `shared/` and
-`tests/`, plus the configuration around them. See `LICENSE`. Read it, learn from
-it, take the pipeline and point it at your own texts; what the licence asks in
-return is that anything built on it stay open too, including a modified version
-put on a network, which is the clause plain GPL lacks.
+| What | Terms |
+| ---- | ----- |
+| `scripts/`, `src/`, `shared/`, `tests/`, config | AGPL-3.0 — `LICENSE` |
+| `content/`, `brand/` | © 2026 heinmer, all rights reserved — `LICENSE-CONTENT` |
+| `public/data/`, `public/media/` — generated | CC BY-SA, CC BY or CC0, per file |
 
-**The content is not** — see `LICENSE-CONTENT`. The German texts in
-`content/texts`, their translations, the illustrations in `content/images` and
-the mark in `brand/` are © 2026 heinmer, all rights reserved. They are what this
-site *is*, as against what it is made of, and they are here so that the code can
-be read in the setting it was written for, not as material to republish. A mark
-is kept out of a code licence for the ordinary reason: it says who made a thing,
-and that stops being true the moment it travels.
+Take the pipeline and point it at texts of your own; the AGPL asks in return
+that what you build stay open, a modified version served over a network
+included. The texts, the translations, the illustrations and the mark are not
+part of that.
 
-**And the dictionary is neither.** Entries come from Wiktionary under CC BY-SA,
-and each word recording carries its own — CC BY-SA at several versions, CC BY
-and CC0 are all in there. Those land in `public/data` and `public/media`, which
-are gitignored: **this repository holds none of that material, and a site built
-from it distributes all of it.** That is the reason the credit is in the
-interface rather than in this file, and the reason it names each recording's own
-author and licence instead of one sentence written for all of them.
+The generated files come from Wiktionary and Wikimedia Commons and are
+gitignored, so this repository holds none of that material and a site built from
+it distributes all of it — which is why the credit is in the interface and names
+each recording's own author and licence.
 
-Two dependencies ship inside the built app and carry their own terms: DM Sans
-and PT Serif, under the SIL Open Font License 1.1, and the Lucide icons, under
-the ISC License. Both are named in the app's *Sources* section.
+Bundled dependencies keep their own terms: DM Sans and PT Serif under the SIL
+Open Font License 1.1, the Lucide icons under the ISC License.

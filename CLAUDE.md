@@ -1258,23 +1258,12 @@ stay that way. The narration is synthesised and asks for nothing. Neither does
 a translation service — there is no longer one to ask. The page exists for the
 people whose work requires it.
 
-**The repository is licensed in two halves, and the line matters.** `LICENSE`
-is **AGPL-3.0** and covers the software — `scripts/`, `src/`, `shared/`,
-`tests/` and the configuration. `LICENSE-CONTENT` reserves everything that
-makes this *this site* rather than a program: the texts, their translations,
-the illustrations and the mark. Anything new belongs on one side or the other
-by that test — is it what the site is made of, or what the site is? A new theme
-is code; a ninth text is not.
-
-The pair was arrived at deliberately and both halves earn their place. MIT over
-the whole repository was the first arrangement and it granted away the texts and
-the mark, which is to say it granted permission to stand this site up again
-under another name. AGPL then replaced MIT on the code because the copyleft is
-what makes the engine unattractive to take quietly: §13 catches a modified
-version put on a network, which plain GPL does not. It is the arrangement
-Bitwarden uses — a default open licence, a carve-out, and the marks reserved
-explicitly. **All dependencies are permissive** (MIT, ISC, Apache-2.0, OFL) with
-no copyleft anywhere in the tree, so nothing here constrains that choice; verify
-that again before adding one. And none of it touches the dictionary: the
-generated files stay CC BY-SA whatever the code carries, which is another reason
-they are not in the repository.
+**The repository is licensed in two halves.** `LICENSE` is AGPL-3.0 and covers
+the software — `scripts/`, `src/`, `shared/`, `tests/` and the configuration.
+`LICENSE-CONTENT` reserves the texts, their translations, the illustrations and
+the mark. Anything new goes on one side or the other by one test: is it what the
+site is *made of*, or what the site *is*? A new theme is code; a ninth text is
+not. Two things to keep true — every dependency is permissive today (MIT, ISC,
+Apache-2.0, OFL), and a copyleft one would constrain the choice, so check before
+adding; and the generated dictionary stays CC BY-SA whatever the code carries,
+which is one more reason it is not in the repository.
