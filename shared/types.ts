@@ -96,6 +96,38 @@ export interface AudioClip {
   file: string;
 }
 
+/**
+ * What Commons says about one recording: who made it and on what terms. The
+ * licences are CC BY-SA for the most part, which asks for the author, the
+ * licence and a way back to the original — so all three are kept.
+ */
+export interface ClipCredit {
+  /** Commons file name; the same string as AudioClip.file. */
+  file: string;
+  /** Author as the file page records them; null when it names none. */
+  author: string | null;
+  /** Short licence name, e.g. "CC BY-SA 4.0". */
+  license: string | null;
+  licenseUrl: string | null;
+  /** The file page: attribution by link, and where everything else is said. */
+  page: string;
+}
+
+/**
+ * public/data/credits.json — one entry per recording the site serves.
+ *
+ * Beside the documents rather than inside them, for three reasons. The
+ * recordings are *shared*, so a per-document copy would repeat one author for
+ * every text that happens to use the word. The Sources section needs the whole
+ * list at once, which no single document has. And keeping it out of the
+ * documents keeps it out of the source hash: crediting the recordings changes
+ * no document and re-narrates nothing.
+ */
+export interface CreditsIndex {
+  generatedAt: string;
+  clips: Record<string, ClipCredit>;
+}
+
 export interface Sense {
   gloss: string;
   /** Register/domain labels, e.g. ["colloquial"], ["figuratively"]. */

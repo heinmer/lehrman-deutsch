@@ -40,6 +40,22 @@ export async function exists(file: string): Promise<boolean> {
   }
 }
 
+/**
+ * The handful of entities the services here actually send back. Both of them
+ * answer in HTML fragments: MyMemory escapes quotes and ampersands, Commons
+ * returns the author field as a scrap of markup.
+ */
+export function decodeEntities(text: string): string {
+  return text
+    .replace(/&nbsp;/g, " ")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    // Last, or an escaped entity comes out decoded twice.
+    .replace(/&amp;/g, "&");
+}
+
 const TRANSLITERATION: Record<string, string> = {
   "ä": "ae",
   "ö": "oe",

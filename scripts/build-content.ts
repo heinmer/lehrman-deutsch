@@ -10,6 +10,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type {
+  CreditsIndex,
   DictionaryEntry,
   NarrationTrack,
   Sentence,
@@ -38,6 +39,7 @@ import {
   type Translation,
 } from "./pipeline/translations.ts";
 import { downloadWordAudio } from "./pipeline/media.ts";
+import { fetchCredits } from "./pipeline/commons.ts";
 import { ensureDir, exists, log, readJson, writeJson } from "./pipeline/util.ts";
 
 const force = process.argv.includes("--force");
@@ -229,6 +231,69 @@ async function narrate(
  * Word recordings are shared between texts, so they are kept as long as *any*
  * surviving document still names them.
  */
+/**
+ * The recordings the surviving documents point at, read in one pass: the local
+ * file names, which is what the sweep deletes by, and the Commons names, which
+ * is what the credits are fetched by. Two answers from one walk, because they
+ * are the same walk.
+ */
+async function clipsInDocuments(
+  slugs: Set<string>,
+): Promise<{ local: Set<string>; commons: Set<string> }> {
+  const local = new Set<string>();
+  const commons = new Set<string>();
+
+  for (const slug of slugs) {
+    const document = await readJson<TextDocument>(
+      path.join(PATHS.dataTexts, `${slug}.json`),
+    );
+    for (const entry of Object.values(document?.dictionary ?? {})) {
+      for (const clip of [entry.form?.audio, entry.lemma?.audio]) {
+        if (!clip) continue;
+        local.add(path.basename(clip.src));
+        commons.add(clip.file);
+      }
+    }
+  }
+
+  return { local, commons };
+}
+
+/**
+ * Writes public/data/credits.json: who recorded each word, and under what
+ * licence.
+ *
+ * Rewritten on every run like the index, and for the same reason — it is
+ * assembled from the documents that *exist* rather than from the texts that
+ * were built this time, so a skipped text still credits its recordings and a
+ * recording nothing refers to any more stops being credited. Nothing here
+ * touches a document, so none of it reaches the source hash.
+ */
+async function writeCredits(slugs: Set<string>): Promise<void> {
+  const { commons } = await clipsInDocuments(slugs);
+  const files = [...commons].sort();
+  const clips = await fetchCredits(files);
+
+  const index: CreditsIndex = { generatedAt: new Date().toISOString(), clips };
+  await writeJson(path.join(PATHS.data, "credits.json"), index, { pretty: false });
+
+  const complete = files.filter((file) => clips[file]?.author && clips[file]?.license);
+  log.ok(`credits: ${complete.length}/${files.length} with an author and a licence`);
+
+  const licences = [...new Set(files.map((f) => clips[f]?.license).filter(Boolean))].sort();
+  if (licences.length > 0) log.info(`licences in use: ${licences.join(", ")}`);
+
+  // Worth naming: a recording nobody is credited for is one the site cannot
+  // attribute, which is the whole point of this step.
+  const anonymous = files.filter((file) => !clips[file]?.author);
+  if (anonymous.length > 0) {
+    log.warn(
+      `no author for ${anonymous.length}: ${anonymous.slice(0, 6).join(", ")}` +
+        (anonymous.length > 6 ? ", …" : ""),
+    );
+  }
+}
+
 async function pruneRemovedTexts(slugs: Set<string>, state: BuildState): Promise<void> {
   const removed: string[] = [];
 
@@ -249,17 +314,7 @@ async function pruneRemovedTexts(slugs: Set<string>, state: BuildState): Promise
   }
 
   // Whatever the surviving documents still point at, by file name.
-  const wanted = new Set<string>();
-  for (const slug of slugs) {
-    const document = await readJson<TextDocument>(
-      path.join(PATHS.dataTexts, `${slug}.json`),
-    );
-    for (const entry of Object.values(document?.dictionary ?? {})) {
-      for (const clip of [entry.form?.audio, entry.lemma?.audio]) {
-        if (clip) wanted.add(path.basename(clip.src));
-      }
-    }
-  }
+  const { local: wanted } = await clipsInDocuments(slugs);
 
   let orphanedClips = 0;
   if (await exists(PATHS.mediaWords)) {
@@ -448,8 +503,12 @@ async function main(): Promise<void> {
     await writeJson(statePath, state);
   }
 
-  await pruneRemovedTexts(new Set(sources.map((source) => source.slug)), state);
+  const slugs = new Set(sources.map((source) => source.slug));
+  await pruneRemovedTexts(slugs, state);
   await writeJson(statePath, state);
+
+  log.step("Credits");
+  await writeCredits(slugs);
 
   const index: TextIndex = {
     generatedAt: new Date().toISOString(),

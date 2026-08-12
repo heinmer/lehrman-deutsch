@@ -164,9 +164,25 @@ Things that are easy to break:
   and re-applies it before writing. Nothing is kept from the previous
   document, so adding a translation to a built text, or fixing one, is a rerun
   of seconds. `applyTranslation` is where the two sides meet.
+- **The recordings' credits live beside the documents, not inside them.**
+  `credits.json` is keyed by Commons file name, which is what `AudioClip.file`
+  already carries, and it is rewritten on every run from the documents that
+  *exist* — like the index, and for the same reason: a skipped text still
+  credits its recordings. Three things follow, each deliberate. The recordings
+  are **shared**, so an author inside a document would be repeated once per
+  text that uses the word. The Sources section needs the **whole** list, which
+  no single document has. And nothing here touches a document, so crediting
+  them is outside the source hash and **re-narrates nothing** — which is the
+  only reason this could be added to a finished site at all. It is one long
+  line like the rest (152 KB, 7.3 KB brotli): the shape repeats thirteen
+  authors across 738 entries, and interning them would save about 2 KB over
+  the wire for a shape nobody could read at a glance. Measured, not assumed.
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
-  from the dictionary. Only 200s and 404s are cached.
+  from the dictionary. Only 200s and 404s are cached. `commons.ts` follows the
+  same rule and for the same reason: it caches a page that answered, present or
+  missing, and leaves a failed request uncached so the next run asks again.
+  It asks in batches of 50 titles, so 738 recordings are fifteen requests.
 - **The build removes what no source accounts for.** Deleting a Markdown file
   used to leave its JSON, its narrations and its hash behind for good — the
   index stopped listing it, so nothing looked wrong while `dist` carried a text
@@ -205,6 +221,13 @@ Things that are easy to break:
   which is common for inflected spellings (`bleibt`, `warmen`).
 - **Wikimedia Commons** — native-speaker recordings, downloaded into
   `public/media/words/`. Standard German is preferred over Austrian/Swiss.
+  Who made each one, and on what terms, is fetched separately by `commons.ts`
+  and written to `public/data/credits.json` — see the note on it below. The
+  licences are **not** all the same: today's 738 recordings run CC BY-SA 4.0,
+  3.0 and 2.5, CC BY 3.0 us and CC0, so nothing may state one licence for all
+  of them. There are, on the other hand, only **13 distinct authors** — one
+  person recorded 645 of the 738 — which is why the credit can be a short list
+  of people rather than a table as long as the dictionary.
 - **Translations are not fetched at all.** They are written by hand beside the
   German, `content/translations/<slug>.md`, and read from there — see *Adding a
   text*. That is the third source-material directory, and the reason it exists
@@ -1123,6 +1146,8 @@ memorises with audio attached.
 - `entries found` close to the distinct-word count, and most with native audio.
 - `translation: sentence counts match` for every text — a warning there names
   the paragraphs whose two sides no longer read line for line.
+- `credits: N/N with an author and a licence` — a recording the site cannot
+  attribute is one it should not be serving.
 - the `title: "…" -> "…"` line actually reads as English.
 
 ## Verifying UI and behaviour

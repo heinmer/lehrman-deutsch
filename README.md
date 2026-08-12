@@ -34,6 +34,7 @@ Generated output lands in `public/` and is not meant to be edited by hand:
 
 ```
 public/data/index.json          list of texts for the sidebar
+public/data/credits.json        who recorded each word, and under what licence
 public/data/texts/<slug>.json   tokens, per-voice timings, dictionary
 public/media/texts/<slug>/*.mp3 full narration, one file per voice
 public/media/voices/*.mp3       one clip per voice, for the picker
@@ -58,6 +59,11 @@ Commons, and downloaded into `public/media/words`. Where several exist,
 standard German is preferred over Austrian or Swiss variants. Some words —
 mostly function words — have no recording; the panel says so instead of
 falling back to a synthetic voice.
+
+Who made each recording, and under what licence, is fetched alongside it and
+written to `public/data/credits.json`. The licences differ from file to file —
+CC BY-SA at three versions, CC BY and CC0 are all in there — so they are kept
+per recording rather than stated once for all of them.
 
 **Dictionary data** (IPA, part of speech, gender, English senses, inflection →
 lemma) comes from English Wiktionary via the Wiktextract dumps on

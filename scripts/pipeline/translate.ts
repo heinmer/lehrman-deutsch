@@ -3,7 +3,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { PATHS } from "./config.ts";
 import { fetchWithRetry } from "./http.ts";
-import { ensureDir, exists, log } from "./util.ts";
+import { decodeEntities, ensureDir, exists, log } from "./util.ts";
 
 /**
  * Paragraph translations, used for the "show me what this says" toggle.
@@ -77,16 +77,6 @@ async function translateWithMyMemory(text: string): Promise<string | null> {
     )[0];
 
   return best ? decodeEntities(best.translation) : null;
-}
-
-/** The service returns HTML entities for quotes and ampersands. */
-function decodeEntities(text: string): string {
-  return text
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
 }
 
 export async function translateToEnglish(text: string): Promise<string | null> {
