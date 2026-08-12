@@ -57,6 +57,20 @@
   --popover-veil: 72%;
   /* Every pill-shaped control in the sidebar footer shares this height. */
   --control-height: 3rem;
+  /* **A side column has two vertical lines and no more.** Type stands on
+     `--column-inset`; anything carrying a ground of its own — a list row's
+     highlight, a settings pill, the panel's close disc — is set
+     `--column-bleed` outside it, so that its ground overhangs the line rather
+     than pushing the words in off it. A row's own padding is therefore the
+     difference between the two, which is why it is written as one.
+
+     Both columns read from these, because they are the same column twice: the
+     sidebar had the site's name at 1.35rem, its list rows at 1.45rem and its
+     settings at 1.1rem, three lines close enough to look like one that missed.
+     The reader keeps its own, wider gutter — prose wants a margin a list does
+     not, and that is a difference worth having. */
+  --column-inset: 1.5rem;
+  --column-bleed: 0.75rem;
 }
 
 *,

@@ -858,6 +858,22 @@ structural tokens (type scale, radii, spacing); `src/styles/themes.css` holds
 every colour. Change the token, not the component — no component names a colour
 directly, which is what makes new themes cheap.
 
+**A side column has two vertical lines and no more.** `--column-inset` (1.5rem)
+is where type stands; `--column-bleed` (0.75rem) is how far outside it anything
+carrying a ground of its own is set — a list row's highlight, a settings pill,
+the word panel's close disc — so that the ground overhangs the line rather than
+pushing the words in off it. A row's own padding is the *difference* between
+the two and is written as `calc()` of them, so the pair cannot drift apart.
+Both side columns read from the same two, being the same column twice: the
+sidebar used to stand the site's name on 1.35rem, its rows' titles on 1.45rem
+and its settings pills on 1.1rem, three lines close enough to read as one that
+missed. Measure a new element against these rather than picking a padding that
+looks right on its own. Two deliberate exceptions: the reader is not on them at
+all — `--reader-gutter` is 2.5rem, because prose wants a margin a list does not
+— and the panel's *Read from here* stands on the inset though it is a control,
+being one block the width of the entry above it, where a button wider than its
+own text reads as escaping the column.
+
 **Adding a theme** means two places: a full token block in `themes.css` under
 `:root[data-theme="<id>"]`, and an entry in `shared/themes.ts` (its two swatch
 colours are duplicated there for the picker dot). It used to be three — the

@@ -5,11 +5,14 @@
   background: var(--surface-sidebar);
 }
 
+/* The lockup stands on the column's line, the same one the rows' titles do —
+   it used to sit 1.4px inside it, which is near enough to read as a miss
+   rather than as a difference. */
 .header {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 1.5rem 1.35rem 1.1rem;
+  padding: 1.5rem var(--column-inset) 1.1rem;
   color: var(--text);
 }
 
@@ -84,14 +87,14 @@
    which level is being read is not something to have to scroll back up for. */
 .filter {
   flex: none;
-  padding: 0 0.7rem 0.8rem;
+  padding: 0 var(--column-bleed) 0.8rem;
 }
 
 /* Only reachable when the index itself is empty: a level nothing is written
    for cannot be chosen — see LevelTabs. */
 .empty {
   margin: 0;
-  padding: 0.6rem 0.75rem;
+  padding: 0.6rem calc(var(--column-inset) - var(--column-bleed));
   font-size: var(--fs-sm);
   color: var(--text-soft);
 }
@@ -105,7 +108,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 0 0.7rem 1rem;
+  padding: 0 var(--column-bleed) 1rem;
 }
 
 /* The title over its own meta line, and nothing beside them: the row held a
@@ -115,7 +118,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
-  padding: 0.7rem 0.75rem;
+  /* What is left of the column's inset once the list has taken its bleed: the
+     highlight hangs outside the line, the title stands on it. */
+  padding: 0.7rem calc(var(--column-inset) - var(--column-bleed));
   text-align: left;
   border-radius: var(--radius-md);
   color: var(--text-muted);
@@ -161,7 +166,10 @@
   align-items: center;
   gap: 0.5rem;
   flex: none;
-  padding: 1rem 1.1rem 1.25rem;
+  /* The pills are grounds of their own, so they hang on the bleed line with
+     the rows' highlights above them rather than on some third line between
+     that and the type. */
+  padding: 1rem var(--column-bleed) 1.25rem;
   /* Lifts the footer — and the theme menu opening out of it — above the
      text list. */
   position: relative;
