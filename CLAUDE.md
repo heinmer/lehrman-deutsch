@@ -539,6 +539,11 @@ as `/…/` so transcriptions look the same everywhere.
   list a text was chosen from is the list it belongs to. Keying the choice by
   the slug it was made under is the version that looks right and is wrong —
   it comes back to life on the way Back to that slug.
+  **The rows carry no level badge**, and that is what the strip bought: every
+  row in the list is now the level standing over it, so a badge on each of them
+  said the same thing five times. The badge stays in the reader's header, where
+  a text stands on its own — which is why `LevelBadge` has one size again; the
+  small one existed for those rows.
 - **A side column has one width, and it is `--side-width`.** There were two —
   23rem, and 18.5rem for everything under 84rem — and the thin one was 3px
   narrower than the lockup in the sidebar's header, so the site's name sat on
@@ -914,9 +919,9 @@ the strip over the player bar before measuring anything against it — it is
 computed value it reported White's chip at 16:1 against a strip that is in fact
 a hair off the bar.
 
-`--level-a1` … `--level-c2` are the CEFR badges, one hue each so the sidebar
-can be scanned by colour, plus `--level-contrast` for the letters printed on
-them. They are a *scale*, not six unrelated colours: green → teal → blue →
+`--level-a1` … `--level-c2` are the CEFR levels, one hue each — the badge in
+the reader's header and the chosen chip in the level strip — plus
+`--level-contrast` for the letters printed on them. They are a *scale*, not six unrelated colours: green → teal → blue →
 violet → amber → red in every theme but Paper, which walks olive → moss → gold
 → orange → brick → wine because it has no blue to spend. The light themes carry
 the scale in dark fills under a white label; the dark themes invert it, since a
@@ -986,7 +991,7 @@ Nach einer Stunde kommen sie am See an.
 | Key     | Default                             | Notes                              |
 | ------- | ----------------------------------- | ---------------------------------- |
 | `title` | file name                           | Narrated first, then the body      |
-| `level` | `A1`                                | Sorts the sidebar; shown on a badge |
+| `level` | `A1`                                | Sorts the sidebar; chooses its strip, and shown on a badge in the reader |
 | `order` | —                                   | Place within the level; see below  |
 | `topic` | —                                   | Stored but not displayed anywhere  |
 | `slug`  | file name                           | Output file and URL identifier     |

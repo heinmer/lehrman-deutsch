@@ -25,11 +25,10 @@ function scallopedPath(lobes = 12, ripple = 0.075, samples = 360): string {
 const SHAPE = scallopedPath();
 
 /** CEFR level on a scalloped badge. */
-export function LevelBadge({ level, size = "md" }: { level: Level; size?: "sm" | "md" }) {
+export function LevelBadge({ level }: { level: Level }) {
   return (
     <span
       className={styles.badge}
-      data-size={size}
       data-level={level}
       title={`CEFR level ${level}`}
     >

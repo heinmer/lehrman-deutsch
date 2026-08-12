@@ -108,10 +108,13 @@
   padding: 0 0.7rem 1rem;
 }
 
+/* The title over its own meta line, and nothing beside them: the row held a
+   badge and its body side by side until the strip above the list took the
+   level over. */
 .item {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  flex-direction: column;
+  gap: 0.15rem;
   padding: 0.7rem 0.75rem;
   text-align: left;
   border-radius: var(--radius-md);
@@ -128,13 +131,6 @@
   background: var(--surface-raised);
   color: var(--text);
   box-shadow: var(--shadow-raised);
-}
-
-.itemBody {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  min-width: 0;
 }
 
 .itemTitle {

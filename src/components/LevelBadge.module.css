@@ -1,10 +1,15 @@
+/* One size: the badge is the reader's header and nowhere else. There was a
+   smaller one for the sidebar's rows until the level strip over that list made
+   a per-row level redundant. */
 .badge {
   position: relative;
   display: inline-grid;
   place-items: center;
   flex: none;
+  width: 4.3rem;
+  height: 4.3rem;
   /* The shape inherits this; the label sits on top of it. One colour per CEFR
-     level, so the sidebar can be read by hue before the letters are. */
+     level, the same hue the chosen chip in the level strip carries. */
   color: var(--level-a1);
 }
 
@@ -38,25 +43,8 @@
 .label {
   position: relative;
   color: var(--level-contrast);
+  font-size: var(--fs-lg);
   font-weight: 800;
   letter-spacing: 0.02em;
   line-height: 1;
-}
-
-.badge[data-size="sm"] {
-  width: 2.7rem;
-  height: 2.7rem;
-}
-
-.badge[data-size="sm"] .label {
-  font-size: 1.02rem;
-}
-
-.badge[data-size="md"] {
-  width: 4.3rem;
-  height: 4.3rem;
-}
-
-.badge[data-size="md"] .label {
-  font-size: var(--fs-lg);
 }

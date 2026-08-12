@@ -15,7 +15,6 @@ import { forVoice } from "../../shared/voices";
 import type { ThemeControls } from "../hooks/useTheme";
 import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
-import { LevelBadge } from "./LevelBadge";
 import { LevelTabs } from "./LevelTabs";
 import { Logo } from "./Logo";
 import { ThemePicker } from "./ThemePicker";
@@ -127,18 +126,19 @@ export function Sidebar({
             aria-current={text.slug === activeSlug}
             onClick={() => onSelect(text.slug)}
           >
-            <LevelBadge level={text.level} size="sm" />
-            <span className={styles.itemBody}>
-              <span className={styles.itemTitle}>{text.title}</span>
-              <span className={styles.itemMeta}>
-                <span className={styles.metaPart}>
-                  <Type size={14} strokeWidth={2} />
-                  {text.wordCount}
-                </span>
-                <span className={styles.metaPart}>
-                  <Clock size={14} strokeWidth={2} />
-                  {formatTime(durationOf(text, voiceId))}
-                </span>
+            {/* No level badge here: the strip above the list already says
+                which level these are, and every row in it carries the same
+                one. The reader's own header still shows it, where the text
+                stands on its own. */}
+            <span className={styles.itemTitle}>{text.title}</span>
+            <span className={styles.itemMeta}>
+              <span className={styles.metaPart}>
+                <Type size={14} strokeWidth={2} />
+                {text.wordCount}
+              </span>
+              <span className={styles.metaPart}>
+                <Clock size={14} strokeWidth={2} />
+                {formatTime(durationOf(text, voiceId))}
               </span>
             </span>
           </button>
