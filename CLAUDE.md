@@ -550,19 +550,25 @@ as `/…/` so transcriptions look the same everywhere.
   and side columns of *different* widths would put the prose off the middle of
   the screen. Anything added to the sidebar is measured against 23rem; nothing
   in it may depend on a narrower one existing.
-- **Below 70rem the sidebar becomes a drawer, not nothing.** It used to be
+- **A side column stays only while the centre keeps 480px**, and that is the
+  whole of where the two layout breakpoints come from: 75rem is that floor plus
+  two side columns and four gaps, 54rem is the same floor plus one of each.
+  Neither is a width anybody picked, so neither moves on its own — change the
+  floor and both follow, in the block that states them together
+  (`App.module.css`). 480px of centre is about 410px of prose, some 39
+  characters of the reading serif; the floor is the one judgement here. Dropping
+  a section costs the reader nothing, since what is being spent is the columns'
+  room and it comes straight back — at 1201px the centre is 481px, at 1200px it
+  is 826px.
+- **Below 75rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
   It is now a fixed panel opened from a round island in the reader's bottom
   corner — closed by choosing a text, by Escape or by the scrim, and
   `visibility: hidden` while shut so it is not somewhere the tab key can go.
-  **The number is what the third column costs the reader**: at 70rem the centre
-  comes to 400px, which is what the thin arrangement left it at its own 62rem,
-  so the tightest the prose is ever set has not moved by dropping that
-  arrangement. The button that opens the drawer carries the same breakpoint in
-  another file (`.library` in `PlayerBar.module.css`); the two are read together
-  whenever either moves.
-  That island is a child of the player bar (`.library`, absolutely positioned
+  The button that opens it carries the same breakpoint in another file
+  (`.library` in `PlayerBar.module.css`); the two are read together whenever
+  either moves. That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
   wrapping. It lines up with the bar's left edge — and so with the text column
@@ -570,9 +576,9 @@ as `/…/` so transcriptions look the same everywhere.
   border: offsets resolve against its padding box, one border inside the edges
   being measured from. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
-  blur is what stands in for it. Below 48rem the word panel becomes a drawer in exactly the same
+  blur is what stands in for it. Below 54rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
-  third of a phone is not a column the prose can be read in, and a section
+  third of that window is not a column the prose can be read in, and a section
   covering the reader should not leave the reader clickable underneath it.
   Both wrappers are `display: contents` above their breakpoint, which is what
   keeps the two sections ordinary grid children while they are in the layout;
@@ -636,8 +642,8 @@ as `/…/` so transcriptions look the same everywhere.
   of the reader's flow (`container-type: inline-size`) and is exactly as wide
   as it. `.main` is not: the reader's padding and its scrollbar are both
   between them. Against the *window*
-  this cannot be got right either: the sidebar leaves the layout at 70rem and
-  the word panel at 48rem, so between those steps the window narrows while the
+  this cannot be got right either: the sidebar leaves the layout at 75rem and
+  the word panel at 54rem, so between those steps the window narrows while the
   bar **widens**, and a window breakpoint therefore squeezes the row hardest
   just before each step and lets go just after. The track vanished twice on the
   way down. The thresholds are in rem because what they are weighed against is

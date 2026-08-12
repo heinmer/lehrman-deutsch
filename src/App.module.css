@@ -69,7 +69,7 @@
 }
 
 /* Rendered while the drawer is open and shown only where the drawer exists:
-   above 70rem the sidebar is back in the layout, and a scrim left over a
+   above 75rem the sidebar is back in the layout, and a scrim left over a
    window with no drawer in front of it darkened the page until it was
    clicked. It sits above the word panel, because the drawer is in front of
    it — Escape reads the same order. */
@@ -82,7 +82,7 @@
 }
 
 /* The same for the panel, and it exists only where the panel is a drawer too:
-   above 48rem the panel is a column of the layout, so nothing beside it may be
+   above 54rem the panel is a column of the layout, so nothing beside it may be
    covered. Rendered whenever a word is chosen; the breakpoint decides whether
    it is shown. */
 .panelScrim {
@@ -93,20 +93,27 @@
   background: var(--scrim);
 }
 
-/* Too narrow for three columns. The sidebar leaves the layout — but it holds
-   the text list, the theme, the volume and both toggles, so it becomes a
-   drawer rather than disappearing, opened from the player bar.
+/* Both breakpoints below are one rule: **a side column stays only while the
+   centre keeps 480px.** Neither is a width somebody liked the look of — each
+   is that floor plus what the layout puts beside it, which is why they are
+   stated here together and why moving one without the other is meaningless.
 
-   70rem and not 62rem because the columns no longer narrow first. There was a
-   second, thinner side width for the screens between here and 84rem, and it
-   was 3px short of the site's name: the lockup wrapped onto two lines for the
-   whole of that band, which is most laptops. A column has one width — the
-   width of what is in it — and where the layout cannot afford two of them
-   beside the prose, the sidebar leaves. The number is what that costs the
-   reader: at this breakpoint the centre comes to 400px, which is what the
-   *thin* arrangement left it at its own breakpoint, so the tightest the prose
-   is ever set has not moved. */
-@media (max-width: 70rem) {
+     three columns   centre = W - 2 * 23rem - 4 * 1rem  ->  480px at 1200px
+     two columns     centre = W - 23rem - 3 * 1rem      ->  490px at  864px
+
+   (In this file a rem is the browser's 16px and everything it measures is the
+   app's 90% of that, which is why the numbers do not look like the tokens.)
+   The floor is the one judgement: 480px of centre is about 410px of prose,
+   some 39 characters of the reading serif, and that is the least this text
+   should ever be set to on a screen with room for a column beside it. A
+   section that cannot be afforded leaves the layout and becomes a drawer,
+   which costs the reader nothing — it is the columns' room that is being
+   spent, and it comes straight back.
+
+   The sidebar goes first, holding the text list, the theme, the volume and
+   both toggles, so it becomes a drawer rather than disappearing, opened from
+   the player bar. */
+@media (max-width: 75rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
   }
@@ -143,10 +150,12 @@
   }
 }
 
-/* A phone. The word panel leaves the layout in its turn and becomes a drawer
-   of its own — the same arrangement as the sidebar, scrim included — instead
-   of squeezing the prose into a column too narrow to read. */
-@media (max-width: 48rem) {
+/* The centre has come back down to the same floor with one column beside it,
+   so the word panel leaves in its turn and becomes a drawer of its own — the
+   same arrangement as the sidebar, scrim included — instead of squeezing the
+   prose into a column too narrow to read. Below here the reader is the whole
+   window and there is nothing left to give it. */
+@media (max-width: 54rem) {
   .app {
     grid-template-columns: minmax(0, 1fr);
   }

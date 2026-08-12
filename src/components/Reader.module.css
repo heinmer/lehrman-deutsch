@@ -233,7 +233,7 @@
    reader's width is not a function of the window's. Each section that leaves
    the layout hands the reader a chunk of the screen, so the prose is at its
    tightest *just above* each of those steps and roomiest just below — a single
-   window threshold cannot follow that, and 70rem would spend the gutter where
+   window threshold cannot follow that, and 75rem would spend the gutter where
    the reader has most room. This one is a rough "the window is no longer a
    desktop's", and where it matters most — a phone, where the reader is the
    whole of it — it is simply always in force. */
@@ -245,8 +245,10 @@
 }
 
 /* A 3:1 band is a wide screen's proportion: on a phone it comes out a hundred
-   pixels tall and nothing in the picture can be made out. It is given back
-   some height at the width where the reader is the whole window. */
+   pixels tall and nothing in the picture can be made out, so it is given back
+   some height there. This one is about the reader being narrow and not about
+   the word panel, whose breakpoint it used to share: the panel now leaves at
+   54rem, and a picture half as tall again is not what a 835px reader wants. */
 @media (max-width: 48rem) {
   .cover {
     aspect-ratio: 2 / 1;

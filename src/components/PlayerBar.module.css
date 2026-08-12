@@ -133,7 +133,7 @@
   transform: scale(1.06);
 }
 
-@media (max-width: 70rem) {
+@media (max-width: 75rem) {
   .library {
     display: grid;
   }
