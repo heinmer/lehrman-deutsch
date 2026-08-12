@@ -101,7 +101,9 @@
    has wrapped to. Offsets resolve against the bar's *padding* box, a border
    inside the edges being measured from, which is what the 1px in each corrects.
    There is no drawer while the sidebar is in the layout, so above the
-   breakpoint it does not exist. */
+   breakpoint it does not exist — and that breakpoint is the sidebar's own
+   (`App.module.css`), which is the one thing about this button that is not
+   its business. The two are read together whenever either moves. */
 .library {
   display: none;
   position: absolute;
@@ -131,7 +133,7 @@
   transform: scale(1.06);
 }
 
-@media (max-width: 62rem) {
+@media (max-width: 70rem) {
   .library {
     display: grid;
   }

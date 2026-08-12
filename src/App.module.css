@@ -69,7 +69,7 @@
 }
 
 /* Rendered while the drawer is open and shown only where the drawer exists:
-   above 62rem the sidebar is back in the layout, and a scrim left over a
+   above 70rem the sidebar is back in the layout, and a scrim left over a
    window with no drawer in front of it darkened the page until it was
    clicked. It sits above the word panel, because the drawer is in front of
    it — Escape reads the same order. */
@@ -93,16 +93,20 @@
   background: var(--scrim);
 }
 
-@media (max-width: 84rem) {
-  .app {
-    --side-width: 18.5rem;
-  }
-}
-
 /* Too narrow for three columns. The sidebar leaves the layout — but it holds
    the text list, the theme, the volume and both toggles, so it becomes a
-   drawer rather than disappearing, opened from the player bar. */
-@media (max-width: 62rem) {
+   drawer rather than disappearing, opened from the player bar.
+
+   70rem and not 62rem because the columns no longer narrow first. There was a
+   second, thinner side width for the screens between here and 84rem, and it
+   was 3px short of the site's name: the lockup wrapped onto two lines for the
+   whole of that band, which is most laptops. A column has one width — the
+   width of what is in it — and where the layout cannot afford two of them
+   beside the prose, the sidebar leaves. The number is what that costs the
+   reader: at this breakpoint the centre comes to 400px, which is what the
+   *thin* arrangement left it at its own breakpoint, so the tightest the prose
+   is ever set has not moved. */
+@media (max-width: 70rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
   }
@@ -117,7 +121,9 @@
     top: var(--gap);
     bottom: var(--gap);
     left: var(--gap);
-    width: min(23rem, 86vw);
+    /* The same column, moved: a drawer of some other width would be a second
+       sidebar to keep in step. */
+    width: min(var(--side-width), 86vw);
     z-index: 50;
     /* Hidden rather than merely offscreen: a drawer nobody can see must not
        be somewhere the tab key can go. */
@@ -151,7 +157,7 @@
     top: var(--gap);
     right: var(--gap);
     bottom: var(--gap);
-    width: min(23rem, 88vw);
+    width: min(var(--side-width), 88vw);
     z-index: 45;
     visibility: hidden;
     transform: translateX(calc(100% + var(--gap)));

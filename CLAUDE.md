@@ -539,12 +539,29 @@ as `/…/` so transcriptions look the same everywhere.
   list a text was chosen from is the list it belongs to. Keying the choice by
   the slug it was made under is the version that looks right and is wrong —
   it comes back to life on the way Back to that slug.
-- **Below 62rem the sidebar becomes a drawer, not nothing.** It used to be
+- **A side column has one width, and it is `--side-width`.** There were two —
+  23rem, and 18.5rem for everything under 84rem — and the thin one was 3px
+  narrower than the lockup in the sidebar's header, so the site's name sat on
+  two lines for that whole band, which is most laptops. Sizing a column to the
+  screen rather than to what stands in it is the mistake; the answer is not a
+  smaller wordmark but one width, with the sidebar leaving the layout where the
+  layout can no longer afford it. The drawer and the word panel are that width
+  too — a drawer of its own width would be a second sidebar to keep in step,
+  and side columns of *different* widths would put the prose off the middle of
+  the screen. Anything added to the sidebar is measured against 23rem; nothing
+  in it may depend on a narrower one existing.
+- **Below 70rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
   It is now a fixed panel opened from a round island in the reader's bottom
   corner — closed by choosing a text, by Escape or by the scrim, and
   `visibility: hidden` while shut so it is not somewhere the tab key can go.
+  **The number is what the third column costs the reader**: at 70rem the centre
+  comes to 400px, which is what the thin arrangement left it at its own 62rem,
+  so the tightest the prose is ever set has not moved by dropping that
+  arrangement. The button that opens the drawer carries the same breakpoint in
+  another file (`.library` in `PlayerBar.module.css`); the two are read together
+  whenever either moves.
   That island is a child of the player bar (`.library`, absolutely positioned
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
@@ -619,7 +636,7 @@ as `/…/` so transcriptions look the same everywhere.
   of the reader's flow (`container-type: inline-size`) and is exactly as wide
   as it. `.main` is not: the reader's padding and its scrollbar are both
   between them. Against the *window*
-  this cannot be got right either: the sidebar leaves the layout at 62rem and
+  this cannot be got right either: the sidebar leaves the layout at 70rem and
   the word panel at 48rem, so between those steps the window narrows while the
   bar **widens**, and a window breakpoint therefore squeezes the row hardest
   just before each step and lets go just after. The track vanished twice on the

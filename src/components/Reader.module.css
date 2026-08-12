@@ -229,6 +229,14 @@
   box-shadow: 0 0 0 3px var(--selected-word), inset 0 -2px 0 var(--accent);
 }
 
+/* Not the sidebar's breakpoint, though it used to be the same number: the
+   reader's width is not a function of the window's. Each section that leaves
+   the layout hands the reader a chunk of the screen, so the prose is at its
+   tightest *just above* each of those steps and roomiest just below — a single
+   window threshold cannot follow that, and 70rem would spend the gutter where
+   the reader has most room. This one is a rough "the window is no longer a
+   desktop's", and where it matters most — a phone, where the reader is the
+   whole of it — it is simply always in force. */
 @media (max-width: 62rem) {
   .reader {
     --reader-gutter: 1.75rem;

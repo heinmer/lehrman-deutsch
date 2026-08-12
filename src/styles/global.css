@@ -24,7 +24,13 @@
   --radius-pill: 999px;
 
   --gap: 1rem;
-  /* The two side columns are deliberately the same width. */
+  /* The two side columns are deliberately the same width — and there is only
+     one width. A second, thinner one for middling screens is what put the
+     site's name on two lines: it came to 3px less than the lockup needs, and
+     nothing in a column that holds a wordmark, a list of texts and a footer of
+     settings gets to be sized to the screen rather than to itself. Where the
+     layout cannot afford it, the sidebar leaves and becomes a drawer — of this
+     width too. */
   --side-width: 23rem;
   /* The player is not a section of its own: it sticks to the bottom of the
      reader, holding itself this far off the edge. `--player-fade` is the band
