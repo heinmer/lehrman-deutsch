@@ -153,8 +153,16 @@ button {
   color: var(--text-soft);
 }
 
-/* Shared island: a floating card with its own ground. Dark themes lean on the
-   border, where a drop shadow has nothing to darken.
+/* Shared island: a box with its own ground.
+
+   It carried a 1px border in `--island-border` for a theme that wanted to draw
+   between the sections. Every theme kept that transparent, so what the border
+   did in practice was take a pixel off all four sides of every island and
+   leave every inner measurement a pixel off the number it was written as — the
+   sidebar's 1.5rem inset measured 22.6px, and the library button needed a
+   `-1px` of its own to find the bar's edge, because an absolute offset
+   resolves against the padding box. The token is gone with it; a theme that
+   wants lines between the sections adds the border back here.
 
    The radius is a variable because two different things wear this class. What
    genuinely floats — the player, the info window, either drawer — is a card,
@@ -165,7 +173,6 @@ button {
    it back, which is one declaration each and says which of the two a box is. */
 .island {
   border-radius: var(--island-radius, var(--radius-lg));
-  border: 1px solid var(--island-border);
   box-shadow: var(--shadow-card);
   overflow: hidden;
 }

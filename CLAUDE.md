@@ -604,9 +604,10 @@ as `/…/` so transcriptions look the same everywhere.
   against it) only because the bar is the one thing whose top edge is where it
   has to hang; it is not a control in the row, which at this width is already
   wrapping. It lines up with the bar's left edge — and so with the text column
-  — and stands `--gap` above it. The stray pixel in each offset is the bar's
-  border: offsets resolve against its padding box, one border inside the edges
-  being measured from. Its ground is `--surface-overlay` at 62% behind a
+  — and stands `--gap` above it. Both offsets carried a stray pixel while
+  `.island` drew a border, since they resolve against the bar's padding box,
+  which was then one border inside the edges being measured from; the border is
+  gone and so is the correction. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
   blur is what stands in for it. Below 61rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
@@ -889,12 +890,17 @@ Renaming a token means renaming it in the components too; grep for it.
 
 **Every theme is a single sheet.** White, Black, Ink and Paper are all the
 same arrangement: page, sidebar, reader and word panel share one ground, and
-nothing is drawn between them — `--island-border: transparent`, `--shadow-card:
-none`, `--shadow-raised: none` in all four. The themes that gave each section
-its own tint (Midnight, Dusk, Daylight) were removed for that reason; a new
-theme is expected to keep the sheet. The three tokens still exist for one that
-wants to draw between sections again, but a theme setting them is going against
-the grain of the rest.
+nothing is drawn between them — `--shadow-card: none`, `--shadow-raised: none`
+in all four. The themes that gave each section its own tint (Midnight, Dusk,
+Daylight) were removed for that reason; a new theme is expected to keep the
+sheet. `--island-border` was the third of these and is **gone**: every theme
+held it at `transparent`, so what it drew was nothing and what it cost was a
+pixel off each side of every island — which put every inner measurement a pixel
+off the number it was written as, and made the library button carry a `-1px` to
+find the bar's edge. A theme that wants lines between the sections adds the
+border back to `.island` in `global.css` rather than reviving a token four
+themes have to hold at nothing. The two shadow tokens stay because other boxes
+still read them.
 
 **The player is the one box those themes do draw.** It keeps a
 `--surface-player` a step off the sheet while the sidebar, the reader and the

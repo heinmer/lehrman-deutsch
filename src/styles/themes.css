@@ -11,9 +11,11 @@
  *
  * Every theme here is a single sheet: page, sidebar, reader and word panel
  * share one ground, and only the player is lifted off it. The themes that
- * tinted each section separately were removed; `--island-border` and the two
- * shadow tokens survive for a theme that wants to draw between sections again,
- * but nothing today does.
+ * tinted each section separately were removed, and so is `--island-border`,
+ * which every one of them held at `transparent` — a line nothing drew, costing
+ * a pixel off each side of every island. The two shadow tokens stay because
+ * other boxes read them; a theme that wants lines between the sections puts
+ * the border back in `.island` (`global.css`).
  */
 
 /**
@@ -73,7 +75,6 @@
   --selected-word: rgb(139 167 226 / 0.24);
 
   --scrim: rgb(0 0 0 / 0.62);
-  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
@@ -133,7 +134,6 @@
   --selected-word: #e0d3ba;
 
   --scrim: rgb(58 44 32 / 0.45);
-  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
@@ -237,7 +237,6 @@
 
   /* Behind the drawer on narrow screens; see App.module.css. */
   --scrim: rgb(0 0 0 / 0.4);
-  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }
@@ -290,7 +289,6 @@
   --selected-word: rgb(147 162 221 / 0.24);
 
   --scrim: rgb(0 0 0 / 0.7);
-  --island-border: transparent;
   --shadow-card: none;
   --shadow-raised: none;
 }

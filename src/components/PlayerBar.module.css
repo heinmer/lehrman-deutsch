@@ -102,8 +102,10 @@
    than one more control in the row, which at this width is what the bar has
    least room for. Both islands float on the reader, so it lines up with the
    bar's left edge and stands the layout gap above it, whatever height the bar
-   has wrapped to. Offsets resolve against the bar's *padding* box, a border
-   inside the edges being measured from, which is what the 1px in each corrects.
+   has wrapped to. Both offsets carried a correcting pixel while `.island` drew
+   a 1px border: they resolve against the bar's *padding* box, which was then a
+   border inside the edges being measured from. The border is gone and so is
+   the correction — if one ever comes back, these two come back with it.
    There is no drawer while the sidebar is in the layout, so above the
    breakpoint it does not exist — and that breakpoint is the sidebar's own
    (`App.module.css`), which is the one thing about this button that is not
@@ -111,9 +113,9 @@
 .library {
   display: none;
   position: absolute;
-  left: -1px;
+  left: 0;
   bottom: 100%;
-  margin-bottom: calc(var(--gap) + 1px);
+  margin-bottom: var(--gap);
   place-items: center;
   /* Larger than anything in the bar: it is the only way out of a text on a
      phone, and it is read against the whole reader rather than a row of
