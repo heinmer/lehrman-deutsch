@@ -78,6 +78,24 @@
   color: var(--text);
 }
 
+/* The strip stands where the list starts, not where the header's text does:
+   its own gutter is the list's, so its edges line up with the rows it filters
+   rather than with the site's name above it. It never scrolls with them —
+   which level is being read is not something to have to scroll back up for. */
+.filter {
+  flex: none;
+  padding: 0 0.7rem 0.8rem;
+}
+
+/* Only reachable when the index itself is empty: a level nothing is written
+   for cannot be chosen — see LevelTabs. */
+.empty {
+  margin: 0;
+  padding: 0.6rem 0.75rem;
+  font-size: var(--fs-sm);
+  color: var(--text-soft);
+}
+
 /* Takes whatever height is left above the settings and scrolls inside it, so
    the divider stays put however many texts there are. */
 .list {

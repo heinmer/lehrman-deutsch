@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import {
   Clock,
   Info,
@@ -9,12 +10,13 @@ import {
   MessageCircleOff,
   Type,
 } from "lucide-react";
-import type { TextSummary } from "../../shared/types";
+import { LEVELS, type Level, type TextSummary } from "../../shared/types";
 import { forVoice } from "../../shared/voices";
 import type { ThemeControls } from "../hooks/useTheme";
 import type { VolumeSetting } from "../hooks/useVolumeSetting";
 import { formatTime } from "../lib/format";
 import { LevelBadge } from "./LevelBadge";
+import { LevelTabs } from "./LevelTabs";
 import { Logo } from "./Logo";
 import { ThemePicker } from "./ThemePicker";
 import { VolumeControl } from "./VolumeControl";
@@ -43,6 +45,13 @@ function durationOf(text: TextSummary, voiceId: string): number {
   return forVoice(text.durations, voiceId) ?? 0;
 }
 
+/** Every level, including the ones nothing is written for: the strip draws them all. */
+function countByLevel(texts: TextSummary[]): Record<Level, number> {
+  const counts = Object.fromEntries(LEVELS.map((level) => [level, 0])) as Record<Level, number>;
+  for (const text of texts) counts[text.level] += 1;
+  return counts;
+}
+
 export function Sidebar({
   texts,
   activeSlug,
@@ -58,6 +67,24 @@ export function Sidebar({
   volume,
   onOpenHelp,
 }: Props) {
+  const counts = useMemo(() => countByLevel(texts), [texts]);
+
+  // The strip shows the level of the text being read until the reader chooses
+  // another, and opening a text is what ends that: the list a text was chosen
+  // from is the list it belongs to, so nothing has to be put back by hand.
+  // Adjusted while rendering, the way `Reader` drops the last text's
+  // translations — an effect would be one frame late, and a pick keyed by the
+  // slug it was made under would *revive* on the way Back to that slug.
+  const activeLevel = texts.find((text) => text.slug === activeSlug)?.level ?? null;
+  const [browsedSlug, setBrowsedSlug] = useState(activeSlug);
+  const [picked, setPicked] = useState<Level | null>(null);
+  if (activeSlug !== browsedSlug) {
+    setBrowsedSlug(activeSlug);
+    setPicked(null);
+  }
+  const level = picked ?? activeLevel ?? "A1";
+  const shown = texts.filter((text) => text.level === level);
+
   return (
     // The sidebar clips its overflow, so anything floating inside it — the
     // tooltips, the pickers' menus — measures itself against this.
@@ -83,8 +110,16 @@ export function Sidebar({
         </button>
       </header>
 
+      {/* Between the name and the list, and the width of the rows under it: it
+          is the list's heading rather than a setting, which is why it is here
+          and not in the footer with the settings. */}
+      <div className={styles.filter}>
+        <LevelTabs selected={level} counts={counts} onSelect={setPicked} />
+      </div>
+
       <nav className={styles.list} aria-label="Texts">
-        {texts.map((text) => (
+        {shown.length === 0 && <p className={styles.empty}>No texts at this level yet.</p>}
+        {shown.map((text) => (
           <button
             key={text.slug}
             type="button"

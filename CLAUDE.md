@@ -520,6 +520,25 @@ as `/…/` so transcriptions look the same everywhere.
   The list answers to Up/Down/Home/End and, when it was opened by click rather
   than by hover, takes focus to the chosen option — in hover mode it must not,
   or the pointer arriving would steal focus from wherever it was.
+- **The text list shows one level at a time.** `LevelTabs` is a segmented strip
+  over the list — all six CEFR levels always, so the scale reads as the course's
+  whole length rather than as however far it has been written. A level nothing
+  is written for is drawn and `disabled`: there is then no empty list to
+  explain, and the note under the strip is only reachable with an empty index.
+  It is a `role="group"` of `aria-pressed` buttons and not the ARIA tabs
+  pattern, like the player's speed strip: the list under it is a `nav` landmark
+  and not a tab panel. The chosen chip carries **that level's own colour**, the
+  badges' colour, which needs no token of its own — every `--level-*` already
+  clears `--level-contrast` by 4.5:1 in every theme, and the light/dark
+  inversion comes along with it. Its hover is a label colour and no ground, for
+  the reason the speed strip's is: a chip on `--surface-inset` has no "raised"
+  to go to — `--surface-raised` is a step the *wrong* way in Black.
+  **Which level is shown follows the text being read** and is adjusted while
+  rendering, as `Reader` drops the last text's translations: choosing a level
+  moves nothing else, and opening a text is what ends the choice, since the
+  list a text was chosen from is the list it belongs to. Keying the choice by
+  the slug it was made under is the version that looks right and is wrong —
+  it comes back to life on the way Back to that slug.
 - **Below 62rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
@@ -971,7 +990,10 @@ ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 out.
 by level first — easiest to hardest, by position in `LEVELS` and not by how the
 labels happen to spell — and within a level by `order:`, lowest first. The
 texts of one level build on each other in a sequence only the author knows, so
-the alphabet is not it; file names never were.
+the alphabet is not it; file names never were. The reader sees one level at a
+time — the strip over the list is what chooses it — so `order:` is the whole of
+what the sidebar's order is, and the level sort survives only because the index
+is still one list.
 
 A text carrying no `order:` falls to the *end* of its level, alphabetically
 among its like. That is on purpose: an unplaced text must not land in the

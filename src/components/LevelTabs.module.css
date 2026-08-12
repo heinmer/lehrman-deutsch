@@ -1,0 +1,80 @@
+/* One box across the top of the list, divided into six. Equal columns rather
+   than content-sized ones: every label is the same two characters, so a grid
+   comes out evenly spaced without measuring anything, and the strip does not
+   twitch as the letters change. The ground is `--surface-inset` — the same
+   segmented strip the playback speed is, which is the one place in the app
+   where a choice is made by lifting a chip out of an inset track. */
+.strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.2rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.tab {
+  padding: 0.4rem 0;
+  /* The strip's own radius less its padding, so the chip's corners sit
+     concentric with the box's rather than inside a straight edge. */
+  border-radius: calc(var(--radius-md) - 0.25rem);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  color: var(--text-muted);
+  transition: background-color 130ms ease, color 130ms ease;
+}
+
+/* The label brightens and the ground stays put, as in the speed strip. A ground
+   of its own is what there is no colour for: `--surface-raised` is what a chip
+   lifted off the *page* takes, and against an inset strip it is a step the
+   wrong way in Black and barely a step at all in Paper — measure a hover
+   against the ground it is drawn on. */
+.tab:hover:not(:disabled):not([aria-pressed="true"]) {
+  color: var(--text);
+}
+
+/* The chosen level is drawn in that level's own colour, the badges' colour, so
+   the strip and the rows under it say the same thing twice — which is what
+   makes the filter read as the list's heading rather than as a control beside
+   it. It is `--surface-selected` in the speed strip because a playback rate has
+   no colour of its own; a level does, and every one of them is already
+   guaranteed to clear `--level-contrast` by 4.5:1 in every theme. That
+   invariant is what this leans on: the light themes carry the scale as dark
+   fills under a white label, the dark themes invert it, and the chip follows
+   without a token of its own. */
+.tab[aria-pressed="true"] {
+  background: var(--level-a1);
+  color: var(--level-contrast);
+  box-shadow: var(--shadow-raised);
+}
+
+.tab[aria-pressed="true"][data-level="A2"] {
+  background: var(--level-a2);
+}
+
+.tab[aria-pressed="true"][data-level="B1"] {
+  background: var(--level-b1);
+}
+
+.tab[aria-pressed="true"][data-level="B2"] {
+  background: var(--level-b2);
+}
+
+.tab[aria-pressed="true"][data-level="C1"] {
+  background: var(--level-c1);
+}
+
+.tab[aria-pressed="true"][data-level="C2"] {
+  background: var(--level-c2);
+}
+
+/* A step back rather than a fade: the disabled controls elsewhere are icons and
+   go to 0.45 opacity, which for two characters of type is a smudge. This is the
+   colour a resting setting takes, and it keeps the empty half of the scale
+   legible — the point of drawing it at all. */
+.tab:disabled {
+  color: var(--text-soft);
+  cursor: default;
+}
