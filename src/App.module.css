@@ -12,6 +12,16 @@
    exception and keeps both: below its breakpoint it floats over a scrim, where
    its edges are visible and it *is* a card.
 
+   The same rule then decides the two that are left. A side column leaving the
+   layout takes its own gap with it — it is a grid track, and the track and the
+   gap go together — but the page's padding on that side stays, and it is
+   dividing the centre from the edge of the screen and nothing else. So each
+   media query below drops the padding on the side it empties: one column gone
+   and the reader starts at the left edge, both gone and it is the window. The
+   prose is not against the glass either way — what holds it off is the
+   reader's own gutter, which is 2.5rem and answers to how wide the reader is
+   (`Reader.module.css`), not to what the layout has left beside it.
+
    What is capped is the *layout*, not the prose inside it. A measure set on
    the text alone would leave the reader's ground stretched the width of an
    ultrawide screen with a column of words down the middle of it, and — since
@@ -139,6 +149,10 @@
 @media (max-width: 85rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
+    /* Nothing to the left of the centre any more, so nothing for a padding to
+       hold it off. The drawer that replaces the column is fixed and carries
+       its own inset. */
+    padding-inline-start: 0;
   }
 
   .scrim {
@@ -185,6 +199,9 @@
 @media (max-width: 64rem) {
   .app {
     grid-template-columns: minmax(0, 1fr);
+    /* The other side goes the same way, and with it the last of the padding:
+       below here the reader is the window, edge to edge and top to bottom. */
+    padding-inline-end: 0;
   }
 
   .panelHost {

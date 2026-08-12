@@ -568,6 +568,14 @@ as `/…/` so transcriptions look the same everywhere.
   card. That variable is what `.island` reads; do not hard-code a radius back
   into it. What holds the player off the bottom edge is unchanged
   (`--player-inset`), so it sits 18px from it rather than 32px.
+  The same rule decides the padding that is left. A side column leaving the
+  layout takes its own gap with it — the track and the gap go together — but
+  the page's padding on that side stays, and it then divides the centre from
+  the edge of the screen and nothing else. Each layout media query therefore
+  drops the padding on the side it empties: below 85rem the reader starts at
+  the left edge, below 64rem it *is* the window. The prose is not against the
+  glass either way — what holds it off is `--reader-gutter`, which answers to
+  how wide the reader is rather than to what the layout has left beside it.
 - **A side column stays only while the centre keeps 640px**, and that is the
   whole of where the two layout breakpoints come from: 85rem is that floor plus
   two side columns and four gaps, 64rem is the same floor plus one of each.
