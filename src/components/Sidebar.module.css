@@ -159,11 +159,19 @@
 
 /* One wrapping row, and nothing in it is pinned to a line: the settings fill
    each line in order and wrap where they stop fitting, so the footer answers
-   to its own width — narrower sidebar, more lines, same order. */
+   to its own width — narrower sidebar, more lines, same order.
+
+   Each line is then justified across the column, the way a paragraph of text
+   is: `space-between` spends the leftover width in the gaps rather than at the
+   end of the line, so a line's first pill lands on the bleed line and its last
+   one on the opposite bleed line. The `gap` stays as the *minimum* it may come
+   to. A line holding one pill is left alone — `space-between` places a single
+   item at the start, which is what a short last line wants. */
 .footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
   flex: none;
   /* The pills are grounds of their own, so they hang on the bleed line with

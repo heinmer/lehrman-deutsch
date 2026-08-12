@@ -544,8 +544,15 @@ as `/…/` so transcriptions look the same everywhere.
   is round — used to be held in rows so a particular grouping survived; that
   made the footer answer to a width someone measured once rather than to its
   own. Adding a setting is one more child in the position it belongs, and the
-  wrapping is the layout's problem. Verify by sweeping widths and reading the
-  rows out of `getBoundingClientRect()`, not by looking at one screen.
+  wrapping is the layout's problem. **Each line is then justified across the
+  column**, the way a paragraph of text is: `space-between` spends a line's
+  leftover width in its gaps, so the first pill of every line lands on one
+  bleed line and the last on the other, and the footer reads as a block rather
+  than as a ragged edge. `gap` becomes the minimum a gap may come to. A line
+  holding a single pill is left alone — `space-between` places one item at the
+  start — which is what a short last line wants and is why nothing extra is
+  needed to say so. Verify by sweeping widths and reading the rows out of
+  `getBoundingClientRect()`, not by looking at one screen.
 - **The dropdowns are one component.** `SettingPicker` owns the control, the
   outside-click and Escape handling, and the menu that opens *upwards* — these
   controls sit at the bottom of the window. Theme (sidebar, a labelled pill,
