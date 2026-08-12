@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.png">
-    <img src="brand/logo-light.png" alt="Lehrman-Deutsch" width="96">
+    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.svg">
+    <img src="brand/logo-light.svg" alt="Lehrman-Deutsch" width="96">
   </picture>
 </p>
 

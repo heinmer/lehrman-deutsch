@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <!--
+    The same mark for a dark ground: the ink of the Black theme, which is what
+    public/favicon.svg switches to on a dark interface. See logo-light.svg for
+    why the two are separate files and where else this path lives.
+  -->
+  <path fill="#e7e9f0" d="M0 0H100V200H200V0H400L500 100L300 300L200 200V300H100L0 200ZM300 100V200L400 100ZM500 200V300H400Z"/>
+</svg>

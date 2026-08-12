@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 300">
+  <!--
+    The mark for a light ground, on nothing: the ink of the White theme, the
+    same colour public/favicon.svg takes on a light interface, and no
+    background at all — README.md picks between this file and logo-dark.svg
+    with a <picture>, so each carries one colour and neither may assume a page
+    behind it.
+
+    The path is the one in src/components/Logo.tsx. Redrawing the mark means
+    changing it here, in logo-dark.svg and in public/favicon.svg as well.
+  -->
+  <path fill="#1c1d22" d="M0 0H100V200H200V0H400L500 100L300 300L200 200V300H100L0 200ZM300 100V200L400 100ZM500 200V300H400Z"/>
+</svg>

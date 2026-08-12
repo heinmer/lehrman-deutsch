@@ -919,8 +919,15 @@ as `/…/` so transcriptions look the same everywhere.
   ground of its own, because iOS puts it on a home screen. All three are
   hand-placed in `public/` — nothing generates them — and Vite rebases their
   `href`s in `index.html` against `base`, so a subpath build needs no help.
-  The path in `favicon.svg` is a second copy of the one in `Logo.tsx`;
-  redrawing the mark means changing both.
+  The path in `favicon.svg` is a second copy of the one in `Logo.tsx`, and
+  `brand/logo-light.svg` and `brand/logo-dark.svg` — the README's lockup — are
+  the third and fourth; redrawing the mark means changing all four. Those two
+  are the favicon's own inks, `#1c1d22` and `#e7e9f0`, on no ground at all,
+  because a README is read on the site's ground and not on ours: GitHub picks
+  between them with a `<picture>` on `prefers-color-scheme`, so each file
+  carries exactly one colour and neither may assume a page behind it. They are
+  not the accent, which is the *app's* colour for the mark and reads as neither
+  ink on a page nobody themed.
 - The word panel's column is always in the grid, so opening it never shifts the
   text.
 
