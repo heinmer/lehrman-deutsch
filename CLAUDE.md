@@ -6,6 +6,16 @@ Keep it current: when a change invalidates something written here — a command,
 a source of data, one of the invariants below — update this file in the same
 commit. It is only useful while it is true.
 
+**Splitting it was tried and turned down.** *App behaviour worth knowing* is
+two thirds of it and bears on nothing that builds content, so moving it to
+`docs/` and leaving a pointer is the obvious economy — and it costs more than
+it saves. A file read on demand is a file skipped on the change that looked
+like one line, which is what most of these notes are about; and what it says
+is summarised away when a long session compacts, while this one is handed over
+whole. What is written here guards against regressions that are *silent*, so
+it is kept where it cannot be missed. Grown much past the section it earns,
+prefer cutting to filing.
+
 ## Committing
 
 **Commit each change once it works.** Do not leave finished work sitting in the
