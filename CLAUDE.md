@@ -382,6 +382,41 @@ as `/…/` so transcriptions look the same everywhere.
   something only a mouse can reach. `App`'s `selectWord` is the one place the
   four outcomes live; its Ctrl+Alt branch is `readFrom`, which is also what
   the panel's "Read from here" calls, so the two cannot drift apart.
+- **The attribution is in two places, and neither is decoration.** The
+  recordings and the dictionary are other people's work under licences that ask
+  for credit as soon as the work is *distributed*, which is what publishing the
+  site does. **At the foot of the word panel's body** is one quiet line —
+  `Wiktionary · recording by <author> (<licence>)` — where each half is a link
+  to where the rest is said, which is what CC accepts in place of reprinting
+  it. It names **that recording's own** licence and not a licence written once
+  for all of them: the files run CC BY-SA at three versions, CC BY and CC0, so
+  there is no one sentence that is true of them all. It is deliberately **not
+  beside the speak button** — that is a control read at a glance, and a licence
+  hung off it costs the panel its one element that needs no reading. **And a
+  Sources section in the info window**, the fourth section and the same shape
+  as the other three, which carries what has no word to sit beside: the
+  dictionary, the fonts (OFL) and the icons (ISC). The recordists are listed
+  there **from the data** and never by hand — `recordists()` counts the authors
+  in `credits.json` and orders them by how much they recorded — because a new
+  text can bring in a name nobody thought to add. Today it is thirteen people,
+  one of whom recorded 645 of the 738.
+- **`useCredits(enabled)` is what fetches `credits.json`, and `enabled` is the
+  point of it.** The panel asks only once it is showing a word and the info
+  window only while it is open, so a reader who does neither never downloads
+  it; the promise is a module-level single, so the two share one request. A
+  failure is swallowed, per *Only the index is a fatal error* — a credit that
+  did not arrive is a line that does not appear, and the file page still says
+  everything. The browser check asserts both halves of that: nothing on the
+  opening page, exactly one request after a word is opened.
+- **The credit line is `--text-muted`, not `--text-soft`.** Soft measured
+  3.78:1 in Paper and 4.44:1 in White, which is a caption's contrast — and the
+  licence's own name sits in that text. Same call the info window's notes went
+  through, and for the same reason. Its links are `--text` and underlined at
+  rest: at `--fs-xs` colour alone does not say "link", and a credit nobody can
+  tell leads anywhere fails at its only job. It is laid out as **prose and not
+  as a flex row**, because a flex gap is not text — it separated the halves on
+  screen while a selection or a screen reader got `Wiktionaryrecording by`. The
+  spaces are text nodes; only the `·` between them is `aria-hidden`.
 - **The info window is the only modal.** `HelpDialog`, opened from the `i`
   beside the site's name, is a centred card over a scrim at z-index 60 — in
   front of both drawers, and Escape reads that same order in `App` (info, then
@@ -391,10 +426,12 @@ as `/…/` so transcriptions look the same everywhere.
   place for the keyboard, and the global outline drawn round the whole window
   reads as a border. It is titled for the site and not for its contents, so
   that the next thing to go in it is a section under its own heading rather
-  than a second window; today there are three. *What is Lehrman-Deutsch?* comes
-  first and says what the site is, then *Settings* and *Shortcuts*. **All three
-  are the same shape** — a heading, a note under it, and a table where there is
-  one to show. The first is only the first two of those, which is the whole
+  than a second window; today there are four. *What is Lehrman-Deutsch?* comes
+  first and says what the site is, then *Settings*, *Shortcuts* and *Sources* —
+  that last one being about where the material came from rather than about
+  using the site, and the only section a reader arrives at deliberately.
+  **All four are the same shape** — a heading, a note under it, and a table
+  where there is one to show. The first is only the first two of those, which is the whole
   reason it does not need a treatment of its own: a lead paragraph set larger
   and darker was tried and it made the opening a different kind of thing from
   the sections under it, when what it is is the first of them. Its note is one
@@ -1209,6 +1246,14 @@ column.
 
 ## Attribution
 
-Dictionary content and recordings come from Wiktionary and Wikimedia Commons
-under CC BY-SA. The credit currently lives in `README.md`, which covers local
-personal use; if this is ever published, the credit belongs in the interface.
+Dictionary content and recordings come from Wiktionary and Wikimedia Commons.
+**The credit is in the interface** — a line at the foot of every word panel and
+a *Sources* section in the info window; see *App behaviour worth knowing* for
+how each is built and why it is where it is. That is what the licences ask for
+once the work is distributed, which is what publishing the site does, so
+`README.md` is no longer where this lives.
+
+What is **not** credited there is deliberate rather than forgotten, and should
+stay that way. The narration is synthesised and asks for nothing. Neither does
+a translation service — there is no longer one to ask. The page exists for the
+people whose work requires it.

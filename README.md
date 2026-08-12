@@ -178,11 +178,11 @@ src/
 - Below roughly 990px the sidebar becomes a drawer, opened from the player;
   below 770px the word panel slides in over the text instead of sharing the
   width with it.
-- Attribution: word recordings and dictionary content come from Wiktionary and
-  Wikimedia Commons, licensed CC BY-SA. The licence asks for attribution when
-  the work is *distributed*; this credit covers the local, personal use the
-  project is built for. If you ever publish this site, put the credit back in
-  the interface as well.
+- Attribution is in the interface, in two places. Each word's panel ends with a
+  line naming the Wiktionary entry it came from and the person who recorded it,
+  with that recording's own licence — they differ from file to file — and both
+  halves link out. The info window's *Sources* section carries the rest: the
+  dictionary, the people who recorded the words, the fonts and the icons.
 
 ## Deploying
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, type KeyboardEvent, type MouseEvent } from "react";
 import { LocateFixed, MessageCircle, X } from "lucide-react";
+import { recordists, useCredits } from "../hooks/useCredits";
 import styles from "./HelpDialog.module.css";
 
 interface Props {
@@ -39,6 +40,8 @@ const FOCUSABLE =
  */
 export function HelpDialog({ onClose }: Props) {
   const cardRef = useRef<HTMLDivElement>(null);
+  // Only while the window is open, which is the only place the list is read.
+  const names = recordists(useCredits(true));
 
   // Focus goes into the dialog and comes back to whatever opened it, so the
   // keyboard is where the eye is and does not restart from the top of the page.
@@ -214,6 +217,100 @@ export function HelpDialog({ onClose }: Props) {
                 <dd className={styles.what}>
                   Reads the text from that word, starting playback if it is
                   paused.
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          {/* Last, because it is about where the material came from rather than
+              about using the site — and it is the one section a reader arrives
+              at deliberately. Same shape as the three above it. */}
+          <section className={styles.block}>
+            <h3 className={styles.section}>Sources</h3>
+            <p className={styles.note}>
+              The words, their meanings and their recordings are the work of
+              Wiktionary and Wikimedia Commons volunteers. The texts, the
+              pictures and the narration are made for this site.
+            </p>
+
+            <dl className={styles.rows}>
+              <div className={styles.row}>
+                <dt className={styles.source}>Dictionary</dt>
+                <dd className={styles.what}>
+                  Meanings, transcriptions and parts of speech from{" "}
+                  <a
+                    href="https://en.wiktionary.org/wiki/Wiktionary:Main_Page"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    English Wiktionary
+                  </a>
+                  , by way of the Wiktextract dumps at{" "}
+                  <a href="https://kaikki.org/" target="_blank" rel="noreferrer">
+                    kaikki.org
+                  </a>
+                  , with German Wiktionary for transcriptions the English
+                  edition does not carry. Used and adapted under{" "}
+                  <a
+                    href="https://creativecommons.org/licenses/by-sa/4.0/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    CC BY-SA 4.0
+                  </a>
+                  . Every word links to its own entry.
+                </dd>
+              </div>
+
+              <div className={styles.row}>
+                <dt className={styles.source}>Recordings</dt>
+                {/* The names are read off the data rather than written here, so
+                    a text that brings in a new voice credits them without
+                    anybody remembering to. Until the file arrives — or if it
+                    never does — the row still says who to look for and where,
+                    which is what the licence asks of it. */}
+                <dd className={styles.what}>
+                  Spoken by{" "}
+                  {names.length > 0 ? (
+                    <span className={styles.names}>{names.join(", ")}</span>
+                  ) : (
+                    "contributors"
+                  )}{" "}
+                  and shared on{" "}
+                  <a
+                    href="https://commons.wikimedia.org/wiki/Category:German_pronunciation"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Wikimedia Commons
+                  </a>
+                  . Each recording carries its own licence — CC BY-SA, CC BY or
+                  CC0 — named beside the word and linked to its file page.
+                </dd>
+              </div>
+
+              <div className={styles.row}>
+                <dt className={styles.source}>Type</dt>
+                <dd className={styles.what}>
+                  DM Sans and PT Serif, under the{" "}
+                  <a
+                    href="https://openfontlicense.org/"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    SIL Open Font License 1.1
+                  </a>
+                  .
+                </dd>
+              </div>
+
+              <div className={styles.row}>
+                <dt className={styles.source}>Icons</dt>
+                <dd className={styles.what}>
+                  <a href="https://lucide.dev/" target="_blank" rel="noreferrer">
+                    Lucide
+                  </a>
+                  , under the ISC License.
                 </dd>
               </div>
             </dl>

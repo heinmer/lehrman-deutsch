@@ -1,8 +1,9 @@
 import { CornerDownRight, MousePointerClick, Play, Volume2, X } from "lucide-react";
-import type { DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
+import type { ClipCredit, DictionaryEntry, LexemeInfo, WordToken } from "../../shared/types";
 import { genderArticle, posLabel } from "../lib/format";
 import { spokenLexeme } from "../lib/pronunciation";
 import { playClip } from "../lib/clipAudio";
+import { creditFor, useCredits } from "../hooks/useCredits";
 import styles from "./WordPanel.module.css";
 
 interface Props {
@@ -17,6 +18,10 @@ interface Props {
 }
 
 export function WordPanel({ token, entry, onClose, onPlayFrom, canPlayFrom }: Props) {
+  // Before the early return, as every hook must be — and asked for only once
+  // the panel is showing a word, so the file is not on the opening page.
+  const credits = useCredits(Boolean(token));
+
   if (!token) {
     return (
       <aside className={`island ${styles.panel}`} aria-label="Word details">
@@ -89,6 +94,8 @@ export function WordPanel({ token, entry, onClose, onPlayFrom, canPlayFrom }: Pr
         ) : (
           <p className={styles.empty}>No dictionary entry found for this word.</p>
         )}
+
+        <Credit lexeme={senseSource} clip={creditFor(credits, clip?.file)} />
       </div>
 
       {/* Outside the scrolling body, so the senses above end before it rather
@@ -106,6 +113,53 @@ export function WordPanel({ token, entry, onClose, onPlayFrom, canPlayFrom }: Pr
         </button>
       </div>
     </aside>
+  );
+}
+
+/**
+ * Where this entry and this recording came from, at the foot of the body.
+ *
+ * It is the conventional place and shape for a source note — under the content
+ * it belongs to, a step smaller and quieter than everything else — which is
+ * what lets it be read as a credit and skipped as one. It is deliberately not
+ * beside the speak button: that is a control read at a glance, and hanging a
+ * licence off it would cost the panel the one element that needs no reading
+ * at all.
+ *
+ * Both halves stand on their own. The dictionary is CC BY-SA and the recordings
+ * carry a licence each — CC BY-SA at three versions, CC BY and CC0 are all in
+ * there — so the recording names its own rather than borrowing a sentence
+ * written once for all of them. Each links out to where the rest is said, which
+ * is what the licences accept in place of reprinting it here.
+ */
+function Credit({ lexeme, clip }: { lexeme: LexemeInfo | null; clip: ClipCredit | null }) {
+  if (!lexeme?.wiktionaryUrl && !clip) return null;
+
+  return (
+    <p className={styles.credit}>
+      {lexeme?.wiktionaryUrl && (
+        <a href={lexeme.wiktionaryUrl} target="_blank" rel="noreferrer">
+          Wiktionary
+        </a>
+      )}
+      {lexeme?.wiktionaryUrl && clip && (
+        <>
+          {" "}
+          <span className={styles.creditDot} aria-hidden="true">
+            ·
+          </span>{" "}
+        </>
+      )}
+      {clip && (
+        <span>
+          {clip.author ? "recording by " : "recording "}
+          <a href={clip.page} target="_blank" rel="noreferrer">
+            {clip.author ?? "on Commons"}
+          </a>
+          {clip.license && ` (${clip.license})`}
+        </span>
+      )}
+    </p>
   );
 }
 

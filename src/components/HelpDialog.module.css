@@ -216,6 +216,7 @@
    own. */
 .keys,
 .setting,
+.source,
 .what {
   margin: 0;
   padding: 0.75rem 1rem;
@@ -225,7 +226,8 @@
 /* The rule between the columns. It reaches the row's edges because the cell
    does, which is the whole reason the cells stretch. */
 .keys,
-.setting {
+.setting,
+.source {
   border-right: 1px solid var(--help-line);
 }
 
@@ -267,6 +269,20 @@
   color: var(--text-muted);
 }
 
+/* What a source row names is a kind of material, not a control or a key, so it
+   is a plain label — the weight of `.setting` without its icon. Centred down
+   the row like the others: the descriptions here run to three and four lines,
+   which is exactly the case that made the settings stop sitting on the first
+   one. */
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .plus {
   color: var(--text-soft);
 }
@@ -274,6 +290,31 @@
 .what {
   line-height: 1.55;
   color: var(--text-muted);
+}
+
+/* Underlined at rest. A description here is `--text-muted` and its links have
+   to be visible inside a sentence of it, which colour alone does not manage at
+   this size — and a source that cannot be told from prose is not a way back to
+   anything. */
+.what a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+  text-decoration-color: var(--track);
+}
+
+.what a:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+/* The people who recorded the words, printed as they are recorded on Commons.
+   They are names and not links: Commons gives an author as text, and a handful
+   of them ("myself", "joni") name no user page to point at — a list where some
+   names lead somewhere and others do not reads as a fault rather than as a
+   credit. The link to each recording's own page is beside the word. */
+.names {
+  color: var(--text);
 }
 
 /* Scoped to the card: a module only rewrites class names, so a bare `kbd`
@@ -315,7 +356,8 @@
   }
 
   .keys,
-  .setting {
+  .setting,
+  .source {
     border-right: none;
     padding-bottom: 0.2rem;
   }

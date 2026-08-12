@@ -252,3 +252,50 @@
   font-size: var(--fs-md);
   color: var(--text-muted);
 }
+
+/* The source note, under everything the panel has to say about the word. The
+   rule over it is what marks it as a footer rather than as one more thing
+   about the word — and it is the only line drawn inside the body, so
+   `--border` is enough weight for it.
+
+   What makes it quiet is `--fs-xs` and its place, not its colour. `--text-soft`
+   was tried and measured 3.78:1 in Paper and 4.44:1 in White, which is a
+   caption's contrast — and the licence's own name is in this text, which is the
+   one token here that has to be legible. It is the same call the info window's
+   notes went through. `--text-muted` clears 4.5:1 in all four themes and leaves
+   `--text` for the links, which is the step that tells them apart.
+
+   Laid out as the sentence it is, and not as a flex row. A flex gap is not
+   text: it separates the halves on screen and leaves nothing between them for
+   a screen reader to pause at or for a selection to carry, so the line came out
+   as "Wiktionaryrecording by …" the moment anybody took it anywhere. The spaces
+   are in the markup instead, and the line then wraps like prose. */
+.credit {
+  margin: 1.75rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/* Underlined at rest rather than on hover. At `--fs-xs` a link carried by
+   colour alone is not visibly one, and a credit nobody can tell leads anywhere
+   fails at the only job it has — the licence and the author both live behind
+   these two links. */
+.credit a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.credit a:hover {
+  color: var(--accent);
+}
+
+/* Faint on purpose: it divides the two credits and is not one of them. The
+   spaces around it are ordinary text nodes outside this span, so hiding the
+   dot from a screen reader leaves the words either side still separated. */
+.creditDot {
+  color: var(--track);
+}
