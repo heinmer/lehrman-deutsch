@@ -1257,3 +1257,13 @@ What is **not** credited there is deliberate rather than forgotten, and should
 stay that way. The narration is synthesised and asks for nothing. Neither does
 a translation service — there is no longer one to ask. The page exists for the
 people whose work requires it.
+
+**The repository is licensed in two halves, and the line matters.** `LICENSE`
+is MIT and covers the software — `scripts/`, `src/`, `shared/`, `tests/` and
+the configuration. `LICENSE-CONTENT` reserves everything that makes this
+*this site* rather than a program: the texts, their translations, the
+illustrations and the mark. The code is meant to be read and reused; the
+product is not meant to be stood up again by somebody else, and MIT over the
+whole repository would have granted exactly that. Anything new belongs on one
+side or the other by that test — is it what the site is made of, or what the
+site is? A new theme is code; a ninth text is not.

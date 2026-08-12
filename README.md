@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="brand/logo-dark.png">
+    <img src="brand/logo-light.png" alt="Lehrman-Deutsch" width="96">
+  </picture>
+</p>
+
 # Lehrman-Deutsch
 
 A reading trainer for German: short texts, narrated end to end, with every word
@@ -159,73 +166,88 @@ src/
   lib/             fetching, asset paths, clip playback
 ```
 
-## Notes
+## What it does
 
-- Word highlighting follows the engine's own timings, so it stays in sync at
-  any playback speed.
-- Clicking a word opens the panel and moves the narration to that word,
-  without changing whether it is playing. `Esc` closes the panel.
-- While the narration is paused, clicking a word also plays its native
-  recording; while it is playing, the click only seeks, so the two never talk
-  over each other. The "Say word" toggle in the sidebar turns this off.
-- Four colour themes, from the picker at the bottom of the sidebar: Ink and
-  Black, then Paper and White. All four are deliberately flat — page and
-  sections share one background, with only the player bar a step off it. Paper
-  is the one with warm accents rather than blue.
-- The text being read is in the address, so it can be linked to and the back
-  button works.
-- The whole interface is keyboard-operable: one word is in the tab order and
-  the arrow keys walk the text, Enter opens the panel for the word under focus,
-  and the menus answer to Up/Down/Home/End.
-- Below roughly 990px the sidebar becomes a drawer, opened from the player;
-  below 770px the word panel slides in over the text instead of sharing the
-  width with it.
-- Attribution is in the interface, in two places. Each word's panel ends with a
-  line naming the Wiktionary entry it came from and the person who recorded it,
-  with that recording's own licence — they differ from file to file — and both
-  halves link out. The info window's *Sources* section carries the rest: the
-  dictionary, the people who recorded the words, the fonts and the icons.
+- **The word being spoken is lit as it is spoken**, and stays in step at any
+  playback speed — the timings come from the engine that read the text, not
+  from an estimate over its length.
+- **Clicking a word opens it and moves the narration there**, without starting
+  or stopping playback. Paused, the click also plays a native speaker saying
+  that word; while the narration runs it only seeks, so the two never talk over
+  each other. Both halves are toggles in the sidebar, and modifier-clicks reach
+  each behaviour whatever the toggles say.
+- **Four voices read every text**, and each can be heard before it is chosen.
+  Switching voice mid-text keeps your place in the *words* rather than in the
+  seconds, the same word being a different moment in another reading.
+- **Four colour themes** — Ink and Black, then Paper and White. All four are
+  deliberately flat: page and sections share one background, with only the
+  player bar a step off it. Paper is the one with warm accents rather than blue.
+- **The text being read is in the address**, so it can be linked to and the
+  back button means something.
+- **The whole interface answers to the keyboard.** The arrow keys walk the
+  text, Enter opens the word under the cursor, Space plays and pauses from
+  anywhere on the page, and the menus take Up/Down/Home/End.
+- **The layout gives up its side columns before it gives up the prose.** The
+  text list and the word panel become drawers as the window narrows, rather
+  than disappearing — a phone gets everything a desktop does.
+- **Attribution is in the interface**, in two places. Each word's panel ends
+  with a line naming the Wiktionary entry it came from and the person who
+  recorded it, with that recording's own licence — they differ from file to
+  file — and both halves link out. The info window's *Sources* section carries
+  what has no word to sit beside: the dictionary, the recordists, the fonts and
+  the icons.
 
-## Deploying
-
-The app is static, and everything it asks for is resolved against the base it
-is served from, so a prefix is one variable:
-
-```bash
-BASE_PATH=/lehrman-deutsch/ npm run build   # dist/ then lives under that path
-```
-
-The build also writes a `.br` and a `.gz` next to every compressible file.
-Point the host at them — nginx `brotli_static`/`gzip_static`, Caddy's
-`precompressed`, and similar — and a text goes from about 780 bytes per word
-to 160. Hosts that compress on the fly ignore them; the audio is deliberately
-left alone.
+## Building
 
 **`public/data` and `public/media` are generated and gitignored**, so a clean
-checkout builds an app with nothing to read: run `npm run content` before
-`npm run build`. It needs the network, takes minutes per text and is
-rate-limited, which makes it a poor fit for a build step on someone else's
-machine — so `dist/` is built here and uploaded whole rather than assembled by
-the host.
+checkout builds an app with nothing to read. `npm run content` fills them, and
+it wants the network, minutes per text and a rate limit that no CI job should
+be pointed at — which is why the two steps are separate and why the generated
+files are not in the repository.
 
-It is a few hundred small files, most of them word recordings, which is worth
-knowing if the upload is over FTP: one archive unpacked on the server is far
-less likely to end half-finished than several hundred transfers, and a site
-missing a handful of recordings fails quietly.
+```bash
+npm run content   # once, and again whenever a text changes
+npm run build     # tsc + vite, into dist/
+```
+
+`npm run build` produces static files and nothing else: no server, no runtime
+configuration, no service to call. Two details of it are worth knowing.
+
+Every path the app asks for is resolved against the base it is served from
+(`assetUrl`, `src/lib/assets.ts`), because at build time the pipeline cannot
+know where the site will live. A subdirectory is therefore one variable:
+
+```bash
+BASE_PATH=/somewhere/ npm run build
+```
+
+And a `.br` and a `.gz` are written beside every compressible file. They are
+inert until a server is told to prefer them — nginx `brotli_static`, Caddy's
+`precompressed` — and where it is, a text goes from about 780 bytes per word to
+160. Hosts that compress on the fly ignore them. The audio is skipped, being
+compressed already.
 
 ## Licence
 
-The code is MIT — see `LICENSE`. So are the texts in `content/texts` and their
-translations, which were written for this project, and the illustrations that
-go with them.
+**The code is MIT** — everything under `scripts/`, `src/`, `shared/` and
+`tests/`, plus the configuration around them. See `LICENSE`. Read it, learn
+from it, take the pipeline and point it at your own texts.
 
-What the build fetches is not. Dictionary entries come from Wiktionary under
-CC BY-SA, and each word recording carries its own licence — CC BY-SA at several
-versions, CC BY and CC0 are all in there. Those land in `public/data` and
-`public/media`, which are gitignored: **this repository contains none of that
-material, but a site built from it distributes all of it.** That is why the
-credit is in the interface rather than here, and why it names each recording's
-own author and licence rather than one sentence for all of them.
+**The content is not** — see `LICENSE-CONTENT`. The German texts in
+`content/texts`, their translations, the illustrations in `content/images` and
+the mark in `brand/` are © 2026 heinmer, all rights reserved. They are what this
+site *is*, as against what it is made of, and they are here so that the code can
+be read in the setting it was written for, not as material to republish. A mark
+is kept out of a code licence for the ordinary reason: it says who made a thing,
+and that stops being true the moment it travels.
+
+**And the dictionary is neither.** Entries come from Wiktionary under CC BY-SA,
+and each word recording carries its own — CC BY-SA at several versions, CC BY
+and CC0 are all in there. Those land in `public/data` and `public/media`, which
+are gitignored: **this repository holds none of that material, and a site built
+from it distributes all of it.** That is the reason the credit is in the
+interface rather than in this file, and the reason it names each recording's own
+author and licence instead of one sentence written for all of them.
 
 Two dependencies ship inside the built app and carry their own terms: DM Sans
 and PT Serif, under the SIL Open Font License 1.1, and the Lucide icons, under

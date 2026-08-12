@@ -1,0 +1,31 @@
+Copyright (c) 2026 heinmer. All rights reserved.
+
+The MIT licence in LICENSE covers the software in this repository: scripts/,
+src/, shared/, tests/ and the configuration around them.
+
+It does not cover the content, which is:
+
+  content/texts/          the German texts
+  content/translations/   their English
+  content/images/         the illustrations
+  brand/                  the mark, in every form it appears in
+
+These are reserved. They may be read here, quoted as one would quote any
+published work, and reproduced for private study. They may not be republished,
+redistributed or used to present another site or product, whole or in part,
+without permission.
+
+Nothing here restricts the software. Take the pipeline, take the reader, point
+them at texts of your own.
+
+Two further things in this repository belong to neither licence:
+
+  Generated files under public/data/ and public/media/ are built from
+  Wiktionary and Wikimedia Commons and carry those projects' licences — CC
+  BY-SA, CC BY and CC0, per file. They are gitignored and so are not here at
+  all, but anything built from this repository contains them, and they are
+  credited in the application's interface.
+
+  Dependencies bundled into a build carry their own terms: DM Sans and PT Serif
+  under the SIL Open Font License 1.1, and the Lucide icons under the ISC
+  License.
