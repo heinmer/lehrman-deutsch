@@ -17,8 +17,8 @@
 
    It is also the container the bar's layout answers to, being exactly its
    width. The window is the wrong thing to measure: the sidebar leaves the
-   layout at 62rem and the word panel at 48rem, so between those two the window
-   gets narrower while the bar gets *wider*. The query at the end of this file
+   layout at 81.5rem and the word panel at 61rem, so between those two the
+   window gets narrower while the bar gets *wider*. The query at the end of this file
    is left unnamed on purpose: a container *name* is a custom ident shared
    across two CSS Modules files, and the day the bundler starts scoping those
    the two halves stop meeting, silently. Here both halves are in this file. */
@@ -137,7 +137,10 @@
   transform: scale(1.06);
 }
 
-@media (max-width: 85rem) {
+/* The sidebar's own breakpoint, which moved when the gaps between the sections
+   went — what a side column costs the centre is now the column alone. There is
+   no drawer above it, so there is nothing here to open. */
+@media (max-width: 81.5rem) {
   .library {
     display: grid;
   }

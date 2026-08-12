@@ -250,7 +250,7 @@
    pixels tall and nothing in the picture can be made out, so it is given back
    some height there. The same width as the gutter above, and for the same
    reason — not the word panel's, whose breakpoint it used to share: the panel
-   leaves at 64rem now, and a picture half as tall again is not what a reader
+   leaves at 61rem now, and a picture half as tall again is not what a reader
    of nearly a thousand pixels wants. */
 @media (max-width: 48rem) {
   .cover {

@@ -23,6 +23,10 @@
   --radius-sm: 0.625rem;
   --radius-pill: 999px;
 
+  /* Not a gap in the layout any more — the three sections meet, and the outer
+     two run out to the edges of the window. What is left is the inset every
+     *floating* thing keeps off the edges it hangs from: either drawer, the
+     library button above the player, the info window's scrim padding. */
   --gap: 1rem;
   /* The two side columns are deliberately the same width — and there is only
      one width. A second, thinner one for middling screens is what put the

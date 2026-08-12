@@ -555,44 +555,44 @@ as `/…/` so transcriptions look the same everywhere.
   and side columns of *different* widths would put the prose off the middle of
   the screen. Anything added to the sidebar is measured against 23rem; nothing
   in it may depend on a narrower one existing.
-- **The gap is horizontal only, and the three sections run the full height of
-  the window.** A gap stands *between* things: between the columns and the
-  centre, and between the columns and the sides of the screen. Above and below
-  there is nothing for it to stand between — every theme is a single sheet, so
-  a section's ground is the page's own and a strip of page along the top edge
-  divided nothing while costing two lines of the text under it. The corners go
-  with the vertical padding, since all four of them now sit on an edge of the
-  screen: `.app` sets `--island-radius: 0` and the boxes that genuinely float
-  set it back — the player, the info window, and either drawer, which below its
-  breakpoint stands over a scrim with the reader showing round it and *is* a
-  card. That variable is what `.island` reads; do not hard-code a radius back
-  into it. What holds the player off the bottom edge is unchanged
-  (`--player-inset`), so it sits 18px from it rather than 32px.
-  The same rule decides the padding that is left. A side column leaving the
-  layout takes its own gap with it — the track and the gap go together — but
-  the page's padding on that side stays, and it then divides the centre from
-  the edge of the screen and nothing else. Each layout media query therefore
-  drops the padding on the side it empties: below 85rem the reader starts at
-  the left edge, below 64rem it *is* the window. The prose is not against the
-  glass either way — what holds it off is `--reader-gutter`, which answers to
-  how wide the reader is rather than to what the layout has left beside it.
+- **Nothing is set between the three sections, and nothing round them.** There
+  is no grid gap and no padding on `.app`: the sections meet, the outer two run
+  out to the sides of the window and all three run from its top edge to its
+  bottom. A gap earns its room where it divides something, and here it divided
+  nothing — every theme is a single sheet, so a section's ground *is* the
+  page's, and a strip of that ground between two sections of it is not a seam,
+  only room taken off the text. It could be measured and not seen: the proof
+  was the version that dropped the padding on one side and kept it on the
+  other, an asymmetry nobody could point to on screen. What holds the prose off
+  its neighbours is their own padding — 48px from the last pixel of a list row
+  to the first of the prose, 52px from the prose to the word panel — and that
+  is `--reader-gutter` and the list's own inset, neither of which is the
+  layout's business. The corners go the same way, every one of them now being
+  on an edge of the screen: `.app` sets `--island-radius: 0` and the boxes that
+  genuinely float set it back — the player, the info window, and either drawer,
+  which below its breakpoint stands over a scrim with the reader showing round
+  it and *is* a card. That variable is what `.island` reads; do not hard-code a
+  radius back into it. `--gap` survives as the inset those floating things keep
+  off the edges they hang from, which is now its whole job.
 - **A side column stays only while the centre keeps 640px**, and that is the
-  whole of where the two layout breakpoints come from: 85rem is that floor plus
-  two side columns and four gaps, 64rem is the same floor plus one of each.
-  Neither is a width anybody picked, so neither moves on its own — change the
-  floor and both follow, in the block that states them together
-  (`App.module.css`). 640px of centre is about 550px of prose, some 52
-  characters of the reading serif; the floor is the one judgement here. Dropping
-  a section costs the reader nothing, since what is being spent is the columns'
-  room and it comes straight back — at 1361px the centre is 641px, at 1360px it
-  is 986px. **Breakpoints are in rem so they answer to the reader's own font
+  whole of where the two layout breakpoints come from: 81.5rem is that floor
+  plus two side columns, 61rem is the same floor plus one. Neither is a width
+  anybody picked, so neither moves on its own — change the floor, or what
+  stands between the sections, and both follow, in the block that states them
+  together (`App.module.css`). They came down from 85rem and 64rem when the
+  gaps went, because what a side column costs the centre is now the column and
+  nothing else. 640px of centre is about 550px of prose, some 52 characters of
+  the reading serif; the floor is the one judgement here. Dropping a section
+  costs the reader nothing, since what is being spent is the columns' room and
+  it comes straight back — at 1305px the centre is 643px, at 1304px it is
+  973px. **Breakpoints are in rem so they answer to the reader's own font
   size**, and they are the one place here where a rem is not the app's rem: a
   media query is evaluated against the browser's untouched default, never the
-  90% `html` sets, so 85rem is 1360px while 23rem in the column beside it is
+  90% `html` sets, so 81.5rem is 1304px while 23rem in the column beside it is
   331px. That is why the arithmetic is written out in px — it is where the two
   scales meet — and why a length that is *not* in a media query still never
   goes in px.
-- **Below 85rem the sidebar becomes a drawer, not nothing.** It used to be
+- **Below 81.5rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
   It is now a fixed panel opened from a round island in the reader's bottom
@@ -608,7 +608,7 @@ as `/…/` so transcriptions look the same everywhere.
   border: offsets resolve against its padding box, one border inside the edges
   being measured from. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
-  blur is what stands in for it. Below 64rem the word panel becomes a drawer in exactly the same
+  blur is what stands in for it. Below 61rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
   third of that window is not a column the prose can be read in, and a section
   covering the reader should not leave the reader clickable underneath it.
@@ -648,7 +648,8 @@ as `/…/` so transcriptions look the same everywhere.
   overflowing for the reader to scroll sideways to.
 - **What is capped on a wide screen is the layout, not the measure.** `.app`
   stops growing at `--reading-width` (70rem, the centre section) plus the two
-  side columns and the four gaps around them, and centres itself; past that the
+  side columns beside it — there is nothing else in the sum now that the gaps
+  between the sections have gone — and centres itself; past that the
   page's own ground takes the width. Capping the *prose* inside a stretched
   reader was the other way to do it and is wrong here for two reasons: the
   reader's ground would run the whole width of a 21:9 screen with a column of
@@ -656,8 +657,8 @@ as `/…/` so transcriptions look the same everywhere.
   that grid, so the text list and the word panel would end up in the far corners
   of the screen, a head-turn from the text they belong to. The three sections
   stay beside each other at every width instead. `--reading-width` is the one
-  number here that is a judgement — the columns and the gaps are what the layout
-  already has, which is why the cap is written as a sum of them rather than as a
+  number here that is a judgement — the columns are what the layout already
+  has, which is why the cap is written as a sum of them rather than as a
   measured total.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
@@ -674,8 +675,8 @@ as `/…/` so transcriptions look the same everywhere.
   of the reader's flow (`container-type: inline-size`) and is exactly as wide
   as it. `.main` is not: the reader's padding and its scrollbar are both
   between them. Against the *window*
-  this cannot be got right either: the sidebar leaves the layout at 85rem and
-  the word panel at 64rem, so between those steps the window narrows while the
+  this cannot be got right either: the sidebar leaves the layout at 81.5rem and
+  the word panel at 61rem, so between those steps the window narrows while the
   bar **widens**, and a window breakpoint therefore squeezes the row hardest
   just before each step and lets go just after. The track vanished twice on the
   way down. The thresholds are in rem because what they are weighed against is
