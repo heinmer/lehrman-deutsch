@@ -550,17 +550,23 @@ as `/…/` so transcriptions look the same everywhere.
   and side columns of *different* widths would put the prose off the middle of
   the screen. Anything added to the sidebar is measured against 23rem; nothing
   in it may depend on a narrower one existing.
-- **A side column stays only while the centre keeps 480px**, and that is the
-  whole of where the two layout breakpoints come from: 75rem is that floor plus
-  two side columns and four gaps, 54rem is the same floor plus one of each.
+- **A side column stays only while the centre keeps 640px**, and that is the
+  whole of where the two layout breakpoints come from: 85rem is that floor plus
+  two side columns and four gaps, 64rem is the same floor plus one of each.
   Neither is a width anybody picked, so neither moves on its own — change the
   floor and both follow, in the block that states them together
-  (`App.module.css`). 480px of centre is about 410px of prose, some 39
+  (`App.module.css`). 640px of centre is about 550px of prose, some 52
   characters of the reading serif; the floor is the one judgement here. Dropping
   a section costs the reader nothing, since what is being spent is the columns'
-  room and it comes straight back — at 1201px the centre is 481px, at 1200px it
-  is 826px.
-- **Below 75rem the sidebar becomes a drawer, not nothing.** It used to be
+  room and it comes straight back — at 1361px the centre is 641px, at 1360px it
+  is 986px. **Breakpoints are in rem so they answer to the reader's own font
+  size**, and they are the one place here where a rem is not the app's rem: a
+  media query is evaluated against the browser's untouched default, never the
+  90% `html` sets, so 85rem is 1360px while 23rem in the column beside it is
+  331px. That is why the arithmetic is written out in px — it is where the two
+  scales meet — and why a length that is *not* in a media query still never
+  goes in px.
+- **Below 85rem the sidebar becomes a drawer, not nothing.** It used to be
   `display: none`, which took the text list, the theme, the volume and both
   toggles away with it and left a phone showing one text it could not leave.
   It is now a fixed panel opened from a round island in the reader's bottom
@@ -576,7 +582,7 @@ as `/…/` so transcriptions look the same everywhere.
   border: offsets resolve against its padding box, one border inside the edges
   being measured from. Its ground is `--surface-overlay` at 62% behind a
   `backdrop-filter` blur — the one floating thing that is not opaque, and the
-  blur is what stands in for it. Below 54rem the word panel becomes a drawer in exactly the same
+  blur is what stands in for it. Below 64rem the word panel becomes a drawer in exactly the same
   way — its own wrapper, its own scrim, closed by clicking beside it — since a
   third of that window is not a column the prose can be read in, and a section
   covering the reader should not leave the reader clickable underneath it.
@@ -642,8 +648,8 @@ as `/…/` so transcriptions look the same everywhere.
   of the reader's flow (`container-type: inline-size`) and is exactly as wide
   as it. `.main` is not: the reader's padding and its scrollbar are both
   between them. Against the *window*
-  this cannot be got right either: the sidebar leaves the layout at 75rem and
-  the word panel at 54rem, so between those steps the window narrows while the
+  this cannot be got right either: the sidebar leaves the layout at 85rem and
+  the word panel at 64rem, so between those steps the window narrows while the
   bar **widens**, and a window breakpoint therefore squeezes the row hardest
   just before each step and lets go just after. The track vanished twice on the
   way down. The thresholds are in rem because what they are weighed against is

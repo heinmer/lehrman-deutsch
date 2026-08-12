@@ -229,15 +229,17 @@
   box-shadow: 0 0 0 3px var(--selected-word), inset 0 -2px 0 var(--accent);
 }
 
-/* Not the sidebar's breakpoint, though it used to be the same number: the
-   reader's width is not a function of the window's. Each section that leaves
-   the layout hands the reader a chunk of the screen, so the prose is at its
-   tightest *just above* each of those steps and roomiest just below — a single
-   window threshold cannot follow that, and 75rem would spend the gutter where
-   the reader has most room. This one is a rough "the window is no longer a
-   desktop's", and where it matters most — a phone, where the reader is the
-   whole of it — it is simply always in force. */
-@media (max-width: 62rem) {
+/* Not the sidebar's breakpoint, and not the layout's at all: what a gutter
+   answers to is how wide the *reader* is, and that is not the width of the
+   window — each section that leaves hands the reader a chunk of the screen, so
+   the prose is tightest just above each of those steps and roomiest just
+   below. Since the layout now keeps 640px of centre while anything shares the
+   screen (`App.module.css`), the only place the reader is genuinely narrow is
+   a window that is narrow itself, which is the same "a phone" the picture
+   below answers to. It sat at 62rem while that meant "the sidebar has gone",
+   and there it would have spent the gutter on a 963px reader while leaving it
+   full on a 641px one. */
+@media (max-width: 48rem) {
   .reader {
     --reader-gutter: 1.75rem;
     padding-top: 2.5rem;
@@ -246,9 +248,10 @@
 
 /* A 3:1 band is a wide screen's proportion: on a phone it comes out a hundred
    pixels tall and nothing in the picture can be made out, so it is given back
-   some height there. This one is about the reader being narrow and not about
-   the word panel, whose breakpoint it used to share: the panel now leaves at
-   54rem, and a picture half as tall again is not what a 835px reader wants. */
+   some height there. The same width as the gutter above, and for the same
+   reason — not the word panel's, whose breakpoint it used to share: the panel
+   leaves at 64rem now, and a picture half as tall again is not what a reader
+   of nearly a thousand pixels wants. */
 @media (max-width: 48rem) {
   .cover {
     aspect-ratio: 2 / 1;

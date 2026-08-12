@@ -69,7 +69,7 @@
 }
 
 /* Rendered while the drawer is open and shown only where the drawer exists:
-   above 75rem the sidebar is back in the layout, and a scrim left over a
+   above 85rem the sidebar is back in the layout, and a scrim left over a
    window with no drawer in front of it darkened the page until it was
    clicked. It sits above the word panel, because the drawer is in front of
    it — Escape reads the same order. */
@@ -82,7 +82,7 @@
 }
 
 /* The same for the panel, and it exists only where the panel is a drawer too:
-   above 54rem the panel is a column of the layout, so nothing beside it may be
+   above 64rem the panel is a column of the layout, so nothing beside it may be
    covered. Rendered whenever a word is chosen; the breakpoint decides whether
    it is shown. */
 .panelScrim {
@@ -94,26 +94,34 @@
 }
 
 /* Both breakpoints below are one rule: **a side column stays only while the
-   centre keeps 480px.** Neither is a width somebody liked the look of — each
+   centre keeps 640px.** Neither is a width somebody liked the look of — each
    is that floor plus what the layout puts beside it, which is why they are
    stated here together and why moving one without the other is meaningless.
 
-     three columns   centre = W - 2 * 23rem - 4 * 1rem  ->  480px at 1200px
-     two columns     centre = W - 23rem - 3 * 1rem      ->  490px at  864px
+     three columns   centre = W - 2 * 23rem - 4 * 1rem  ->  640px at 1360px
+     two columns     centre = W - 23rem - 3 * 1rem      ->  650px at 1024px
 
-   (In this file a rem is the browser's 16px and everything it measures is the
-   app's 90% of that, which is why the numbers do not look like the tokens.)
-   The floor is the one judgement: 480px of centre is about 410px of prose,
-   some 39 characters of the reading serif, and that is the least this text
-   should ever be set to on a screen with room for a column beside it. A
-   section that cannot be afforded leaves the layout and becomes a drawer,
-   which costs the reader nothing — it is the columns' room that is being
-   spent, and it comes straight back.
+   The floor is the one judgement: 640px of centre is about 550px of prose,
+   some 52 characters of the reading serif, which is a measure and not a
+   column squeezed between two panels. A section that cannot be afforded
+   leaves the layout and becomes a drawer, which costs the reader nothing —
+   it is the columns' room being spent, and it comes straight back: at 1361px
+   the centre is 641px and at 1360px it is 986px.
+
+   **A breakpoint is in rem so that it answers to the reader's own font size**,
+   and it is the one place in this project where a rem is not the app's rem: a
+   media query is evaluated against the *initial* font size, the browser's
+   untouched default, never the 90% `html` sets. So 85rem here is 1360px while
+   23rem in the column beside it is 331px, and the arithmetic above is written
+   in px because that is where the two scales meet — "44.4rem of centre inside
+   85rem of window" would be two different units under one name. Nothing but a
+   media query may be written in the browser's rem, and nothing in the layout
+   may be written in px.
 
    The sidebar goes first, holding the text list, the theme, the volume and
    both toggles, so it becomes a drawer rather than disappearing, opened from
    the player bar. */
-@media (max-width: 75rem) {
+@media (max-width: 85rem) {
   .app {
     grid-template-columns: minmax(0, 1fr) var(--side-width);
   }
@@ -155,7 +163,7 @@
    same arrangement as the sidebar, scrim included — instead of squeezing the
    prose into a column too narrow to read. Below here the reader is the whole
    window and there is nothing left to give it. */
-@media (max-width: 54rem) {
+@media (max-width: 64rem) {
   .app {
     grid-template-columns: minmax(0, 1fr);
   }
