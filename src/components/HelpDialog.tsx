@@ -313,6 +313,26 @@ export function HelpDialog({ onClose }: Props) {
                   , © Lucide Icons and Contributors, under the ISC License.
                 </dd>
               </div>
+
+              {/* Last, and the only row that is about this site rather than
+                  about something it borrowed. The AGPL asks that a version put
+                  on a network offer its source to the people using it; here it
+                  is offered whether or not anyone is obliged to. */}
+              <div className={styles.row}>
+                <dt className={styles.source}>This site</dt>
+                <dd className={styles.what}>
+                  The code is{" "}
+                  <a
+                    href="https://github.com/heinmer/lehrman-deutsch"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    on GitHub
+                  </a>
+                  , under the GNU AGPL v3. The texts, the illustrations and the
+                  mark are not part of that — they are © 2026 heinmer.
+                </dd>
+              </div>
             </dl>
           </section>
         </div>

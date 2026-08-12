@@ -229,9 +229,11 @@ compressed already.
 
 ## Licence
 
-**The code is MIT** — everything under `scripts/`, `src/`, `shared/` and
-`tests/`, plus the configuration around them. See `LICENSE`. Read it, learn
-from it, take the pipeline and point it at your own texts.
+**The code is AGPL-3.0** — everything under `scripts/`, `src/`, `shared/` and
+`tests/`, plus the configuration around them. See `LICENSE`. Read it, learn from
+it, take the pipeline and point it at your own texts; what the licence asks in
+return is that anything built on it stay open too, including a modified version
+put on a network, which is the clause plain GPL lacks.
 
 **The content is not** — see `LICENSE-CONTENT`. The German texts in
 `content/texts`, their translations, the illustrations in `content/images` and

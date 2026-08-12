@@ -1,7 +1,8 @@
 Copyright (c) 2026 heinmer. All rights reserved.
 
-The MIT licence in LICENSE covers the software in this repository: scripts/,
-src/, shared/, tests/ and the configuration around them.
+The GNU Affero General Public License v3.0 in LICENSE covers the software in
+this repository: scripts/, src/, shared/, tests/ and the configuration around
+them.
 
 It does not cover the content, which is:
 
@@ -16,7 +17,8 @@ redistributed or used to present another site or product, whole or in part,
 without permission.
 
 Nothing here restricts the software. Take the pipeline, take the reader, point
-them at texts of your own.
+them at texts of your own — on the AGPL's terms, which ask that what you build
+stay as open as what you started from.
 
 Two further things in this repository belong to neither licence:
 
