@@ -217,8 +217,7 @@ Things that are easy to break:
   when `DEEPL_API_KEY` is set, otherwise MyMemory, cached per provider.
   Nothing here uses it. Note before reaching for it that MyMemory answers short
   strings with a zero-quality corpus match that simply echoes the source, which
-  is what `isEcho` is for, and that **DeepL is unavailable in Russia and
-  Belarus** — it answers 451, and registration is region-locked.
+  is what `isEcho` is for.
 
 Lookups try several spellings (as written, lowercase, capitalized) because
 German capitalizes nouns and a sentence-initial word says nothing about its
