@@ -31,6 +31,12 @@ import { synthesize } from "./pipeline/tts.ts";
 import { alignTimings } from "./pipeline/align.ts";
 import { lookup } from "./pipeline/wiktionary.ts";
 import { translateToEnglish, translationProvider } from "./pipeline/translate.ts";
+import {
+  applyTranslation,
+  loadTranslation,
+  type SentenceMismatch,
+  type Translation,
+} from "./pipeline/translations.ts";
 import { downloadWordAudio } from "./pipeline/media.ts";
 import { ensureDir, exists, log, readJson, writeJson } from "./pipeline/util.ts";
 
@@ -84,6 +90,42 @@ async function buildVoiceSamples(state: BuildState): Promise<void> {
   } else {
     log.info(`voice samples: ${VOICES.length} unchanged`);
   }
+}
+
+/**
+ * The one thing about a hand-written translation a build can check: the reader
+ * sets the two blocks one under the other and reads them line for line, so a
+ * paragraph that breaks into three sentences in German and two in English no
+ * longer lines up with itself.
+ */
+function reportSentenceCounts(slug: string, mismatches: SentenceMismatch[]): void {
+  if (mismatches.length === 0) {
+    log.ok(`translation: sentence counts match`);
+    return;
+  }
+  const where = mismatches
+    .map((m) => `${m.paragraph} (${m.german} vs ${m.english})`)
+    .join(", ");
+  log.warn(
+    `translation: ${mismatches.length} paragraph(s) out of step in ` +
+      `content/translations/${slug}.md — ${where}`,
+  );
+}
+
+/**
+ * Puts the hand-written English on the paragraphs, and says so.
+ *
+ * Separate from buildText because the skip path needs it too: a translation is
+ * not in the source hash, so editing one has to reach a text that is otherwise
+ * unchanged.
+ */
+function useTranslation(
+  slug: string,
+  paragraphs: TextDocument["paragraphs"],
+  translation: Translation,
+): string | null {
+  reportSentenceCounts(slug, applyTranslation(paragraphs, translation));
+  return translation.title;
 }
 
 /** Where a text's header illustration is served from, if it has one. */
@@ -248,26 +290,35 @@ async function buildText(source: SourceText): Promise<TextSummary> {
   log.info(`synthesizing ${VOICES.length} voices at rate ${source.rate}...`);
   const narrations = await narrate(source, sentences);
 
-  log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
-  const titleTranslation = await translateToEnglish(source.title);
+  const written = await loadTranslation(source.slug);
+  let titleTranslation: string | null;
+
+  if (written) {
+    log.info(`translation: content/translations/${source.slug}.md`);
+    titleTranslation = useTranslation(source.slug, paragraphs, written);
+  } else {
+    log.info(`translating ${paragraphs.length} paragraphs with ${translationProvider()}...`);
+    titleTranslation = await translateToEnglish(source.title);
+
+    let translated = 0;
+    for (const paragraph of paragraphs) {
+      const text = paragraph.sentences.map((s) => s.text).join(" ");
+      paragraph.translation = await translateToEnglish(text);
+      if (paragraph.translation) translated += 1;
+    }
+    if (translated === paragraphs.length) {
+      log.ok(`translated ${translated} paragraphs`);
+    } else {
+      log.warn(`translated ${translated}/${paragraphs.length} paragraphs`);
+    }
+  }
+
   // The one translation most likely to degrade quietly, and the documents are
   // no longer written in a shape anybody would open to look at it.
   if (titleTranslation) {
     log.ok(`title: "${source.title}" -> "${titleTranslation}"`);
   } else {
     log.warn(`title: "${source.title}" was not translated`);
-  }
-
-  let translated = 0;
-  for (const paragraph of paragraphs) {
-    const text = paragraph.sentences.map((s) => s.text).join(" ");
-    paragraph.translation = await translateToEnglish(text);
-    if (paragraph.translation) translated += 1;
-  }
-  if (translated === paragraphs.length) {
-    log.ok(`translated ${translated} paragraphs`);
-  } else {
-    log.warn(`translated ${translated}/${paragraphs.length} paragraphs`);
   }
 
   const vocabulary = collectVocabulary(sentences);
@@ -358,6 +409,19 @@ async function main(): Promise<void> {
       if (existing) {
         log.step(`${source.title} (${source.slug})`);
         log.info("unchanged, skipping (use npm run content:force to rebuild)");
+        // A translation is source material and, like the picture, deliberately
+        // outside the source hash: correcting a sentence of English must not
+        // cost VOICES.length fresh syntheses. It is re-applied here rather
+        // than kept from the document, which is free — the skip path rewrites
+        // the file anyway, for the reason below.
+        const written = await loadTranslation(source.slug);
+        if (written) {
+          existing.titleTranslation = useTranslation(
+            source.slug,
+            existing.paragraphs,
+            written,
+          );
+        }
         // Rewritten even though nothing was rebuilt: how the file is *written*
         // is not part of the source hash, so without this a formatting change
         // would only reach a text the next time its content happened to

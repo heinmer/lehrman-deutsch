@@ -76,9 +76,10 @@ in the background and read the log.
 
 Two halves that meet at one JSON contract, `shared/types.ts`:
 
-- **Build time** (`scripts/`) — reads Markdown from `content/texts/` and header
-  illustrations from `content/images/`, hits the network, writes
-  `public/data/*.json` and `public/media/**`.
+- **Build time** (`scripts/`) — reads Markdown from `content/texts/`, its
+  English from `content/translations/` and header illustrations from
+  `content/images/`, hits the network, writes `public/data/*.json` and
+  `public/media/**`.
 - **Run time** (`src/`) — a React app that only ever *reads* those files. It
   never calls an external service.
 
@@ -153,8 +154,16 @@ Things that are easy to break:
   whatever shape it was last built in — otherwise a format change reaches a
   text only when its content next happens to change.
 - **`titleTranslation` is printed in the build log**, which is where to check
-  it now that the documents are one long line. It is still the translation
-  most likely to degrade quietly.
+  it now that the documents are one long line.
+- **A translation is outside the source hash, like the picture, and unlike the
+  picture it is *in* the document.** Correcting a sentence of English must not
+  cost `VOICES.length` fresh syntheses, so it is not hashed; but it is a field
+  of the JSON, so a change to it has to reach a text that is otherwise
+  unchanged. Both at once is free, because the skip path rewrites the document
+  anyway (see the note on indentation above): it re-reads the translation file
+  and re-applies it before writing. Nothing is kept from the previous
+  document, so adding a translation to a built text, or fixing one, is a rerun
+  of seconds. `applyTranslation` is where the two sides meet.
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
   from the dictionary. Only 200s and 404s are cached.
@@ -196,16 +205,20 @@ Things that are easy to break:
   which is common for inflected spellings (`bleibt`, `warmen`).
 - **Wikimedia Commons** — native-speaker recordings, downloaded into
   `public/media/words/`. Standard German is preferred over Austrian/Swiss.
-- **Translations** (each paragraph, plus the title) — DeepL when
-  `DEEPL_API_KEY` is set in the environment, otherwise MyMemory, which needs no
-  credentials. Cached per provider, so switching providers re-translates rather
-  than reusing the other one's output.
+- **Translations are not fetched at all.** They are written by hand beside the
+  German, `content/translations/<slug>.md`, and read from there — see *Adding a
+  text*. That is the third source-material directory, and the reason it exists
+  is licensing as much as quality: a published site distributes its
+  translations, and a translation that came from a service arrives with that
+  service's terms attached, while one written here has none. It also takes the
+  network out of the step, so a build is reproducible offline.
 
-  MyMemory answers short strings with a zero-quality corpus match that simply
-  echoes the source — titles came back untranslated or truncated until
-  `translate.ts` learned to reject echoes and take the closest real alternative.
-  Always eyeball `titleTranslation` after a build; it is the case most likely to
-  degrade quietly.
+  `translate.ts` survives as the fallback for a text with no file yet — DeepL
+  when `DEEPL_API_KEY` is set, otherwise MyMemory, cached per provider.
+  Nothing here uses it. Note before reaching for it that MyMemory answers short
+  strings with a zero-quality corpus match that simply echoes the source, which
+  is what `isEcho` is for, and that **DeepL is unavailable in Russia and
+  Belarus** — it answers 451, and registration is region-locked.
 
 Lookups try several spellings (as written, lowercase, capitalized) because
 German capitalizes nouns and a sentence-initial word says nothing about its
@@ -1045,8 +1058,19 @@ Nach einer Stunde kommen sie am See an.
 There is no `voice:` key: the voice is the reader's setting, not the text's, so
 every text is narrated by all of `shared/voices.ts`.
 
-`image:` is a bare file name in `content/images/`, which is the one directory
-of source material that is *not* generated — the build copies what is named
+**Each text comes with its own translation**, `content/translations/<slug>.md`:
+front matter carrying `title:`, then one paragraph per paragraph of the German,
+in the same order. The English should read naturally, but the **number of
+sentences in a paragraph has to match** — the reader sets the two blocks one
+under the other and reads them line for line, so sentences merged or split
+break the correspondence that makes the translation worth showing. The build
+counts both sides and says so in the log; a paragraph *count* that does not
+match is an error, since that can only mean a German text edited without its
+English. A text with no file falls back to the network path in `translate.ts`,
+which is not how anything here is built.
+
+`image:` is a bare file name in `content/images/`, which like the translations
+is source material and not generated — the build copies what is named
 into `public/media/images/` and deletes what nothing names. Several texts may
 share one picture, so the copies are keyed by file name and not by slug. It is
 not in the source hash and not in the document (see the pipeline notes), so
@@ -1098,6 +1122,8 @@ memorises with audio attached.
 - `aligned N/M words (100%)` for every text — anything less means the
   highlighting will sit dead on some words.
 - `entries found` close to the distinct-word count, and most with native audio.
+- `translation: sentence counts match` for every text — a warning there names
+  the paragraphs whose two sides no longer read line for line.
 - the `title: "…" -> "…"` line actually reads as English.
 
 ## Verifying UI and behaviour

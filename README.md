@@ -65,9 +65,12 @@ lemma) comes from English Wiktionary via the Wiktextract dumps on
 Wiktionary for transcriptions it does not carry. Responses are cached in
 `.cache/` so rebuilds stay cheap and polite.
 
-**Paragraph translations** come from MyMemory, which needs no account. Set
-`DEEPL_API_KEY` before running `npm run content` to use DeepL instead — it
-reads German word order and separable verbs more reliably.
+**Paragraph translations** are not fetched. They are written by hand beside the
+German, in `content/translations/`, and the build only reads them — which keeps
+the English something the author can correct, and keeps the network out of a
+step that a published site distributes the result of. A text with no
+translation file falls back to MyMemory, or to DeepL when `DEEPL_API_KEY` is
+set.
 
 ## Adding a text
 
@@ -87,6 +90,23 @@ Es ist Winter. Anna wacht früh auf.
 
 Blank lines separate paragraphs; sentences are detected automatically.
 
+Write the English beside it, as `content/translations/<slug>.md` — front matter
+carrying `title:`, then one paragraph per paragraph of the German:
+
+```markdown
+---
+title: The First Snow
+---
+
+It is winter. Anna wakes up early.
+
+Snow has fallen overnight.
+```
+
+It should read naturally, but the **number of sentences in a paragraph has to
+match**: the two blocks are shown one under the other and read line for line.
+The build counts both sides and reports it.
+
 Optional front-matter keys:
 
 | Key     | Default                            | Meaning                            |
@@ -105,10 +125,14 @@ trying are `de-DE-KatjaNeural` and `de-DE-AmalaNeural`.
 ## Layout
 
 ```
-content/texts/     source texts (the only files you write by hand)
+content/
+  texts/           source texts (written by hand)
+  translations/    their English, paragraph for paragraph (written by hand)
+  images/          header illustrations
 scripts/           build pipeline
   pipeline/
     source.ts      front matter + paragraphs
+    translations.ts reads the English, checks it against the German
     tokenize.ts    sentences and words (Intl.Segmenter)
     tts.ts         narration + word boundary timings
     align.ts       maps timings onto tokens

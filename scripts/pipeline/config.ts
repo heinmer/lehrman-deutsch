@@ -8,6 +8,8 @@ export const ROOT = path.resolve(here, "..", "..");
 export const PATHS = {
   /** Hand-written source texts (Markdown + front matter). */
   source: path.join(ROOT, "content", "texts"),
+  /** English renderings, one file per slug, paragraph for paragraph. */
+  sourceTranslations: path.join(ROOT, "content", "translations"),
   /** Header illustrations, named by a text's `image:` key. Shared between texts. */
   sourceImages: path.join(ROOT, "content", "images"),
   /** Generated JSON consumed by the app at runtime. */

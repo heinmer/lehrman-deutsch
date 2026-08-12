@@ -58,8 +58,12 @@ export function byCourseOrder(a: SourceText, b: SourceText): number {
 /**
  * Minimal front-matter parser: a `---` fenced block of `key: value` lines.
  * Deliberately not YAML — texts only need a handful of flat string fields.
+ *
+ * Exported for translations.ts, which reads a file of the same shape: a
+ * translation has to be split into paragraphs by exactly the rule the German
+ * was, or the two come out of different numbers of blocks.
  */
-function parseFrontMatter(raw: string): { meta: Record<string, string>; body: string } {
+export function parseFrontMatter(raw: string): { meta: Record<string, string>; body: string } {
   const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(raw);
   if (!match) return { meta: {}, body: raw.trim() };
 
@@ -74,7 +78,8 @@ function parseFrontMatter(raw: string): { meta: Record<string, string>; body: st
   return { meta, body: raw.slice(match[0].length).trim() };
 }
 
-function normalizeBody(body: string): string {
+/** Exported alongside parseFrontMatter, and for the same reason. */
+export function normalizeBody(body: string): string {
   return body
     .replace(/\r\n/g, "\n")
     // Collapse runs of blank lines into a single paragraph break.
