@@ -1260,8 +1260,10 @@ people whose work requires it.
 
 **The repository is licensed in two halves.** `LICENSE` is AGPL-3.0 and covers
 the software — `scripts/`, `src/`, `shared/`, `tests/` and the configuration.
-`LICENSE-CONTENT` reserves the texts, their translations, the illustrations and
-the mark. Anything new goes on one side or the other by one test: is it what the
+`LICENSE-CONTENT` reserves the texts, their translations, the illustrations, the
+mark and the name — the last on a different footing from the rest, a name not
+being copyrightable, which is why it is written as the AGPL's own §7(e)
+declining of trademark rights. Anything new goes on one side or the other by one test: is it what the
 site is *made of*, or what the site *is*? A new theme is code; a ninth text is
 not. Two things to keep true — every dependency is permissive today (MIT, ISC,
 Apache-2.0, OFL), and a copyleft one would constrain the choice, so check before

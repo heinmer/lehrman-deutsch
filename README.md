@@ -238,7 +238,8 @@ compressed already.
 Take the pipeline and point it at texts of your own; the AGPL asks in return
 that what you build stay open, a modified version served over a network
 included. The texts, the translations, the illustrations and the mark are not
-part of that.
+part of that, and neither is the name — the AGPL grants no rights to it, as its
+section 7(e) allows a licence to state.
 
 The generated files come from Wiktionary and Wikimedia Commons and are
 gitignored, so this repository holds none of that material and a site built from

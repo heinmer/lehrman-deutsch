@@ -329,8 +329,9 @@ export function HelpDialog({ onClose }: Props) {
                   >
                     on GitHub
                   </a>
-                  , under the GNU AGPL v3. The texts, the illustrations and the
-                  mark are not part of that — they are © 2026 heinmer.
+                  , under the GNU AGPL v3. The texts, the illustrations, the
+                  mark and the name are not part of that — they are © 2026
+                  heinmer.
                 </dd>
               </div>
             </dl>

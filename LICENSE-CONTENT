@@ -11,6 +11,8 @@ It does not cover the content, which is:
   content/images/         the illustrations
   brand/                  the mark, in every form it appears in
 
+and, on the separate footing set out below, the project's name.
+
 These are reserved. They may be read here, quoted as one would quote any
 published work, and reproduced for private study. They may not be republished,
 redistributed or used to present another site or product, whole or in part,
@@ -18,7 +20,17 @@ without permission.
 
 Nothing here restricts the software. Take the pipeline, take the reader, point
 them at texts of your own — on the AGPL's terms, which ask that what you build
-stay as open as what you started from.
+stay as open as what you started from. Give it a name of its own.
+
+No rights are granted to the name or the mark. "Lehrman-Deutsch" and the LD
+monogram may not be used to name, brand or promote another work, whether or not
+it derives from the software here. The AGPL grants no such rights by itself,
+and its section 7(e) provides for saying so.
+
+The monogram is reserved by copyright, being the drawing it is. A name is not
+copyrightable and none is registered here: what stands above is a statement of
+what is not being given away, and a request that a fork take a name of its own,
+as forks conventionally do.
 
 Two further things in this repository belong to neither licence:
 
