@@ -159,19 +159,11 @@
 
 /* One wrapping row, and nothing in it is pinned to a line: the settings fill
    each line in order and wrap where they stop fitting, so the footer answers
-   to its own width — narrower sidebar, more lines, same order.
-
-   Each line is then justified across the column, the way a paragraph of text
-   is: `space-between` spends the leftover width in the gaps rather than at the
-   end of the line, so a line's first pill lands on the bleed line and its last
-   one on the opposite bleed line. The `gap` stays as the *minimum* it may come
-   to. A line holding one pill is left alone — `space-between` places a single
-   item at the start, which is what a short last line wants. */
+   to its own width — narrower sidebar, more lines, same order. */
 .footer {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 0.5rem;
   flex: none;
   /* The pills are grounds of their own, so they hang on the bleed line with
@@ -184,4 +176,33 @@
   z-index: 2;
 }
 
-/* The settings themselves use the shared .control class in global.css. */
+/* The settings themselves use the shared .control class in global.css.
+
+   Each line runs from one bleed line to the other, and what fills it is the
+   pills rather than the gaps: they stay 0.5rem apart wherever they fall, and
+   the line's leftover width is shared out between them. An equal share each,
+   not equal widths — `1 1 auto` grows every pill by the same amount, so a
+   longer label is still the longer pill and the row keeps the rhythm it has at
+   its natural widths. Stretched, a pill is wider than its own words, so the
+   words go to the middle of it: hard left in a pill half again as wide as they
+   are reads as a label that has come loose from its ground.
+
+   **The volume knob does not stretch**, there being no such thing as a
+   stretched circle — which is why this asks for the pills by class rather than
+   for every child of the footer. The knob is deliberately *not* a `.control`
+   (its ground belongs to the pill it grows into; see VolumeControl), and that
+   distinction is exactly the one wanted here, so nothing new had to be
+   invented to say it. */
+.footer :global(.control) {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+/* A picker is a wrapper round its pill, so the stretch has to reach both or
+   the pill is left standing in a box wider than itself. Asking for the wrapper
+   by what it holds keeps the exception above intact, and beats the `flex: none`
+   the picker carries for the player bar on specificity rather than on the order
+   the modules happen to be bundled in. */
+.footer > :has(> :global(.control)) {
+  flex: 1 1 auto;
+}

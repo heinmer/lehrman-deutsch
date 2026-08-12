@@ -544,15 +544,24 @@ as `/…/` so transcriptions look the same everywhere.
   is round — used to be held in rows so a particular grouping survived; that
   made the footer answer to a width someone measured once rather than to its
   own. Adding a setting is one more child in the position it belongs, and the
-  wrapping is the layout's problem. **Each line is then justified across the
-  column**, the way a paragraph of text is: `space-between` spends a line's
-  leftover width in its gaps, so the first pill of every line lands on one
-  bleed line and the last on the other, and the footer reads as a block rather
-  than as a ragged edge. `gap` becomes the minimum a gap may come to. A line
-  holding a single pill is left alone — `space-between` places one item at the
-  start — which is what a short last line wants and is why nothing extra is
-  needed to say so. Verify by sweeping widths and reading the rows out of
-  `getBoundingClientRect()`, not by looking at one screen.
+  wrapping is the layout's problem. **Each line fills the column, and it is the
+  pills that stretch and not the gaps between them.** The gap stays 0.5rem
+  wherever a pill falls; the line's leftover width is shared out over the pills
+  themselves, `1 1 auto` so each grows by the same *amount* rather than all of
+  them coming out the same width — a longer label is still the longer pill.
+  Their contents centre, a pill being wider than its own words once it is
+  stretched. `justify-content: space-between` was the other way to reach both
+  bleed lines and was tried and turned down: gaps that grow with the width read
+  as pills scattered along a line rather than as a block of settings.
+  **The volume knob is the exception**, there being no such thing as a
+  stretched circle, which is why the rule asks for `.control` and for the
+  wrappers that hold one instead of for every child of the footer — the knob is
+  deliberately not a `.control`, so the distinction already existed. Reaching
+  the picker's pill through its wrapper is also what keeps this off the
+  bundler's ordering: `.footer > :has(> .control)` beats the `flex: none` the
+  picker carries for the player bar on specificity. Verify by sweeping widths
+  and reading the rows out of `getBoundingClientRect()`, not by looking at one
+  screen.
 - **The dropdowns are one component.** `SettingPicker` owns the control, the
   outside-click and Escape handling, and the menu that opens *upwards* — these
   controls sit at the bottom of the window. Theme (sidebar, a labelled pill,
