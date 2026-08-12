@@ -289,15 +289,15 @@ export function HelpDialog({ onClose }: Props) {
                 </dd>
               </div>
 
+              {/* Both of these ask for the copyright notice and not only for
+                  the licence's name, so the holders are printed rather than
+                  left on the file the reader would have to go and find. */}
               <div className={styles.row}>
                 <dt className={styles.source}>Type</dt>
                 <dd className={styles.what}>
-                  DM Sans and PT Serif, under the{" "}
-                  <a
-                    href="https://openfontlicense.org/"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
+                  DM Sans, © The DM Sans Project Authors, and PT Serif, ©
+                  ParaType Ltd, under the{" "}
+                  <a href="https://openfontlicense.org/" target="_blank" rel="noreferrer">
                     SIL Open Font License 1.1
                   </a>
                   .
@@ -310,7 +310,7 @@ export function HelpDialog({ onClose }: Props) {
                   <a href="https://lucide.dev/" target="_blank" rel="noreferrer">
                     Lucide
                   </a>
-                  , under the ISC License.
+                  , © Lucide Icons and Contributors, under the ISC License.
                 </dd>
               </div>
             </dl>

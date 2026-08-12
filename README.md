@@ -1,9 +1,11 @@
 # Lehrman-Deutsch
 
-A local reading trainer for German: short texts, narrated end to end, with
-every word clickable for pronunciation, IPA, part of speech and English
-meaning. Runs entirely on your machine — after the content is generated, no
-network is needed.
+A reading trainer for German: short texts, narrated end to end, with every word
+clickable for pronunciation, IPA, part of speech and English meaning.
+
+The audio and the dictionary are generated once, ahead of time. What is served
+is static files and nothing else — the app calls no service, at build or at
+run time, so it works from a folder as readily as from a host.
 
 ## Quick start
 
@@ -199,13 +201,32 @@ Point the host at them — nginx `brotli_static`/`gzip_static`, Caddy's
 to 160. Hosts that compress on the fly ignore them; the audio is deliberately
 left alone.
 
-Two things are worth knowing before it goes anywhere public:
+**`public/data` and `public/media` are generated and gitignored**, so a clean
+checkout builds an app with nothing to read: run `npm run content` before
+`npm run build`. It needs the network, takes minutes per text and is
+rate-limited, which makes it a poor fit for a build step on someone else's
+machine — so `dist/` is built here and uploaded whole rather than assembled by
+the host.
 
-- **`public/data` and `public/media` are generated and gitignored**, so a clean
-  checkout builds an app with nothing to read. `npm run content` needs the
-  network, takes minutes per text and is rate-limited, which makes it a poor
-  fit for a build step — the generated files want committing, caching or
-  publishing as an artifact. That decision has not been made here.
-- **Narration is synthesised through an undocumented Microsoft endpoint**, and
-  the word recordings are CC BY-SA. Redistributing either is a different
-  question from generating them for yourself.
+It is a few hundred small files, most of them word recordings, which is worth
+knowing if the upload is over FTP: one archive unpacked on the server is far
+less likely to end half-finished than several hundred transfers, and a site
+missing a handful of recordings fails quietly.
+
+## Licence
+
+The code is MIT — see `LICENSE`. So are the texts in `content/texts` and their
+translations, which were written for this project, and the illustrations that
+go with them.
+
+What the build fetches is not. Dictionary entries come from Wiktionary under
+CC BY-SA, and each word recording carries its own licence — CC BY-SA at several
+versions, CC BY and CC0 are all in there. Those land in `public/data` and
+`public/media`, which are gitignored: **this repository contains none of that
+material, but a site built from it distributes all of it.** That is why the
+credit is in the interface rather than here, and why it names each recording's
+own author and licence rather than one sentence for all of them.
+
+Two dependencies ship inside the built app and carry their own terms: DM Sans
+and PT Serif, under the SIL Open Font License 1.1, and the Lucide icons, under
+the ISC License. Both are named in the app's *Sources* section.
