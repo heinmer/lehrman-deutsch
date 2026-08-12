@@ -1,6 +1,19 @@
 /* Three islands floating on the page ground. The panel column exists whether
-   or not a word is selected, so opening it never shifts the text. */
+   or not a word is selected, so opening it never shifts the text.
+
+   What is capped is the *layout*, not the prose inside it. A measure set on
+   the text alone would leave the reader's ground stretched the width of an
+   ultrawide screen with a column of words down the middle of it, and — since
+   the side columns are pinned to the edges of that grid — would push the text
+   list and the word panel to the far corners of the screen, a head-turn away
+   from what they belong to. Capping the grid and centring it keeps the three
+   sections beside each other at every width; the page's own ground takes the
+   rest. That is also why the cap is stated as the width of the *centre*
+   (`--reading-width`) plus what the layout puts around it: the columns and the
+   gaps are what they already are, and the one number here is the only one that
+   is a judgement. */
 .app {
+  --reading-width: 70rem;
   display: grid;
   grid-template-columns: var(--side-width) minmax(0, 1fr) var(--side-width);
   /* Without an explicit row the implicit one is sized to content, so a long
@@ -8,6 +21,9 @@
   grid-template-rows: minmax(0, 1fr);
   gap: var(--gap);
   padding: var(--gap);
+  /* Two gaps between the three columns, and the padding either side. */
+  max-width: calc(var(--reading-width) + 2 * var(--side-width) + 4 * var(--gap));
+  margin-inline: auto;
   height: 100%;
 }
 

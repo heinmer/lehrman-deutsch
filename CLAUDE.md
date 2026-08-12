@@ -572,6 +572,19 @@ as `/…/` so transcriptions look the same everywhere.
   side padding declared as a property for this one purpose, so it lands exactly
   on the section's padding edge — inside the scrollbar, and with nothing
   overflowing for the reader to scroll sideways to.
+- **What is capped on a wide screen is the layout, not the measure.** `.app`
+  stops growing at `--reading-width` (70rem, the centre section) plus the two
+  side columns and the four gaps around them, and centres itself; past that the
+  page's own ground takes the width. Capping the *prose* inside a stretched
+  reader was the other way to do it and is wrong here for two reasons: the
+  reader's ground would run the whole width of a 21:9 screen with a column of
+  words down the middle of it, and the side columns are pinned to the edges of
+  that grid, so the text list and the word panel would end up in the far corners
+  of the screen, a head-turn from the text they belong to. The three sections
+  stay beside each other at every width instead. `--reading-width` is the one
+  number here that is a judgement — the columns and the gaps are what the layout
+  already has, which is why the cap is written as a sum of them rather than as a
+  measured total.
 - **Every grid track that holds content is explicit.** An implicit track is
   sized to its content: `.main` without `grid-template-columns` let the reader
   grow past its column instead of wrapping inside it — invisible on a wide
