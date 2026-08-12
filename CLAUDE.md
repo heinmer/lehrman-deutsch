@@ -555,6 +555,19 @@ as `/…/` so transcriptions look the same everywhere.
   and side columns of *different* widths would put the prose off the middle of
   the screen. Anything added to the sidebar is measured against 23rem; nothing
   in it may depend on a narrower one existing.
+- **The gap is horizontal only, and the three sections run the full height of
+  the window.** A gap stands *between* things: between the columns and the
+  centre, and between the columns and the sides of the screen. Above and below
+  there is nothing for it to stand between — every theme is a single sheet, so
+  a section's ground is the page's own and a strip of page along the top edge
+  divided nothing while costing two lines of the text under it. The corners go
+  with the vertical padding, since all four of them now sit on an edge of the
+  screen: `.app` sets `--island-radius: 0` and the boxes that genuinely float
+  set it back — the player, the info window, and either drawer, which below its
+  breakpoint stands over a scrim with the reader showing round it and *is* a
+  card. That variable is what `.island` reads; do not hard-code a radius back
+  into it. What holds the player off the bottom edge is unchanged
+  (`--player-inset`), so it sits 18px from it rather than 32px.
 - **A side column stays only while the centre keeps 640px**, and that is the
   whole of where the two layout breakpoints come from: 85rem is that floor plus
   two side columns and four gaps, 64rem is the same floor plus one of each.

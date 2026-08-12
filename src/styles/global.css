@@ -136,9 +136,17 @@ button {
 }
 
 /* Shared island: a floating card with its own ground. Dark themes lean on the
-   border, where a drop shadow has nothing to darken. */
+   border, where a drop shadow has nothing to darken.
+
+   The radius is a variable because two different things wear this class. What
+   genuinely floats — the player, the info window, either drawer — is a card,
+   and a card has corners. The three sections of the layout do not: they run
+   from the top edge of the window to the bottom, so all four of their corners
+   sit on an edge of the screen and there is nothing left for a radius to
+   round. `.app` therefore sets it to zero and the things that really float set
+   it back, which is one declaration each and says which of the two a box is. */
 .island {
-  border-radius: var(--radius-lg);
+  border-radius: var(--island-radius, var(--radius-lg));
   border: 1px solid var(--island-border);
   box-shadow: var(--shadow-card);
   overflow: hidden;

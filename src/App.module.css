@@ -1,5 +1,16 @@
-/* Three islands floating on the page ground. The panel column exists whether
-   or not a word is selected, so opening it never shifts the text.
+/* Three sections side by side, running the full height of the window. The
+   panel column exists whether or not a word is selected, so opening it never
+   shifts the text.
+
+   **The gaps are horizontal only.** They stand *between* things — the two
+   columns and the centre, and the columns and the sides of the screen — and
+   that is a job worth the room. Above and below there is nothing to stand
+   between: every theme is a single sheet, so a section's ground is the page's
+   own and a strip of page along the top edge divided nothing while costing two
+   lines of the text under it. The sections take that height instead and the
+   corners go with it — see `--island-radius` in global.css. A drawer is the
+   exception and keeps both: below its breakpoint it floats over a scrim, where
+   its edges are visible and it *is* a card.
 
    What is capped is the *layout*, not the prose inside it. A measure set on
    the text alone would leave the reader's ground stretched the width of an
@@ -20,7 +31,11 @@
      text pushes the player off screen instead of scrolling inside the reader. */
   grid-template-rows: minmax(0, 1fr);
   gap: var(--gap);
-  padding: var(--gap);
+  padding-inline: var(--gap);
+  /* In the layout an island is not a card: it reaches both edges of the window
+     and has no corner that is not on one of them. What still floats says so
+     for itself. */
+  --island-radius: 0;
   /* Two gaps between the three columns, and the padding either side. */
   max-width: calc(var(--reading-width) + 2 * var(--side-width) + 4 * var(--gap));
   margin-inline: auto;
@@ -139,6 +154,10 @@
     /* The same column, moved: a drawer of some other width would be a second
        sidebar to keep in step. */
     width: min(var(--side-width), 86vw);
+    /* A card again, and held off all four edges: here it stands over a scrim
+       with the reader showing round it, so its corners are something the
+       reader can see. */
+    --island-radius: var(--radius-lg);
     z-index: 50;
     /* Hidden rather than merely offscreen: a drawer nobody can see must not
        be somewhere the tab key can go. */
@@ -175,6 +194,8 @@
     right: var(--gap);
     bottom: var(--gap);
     width: min(var(--side-width), 88vw);
+    /* As the sidebar's drawer: floating over a scrim, so it is a card. */
+    --island-radius: var(--radius-lg);
     z-index: 45;
     visibility: hidden;
     transform: translateX(calc(100% + var(--gap)));

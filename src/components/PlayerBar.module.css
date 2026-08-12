@@ -72,6 +72,10 @@
   gap: var(--control-gap);
   padding: 1rem 1.5rem;
   background: var(--surface-player);
+  /* The one island inside the layout that is still a card: it floats on the
+     reader with the prose scrolling under it and is the one box the themes
+     draw, so it keeps the corners the sections around it gave up. */
+  --island-radius: var(--radius-lg);
   /* The voice menu opens upwards, out of the bar; the island would clip it.
      Nothing else in here overflows. */
   overflow: visible;
