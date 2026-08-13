@@ -107,12 +107,10 @@ export function HelpDialog({ onClose }: Props) {
               different order from the hairlines inside a table, which stop at
               the text. */}
           <section className={styles.block}>
-            <h3 className={styles.section}>What is Lehrman-Deutsch?</h3>
-            {/* What it is, then the one move the whole thing turns on. The
-                heading has just named the site, so the sentence says "This is"
-                rather than naming it twice. It stays a note like the two below
-                it: a paragraph that has to be read before the tables are
-                reached is no longer one. */}
+            <h3 className={styles.section}>What is this?</h3>
+            {/* What it is, then the one move the whole thing turns on. It
+                stays a note like the two below it: a paragraph that has to be
+                read before the tables are reached is no longer one. */}
             <p className={styles.note}>
               This is a reader for learning German: short texts, read aloud from
               beginning to end, with the word being spoken lit as it goes. Click

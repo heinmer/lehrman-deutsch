@@ -436,7 +436,7 @@ as `/…/` so transcriptions look the same everywhere.
   place for the keyboard, and the global outline drawn round the whole window
   reads as a border. It is titled for the site and not for its contents, so
   that the next thing to go in it is a section under its own heading rather
-  than a second window; today there are four. *What is Lehrman-Deutsch?* comes
+  than a second window; today there are four. *What is this?* comes
   first and says what the site is, then *Settings*, *Shortcuts* and *Sources* —
   that last one being about where the material came from rather than about
   using the site, and the only section a reader arrives at deliberately.
