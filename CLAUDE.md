@@ -967,6 +967,15 @@ as `/…/` so transcriptions look the same everywhere.
   carries exactly one colour and neither may assume a page behind it. They are
   not the accent, which is the *app's* colour for the mark and reads as neither
   ink on a page nobody themed.
+- **`brand/logo-monochrome.ai` is the drawing all four come from**, and the
+  only one anything here is exported from. `brand/logo-two-color.ai` is the
+  same mark with the foot of the L and the inner band of the D a step darker;
+  it is kept for a use that is large enough to want it and is not this site.
+  The README was tried in it and turned down: one colour is what the mark is
+  everywhere else, at 19px beside the site's name and 16px on a tab strip,
+  where a second fill is a second thing for every theme to set and too small
+  to be seen setting it — so a shaded lockup at the top of the README made the
+  repository and the app two different marks.
 - The word panel's column is always in the grid, so opening it never shifts the
   text.
 
