@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { TextDocument, TextSummary, WordToken } from "../shared/types";
 import { fetchTextDocument, fetchTextIndex } from "./lib/api";
 import { useSlugRoute } from "./hooks/useSlugRoute";
+import { useDocumentTitle } from "./hooks/useDocumentTitle";
 import { useToggleSetting } from "./hooks/useToggleSetting";
 import { useVoiceSetting } from "./hooks/useVoiceSetting";
 import { useVolumeSetting } from "./hooks/useVolumeSetting";
@@ -39,6 +40,13 @@ export function App() {
   // button means something.
   const slugs = useMemo(() => texts.map((text) => text.slug), [texts]);
   const [slug, selectText] = useSlugRoute(slugs);
+
+  // What the index says about the text being read. It is what the tab is named
+  // after and where the header illustration comes from, and both are wanted
+  // from the moment the text is chosen — the index has them before the document
+  // is fetched, and still has them if that fetch fails.
+  const summary = texts.find((item) => item.slug === slug) ?? null;
+  useDocumentTitle(summary?.title ?? null);
 
   // Both of these are stored with the text they belong to and read back only
   // while that is still the text on screen. Deriving them costs a comparison
@@ -265,11 +273,10 @@ export function App() {
 
   const entry = selectedWord ? text?.dictionary[selectedWord.key] ?? null : null;
   // The header illustration travels in the index rather than the document (see
-  // TextSummary), so it is looked up here beside the text it belongs to. Turned
-  // off, it is not rendered at all rather than hidden: an <img> the reader has
-  // asked not to see should not be downloaded either.
-  const image =
-    (showImage ? texts.find((summary) => summary.slug === slug)?.image : null) ?? null;
+  // TextSummary), which is why it is read off the summary. Turned off, it is
+  // not rendered at all rather than hidden: an <img> the reader has asked not
+  // to see should not be downloaded either.
+  const image = (showImage ? summary?.image : null) ?? null;
 
   return (
     <div className={styles.app}>

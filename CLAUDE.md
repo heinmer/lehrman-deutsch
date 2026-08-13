@@ -303,6 +303,19 @@ as `/…/` so transcriptions look the same everywhere.
   The only state is what the hash says — *which text that is* is derived, since
   a slug is not a text until the index says so, and a hash naming nothing is
   **replaced** rather than pushed so Back cannot return to a bad address.
+- **The tab is named after the text being read**, `<title>` from the index and
+  not from the document (`useDocumentTitle`, called in `App` on the same
+  summary the header illustration comes from). The index has the title as soon
+  as the choice is made — before the document is fetched, and still if that
+  fetch fails, which is exactly when a reader looks at the tab strip. The site's
+  name stays on the end because a bookmark and a history entry are the whole
+  title and a tab strip is only its first few characters. Nothing here ever
+  shows that name alone once the index has loaded: `useSlugRoute` replaces a
+  hash naming no text with the first one, so the bare fallback is the moment
+  before the index arrives — or the "Nothing to read yet" screen, where it is
+  the only true title there is. The same name is in `index.html`, which is
+  what the tab reads until the bundle runs; there is no way for the two to
+  share one string, the script tag being the thing that has not run yet.
 - **Nothing hands a path from the data to `fetch` or `new Audio`.** The
   pipeline writes site-root-relative paths (`/media/words/…`) because at build
   time it cannot know where the site will be served from; `assetUrl`
