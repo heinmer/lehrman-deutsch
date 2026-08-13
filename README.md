@@ -42,12 +42,12 @@ The project is split in two halves that meet at a JSON contract
 Generated output lands in `public/` and is not meant to be edited by hand:
 
 ```
-public/data/index.json          list of texts for the sidebar
-public/data/credits.json        who recorded each word, and under what licence
-public/data/texts/<slug>.json   tokens, per-voice timings, dictionary
-public/media/texts/<slug>/*.mp3 full narration, one file per voice
-public/media/voices/*.mp3       one clip per voice, for the picker
-public/media/words/*.mp3        native-speaker word recordings
+public/data/index.json              list of texts for the sidebar
+public/data/credits.json            who recorded each word, and under what licence
+public/data/texts/<slug>.json       tokens, per-voice timings, dictionary
+public/media/texts/<slug>/*.mp3     full narration, one file per voice
+public/media/voices/*.mp3           one clip per voice, for the picker
+public/media/words/*.mp3            native-speaker word recordings
 ```
 
 ### Where the audio comes from
@@ -141,29 +141,29 @@ trying are `de-DE-KatjaNeural` and `de-DE-AmalaNeural`.
 
 ```
 content/
-  texts/           source texts (written by hand)
-  translations/    their English, paragraph for paragraph (written by hand)
-  images/          header illustrations
-scripts/           build pipeline
+  texts/               source texts (written by hand)
+  translations/        their English, paragraph for paragraph (written by hand)
+  images/              header illustrations
+scripts/               build pipeline
   pipeline/
-    source.ts      front matter + paragraphs
-    translations.ts reads the English, checks it against the German
-    tokenize.ts    sentences and words (Intl.Segmenter)
-    tts.ts         narration + word boundary timings
-    align.ts       maps timings onto tokens
-    wiktionary.ts  dictionary lookup, inflection → lemma
-    media.ts       downloads native recordings
-    http.ts        throttling and retries
-shared/            what both halves need
-  types.ts         the JSON contract
-  narration.ts     the order a document is spoken in
-  voices.ts        the voice roster
-  themes.ts        the theme roster
-tests/             the pipeline's pure functions
+    source.ts          front matter + paragraphs
+    translations.ts    reads the English, checks it against the German
+    tokenize.ts        sentences and words (Intl.Segmenter)
+    tts.ts             narration + word boundary timings
+    align.ts           maps timings onto tokens
+    wiktionary.ts      dictionary lookup, inflection → lemma
+    media.ts           downloads native recordings
+    http.ts            throttling and retries
+shared/                what both halves need
+  types.ts             the JSON contract
+  narration.ts         the order a document is spoken in
+  voices.ts            the voice roster
+  themes.ts            the theme roster
+tests/                 the pipeline's pure functions
 src/
-  components/      Sidebar, Reader, PlayerBar, WordPanel
-  hooks/           narration clock, route, theme, settings
-  lib/             fetching, asset paths, clip playback
+  components/          Sidebar, Reader, PlayerBar, WordPanel
+  hooks/               narration clock, route, theme, settings
+  lib/                 fetching, asset paths, clip playback
 ```
 
 ## What it does
