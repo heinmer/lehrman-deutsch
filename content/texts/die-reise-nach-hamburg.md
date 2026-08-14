@@ -3,6 +3,7 @@ title: Die Reise nach Hamburg
 level: A2
 order: 3
 topic: Travel
+image: die-reise-nach-hamburg.webp
 ---
 
 In den Herbstferien bin ich mit meiner Freundin Nele nach Hamburg gefahren. Wir wohnen in einem kleinen Dorf in Bayern, deshalb war die Reise für uns etwas Besonderes. Am Freitagmorgen sind wir um sechs Uhr aufgestanden. Meine Mutter hat uns zum Bahnhof gebracht, weil der erste Bus erst später fährt. Im Zug haben wir Brötchen gegessen und aus dem Fenster geschaut.
