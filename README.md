@@ -14,6 +14,12 @@ The audio and the dictionary are generated once, ahead of time. What is served
 is static files and nothing else — the app calls no service, at build or at
 run time, so it works from a folder as readily as from a host.
 
+<p align="center">
+  <video src="docs/demo.mp4" controls muted playsinline width="880">
+    <a href="docs/demo.mp4">Eighty seconds of the reader, with sound</a>
+  </video>
+</p>
+
 ## Quick start
 
 ```bash
@@ -232,7 +238,7 @@ compressed already.
 | What | Terms |
 | ---- | ----- |
 | `scripts/`, `src/`, `shared/`, `tests/`, config | AGPL-3.0 — `LICENSE` |
-| `content/`, `brand/` | © 2026 heinmer, all rights reserved — `LICENSE-CONTENT` |
+| `content/`, `brand/`, `docs/demo.mp4` | © 2026 heinmer, all rights reserved — `LICENSE-CONTENT` |
 | `public/data/`, `public/media/` — generated | CC BY-SA, CC BY or CC0, per file |
 
 Take the pipeline and point it at texts of your own; the AGPL asks in return
