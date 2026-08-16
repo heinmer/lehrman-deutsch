@@ -14,12 +14,6 @@ The audio and the dictionary are generated once, ahead of time. What is served
 is static files and nothing else — the app calls no service, at build or at
 run time, so it works from a folder as readily as from a host.
 
-<p align="center">
-  <video src="docs/demo.mp4" controls muted playsinline width="880">
-    <a href="docs/demo.mp4">Eighty seconds of the reader, with sound</a>
-  </video>
-</p>
-
 ## Quick start
 
 ```bash
