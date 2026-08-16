@@ -14,6 +14,8 @@ The audio and the dictionary are generated once, ahead of time. What is served
 is static files and nothing else — the app calls no service, at build or at
 run time, so it works from a folder as readily as from a host.
 
+https://github.com/user-attachments/assets/aade9e86-2e14-4e77-9934-09fdddce9528
+
 ## Quick start
 
 ```bash
