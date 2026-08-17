@@ -1202,6 +1202,10 @@ encoded; the two are indistinguishable side by side at 1:1). ffmpeg does it:
 ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 out.webp
 ```
 
+**The illustrations all come from one prompt**, kept with the scene it needs
+written out of a text in `.claude/skills/illustration-prompt/`. The pictures
+being generated elsewhere is why it is a prompt to print and not a build step.
+
 **The sidebar reads as a course, and `order:` is what writes it.** Texts sort
 by level first — easiest to hardest, by position in `LEVELS` and not by how the
 labels happen to spell — and within a level by `order:`, lowest first. The
