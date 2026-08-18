@@ -1186,8 +1186,8 @@ which is not how anything here is built.
 **A paragraph is what a translation is attached to**, one English block under
 the German one, which makes its size the resolution of the whole aid: the
 longer the block, the more counting it takes to find the sentence being looked
-for. So keep a paragraph scannable — three to six sentences, and short of about
-ninety words, at every level. What grows with the level is the *sentence*, not
+for. So keep a paragraph scannable — short of about ninety words, which at
+C-level sentence lengths is three or four sentences and at A1 is six or seven. What grows with the level is the *sentence*, not
 the block; a longer text therefore gets more paragraphs rather than larger
 ones. The texts here average 25 words a paragraph at A1, 55 at B1 and 77 at C1,
 which is the scale a new one is measured against.
