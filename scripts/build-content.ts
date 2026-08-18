@@ -477,6 +477,12 @@ async function main(): Promise<void> {
             written,
           );
         }
+        // The subject is source material too, and outside the hash for the
+        // same reason: renaming one must not cost VOICES.length syntheses.
+        // Re-read from the source rather than kept from the document, so an
+        // edit to `topic:` reaches the document and the index on the next run
+        // — the summary below takes it from here.
+        existing.topic = source.topic;
         // Rewritten even though nothing was rebuilt: how the file is *written*
         // is not part of the source hash, so without this a formatting change
         // would only reach a text the next time its content happened to
