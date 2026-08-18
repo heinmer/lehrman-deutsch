@@ -2,7 +2,7 @@
 title: Mein erster Tag im Praktikum
 level: A2
 order: 1
-topic: Work
+topic: A first day of work experience in a bookshop
 image: mein-erster-tag-im-praktikum.webp
 ---
 

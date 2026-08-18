@@ -2,7 +2,7 @@
 title: Nachtschicht in der Bäckerei
 level: B2
 order: 2
-topic: Work
+topic: A master baker's night shift
 image: nachtschicht-in-der-baeckerei.webp
 ---
 

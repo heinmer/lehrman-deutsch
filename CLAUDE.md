@@ -1150,7 +1150,7 @@ and clickable like the body, so it counts as content.
 ---
 title: Ein Tag am See
 level: A1
-topic: Summer
+topic: A summer bicycle trip to a lake
 image: ein-tag-am-see.png
 ---
 
@@ -1164,7 +1164,7 @@ Nach einer Stunde kommen sie am See an.
 | `title` | file name                           | Narrated first, then the body      |
 | `level` | `A1`                                | Sorts the sidebar; chooses its strip, and shown on a badge in the reader |
 | `order` | —                                   | Place within the level; see below  |
-| `topic` | —                                   | Stored, shown nowhere; see below   |
+| `topic` | —                                   | The plot in one line; shown nowhere, see below |
 | `slug`  | file name                           | Output file and URL identifier     |
 | `rate`  | `-10%`                              | Speaking rate, applied to every voice |
 | `image` | —                                   | Header illustration in `content/images/` |
@@ -1230,16 +1230,31 @@ the build log then reads in the same order the reader sees. Do not add a second
 sort over the summaries at the end; there was one, and it was a second place to
 keep in step.
 
-**No two texts are about the same thing.** `topic:` is displayed nowhere, which
-is what it is for: it is the standing record of what has already been written
-about, and a new text adds to that list rather than repeating it. Read
-`content/texts/*.md` before starting — the *subject* has to be new, not merely
-the label, since two texts may both be `Everyday life` and share nothing, while
-two carrying different labels can still both be a Saturday walk through a town.
-A repeated subject repeats the vocabulary that comes with it, which is the half
-of the course a reader is actually here for; sixteen texts over six levels are a
-course and not an anthology. A level is no licence either: the same material
-told again in harder grammar is still the same material.
+**No two texts share a plot.** A plot is where it happens, what happens and who
+it happens to, taken together: a night shift in a bakery and a morning in the
+same bakery are one plot however differently the two are titled, and the level
+is no licence — the same story told again in harder grammar is still the same
+story. What may come back is the *field* the plot stands in. Food, travel, work
+and weather are met more than once over a course, and a second meeting in
+another scene is how the vocabulary that comes with them is learned rather than
+merely seen. It is the story that has to be new, and nothing beyond it.
+
+`topic:` is what makes that checkable without reading the course. It is
+displayed nowhere, which is what it is for: it carries the plot in one line of
+English — `A master baker's night shift`, not `Work` — so the standing record of
+what has been written is `grep -h '^topic:' content/texts/*.md`, one line per
+text instead of the whole of it. It was a rubric once, and as a rubric it could
+say nothing either way: three texts read `Work` while sharing no plot at all and
+three more read `Everyday life`, so the rule had to send the writer to the texts
+themselves — which is a thing that quietly stops being done somewhere around the
+thirtieth of them.
+
+Renaming one is a rerun of seconds. `topic:` is outside the source hash, like
+the translation and the picture, so no narration is re-synthesised; and the skip
+path re-reads it from the source before rewriting the document, so the new line
+reaches both the document and `index.json` on that same run. It was kept from
+the previous document once, which meant an edit reached nothing at all — the
+field being outside the hash, the text it belonged to was never rebuilt.
 
 **Write real German.** These are teaching texts: keep A1 to present tense and
 simple clauses, and let A2 use Perfekt, subordinate clauses with `dass`/`weil`,

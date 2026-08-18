@@ -2,7 +2,7 @@
 title: Mein Hund Bruno
 level: A1
 order: 3
-topic: Animals
+topic: A day at home with a dog
 image: mein-hund-bruno.webp
 ---
 

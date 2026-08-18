@@ -2,7 +2,7 @@
 title: Die Vier-Tage-Woche
 level: C1
 order: 1
-topic: Work
+topic: A software firm's switch to a four-day week
 image: die-vier-tage-woche.webp
 ---
 

@@ -2,7 +2,7 @@
 title: Ein Regentag
 level: A1
 order: 1
-topic: Weather
+topic: A rainy day in town, from the window to the bus stop
 image: ein-regentag.webp
 ---
 

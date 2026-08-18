@@ -2,7 +2,7 @@
 title: Das Reparatur-Café
 level: B2
 order: 1
-topic: Society
+topic: A monthly repair café in a community centre
 image: das-reparatur-cafe.webp
 ---
 

@@ -2,7 +2,7 @@
 title: Der Chor am Mittwochabend
 level: B1
 order: 2
-topic: Music
+topic: Joining an amateur choir as a beginner
 image: der-chor-am-mittwochabend.webp
 ---
 

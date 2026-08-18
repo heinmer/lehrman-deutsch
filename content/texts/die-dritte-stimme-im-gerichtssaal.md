@@ -2,7 +2,7 @@
 title: Die dritte Stimme im Gerichtssaal
 level: C2
 order: 1
-topic: Language
+topic: The interpreter's place in a German courtroom
 image: die-dritte-stimme-im-gerichtssaal.webp
 ---
 

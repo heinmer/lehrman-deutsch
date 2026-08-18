@@ -2,7 +2,7 @@
 title: Das Fahrrad meines Großvaters
 level: B1
 order: 1
-topic: Family
+topic: Restoring a grandfather's old bicycle
 image: das-fahrrad-meines-grossvaters.webp
 ---
 

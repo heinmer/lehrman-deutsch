@@ -2,7 +2,7 @@
 title: Ein Tag am See
 level: A1
 order: 2
-topic: Summer
+topic: A summer bicycle trip to a lake
 image: ein-tag-am-see.webp
 ---
 
