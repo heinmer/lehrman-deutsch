@@ -1164,7 +1164,7 @@ Nach einer Stunde kommen sie am See an.
 | `title` | file name                           | Narrated first, then the body      |
 | `level` | `A1`                                | Sorts the sidebar; chooses its strip, and shown on a badge in the reader |
 | `order` | —                                   | Place within the level; see below  |
-| `topic` | —                                   | Stored but not displayed anywhere  |
+| `topic` | —                                   | Stored, shown nowhere; see below   |
 | `slug`  | file name                           | Output file and URL identifier     |
 | `rate`  | `-10%`                              | Speaking rate, applied to every voice |
 | `image` | —                                   | Header illustration in `content/images/` |
@@ -1229,6 +1229,17 @@ source, so that order is the index's order and therefore the sidebar's — and
 the build log then reads in the same order the reader sees. Do not add a second
 sort over the summaries at the end; there was one, and it was a second place to
 keep in step.
+
+**No two texts are about the same thing.** `topic:` is displayed nowhere, which
+is what it is for: it is the standing record of what has already been written
+about, and a new text adds to that list rather than repeating it. Read
+`content/texts/*.md` before starting — the *subject* has to be new, not merely
+the label, since two texts may both be `Everyday life` and share nothing, while
+two carrying different labels can still both be a Saturday walk through a town.
+A repeated subject repeats the vocabulary that comes with it, which is the half
+of the course a reader is actually here for; sixteen texts over six levels are a
+course and not an anthology. A level is no licence either: the same material
+told again in harder grammar is still the same material.
 
 **Write real German.** These are teaching texts: keep A1 to present tense and
 simple clauses, and let A2 use Perfekt, subordinate clauses with `dass`/`weil`,
