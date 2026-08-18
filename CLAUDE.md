@@ -1183,6 +1183,15 @@ match is an error, since that can only mean a German text edited without its
 English. A text with no file falls back to the network path in `translate.ts`,
 which is not how anything here is built.
 
+**A paragraph is what a translation is attached to**, one English block under
+the German one, which makes its size the resolution of the whole aid: the
+longer the block, the more counting it takes to find the sentence being looked
+for. So keep a paragraph scannable — three to six sentences, and short of about
+ninety words, at every level. What grows with the level is the *sentence*, not
+the block; a longer text therefore gets more paragraphs rather than larger
+ones. The texts here average 25 words a paragraph at A1, 55 at B1 and 77 at C1,
+which is the scale a new one is measured against.
+
 `image:` is a bare file name in `content/images/`, which like the translations
 is source material and not generated — the build copies what is named
 into `public/media/images/` and deletes what nothing names. Several texts may
@@ -1240,6 +1249,18 @@ A repeated subject repeats the vocabulary that comes with it, which is the half
 of the course a reader is actually here for; sixteen texts over six levels are a
 course and not an anthology. A level is no licence either: the same material
 told again in harder grammar is still the same material.
+
+**A level is a ceiling on what a text may demand, not a score to maximise.** C2
+does not mean as hard as the language gets: what rises with the level is how
+much is left implicit, how abstract the subject is and how idiomatic the
+register — not the length of the words. The test is whether the piece could
+have been printed in German as it stands, in a newspaper, a magazine or a book;
+where it could not, the level is no excuse. Measure a draft against the texts
+already here rather than against a number — the median sentence runs 6–9 words
+at A1, 11 at A2, 13–15 at B1, 16–21 at B2 and 24–25 at C1 and C2. The failure
+mode to watch for is syntax and not vocabulary: the first C2 draft came out at
+a median of 30 words a sentence, half again what German journalism prints,
+while its share of long words was *lower* than the C1 text's.
 
 **Write real German.** These are teaching texts: keep A1 to present tense and
 simple clauses, and let A2 use Perfekt, subordinate clauses with `dass`/`weil`,
