@@ -23,9 +23,10 @@ image generator.
 4. **Save the result to `content/illustration-prompts/<slug>.md`** — the filled
    template and nothing else, no heading, no code fence, no commentary before or
    after it. That directory holds one prompt per text, alongside
-   `generated-images/`, where the picture made from it lands once it comes back
-   from the generator (see *After the image comes back*). Tell the user in the
-   chat where the file was written; do not also paste the prompt there.
+   `generated-images/`, where the raw output lands once the user has generated
+   the picture from it — a separate step from this skill, not something it does
+   itself. Tell the user in the chat where the file was written; do not also
+   paste the prompt there.
 
 ## Writing the scene description
 
@@ -51,13 +52,6 @@ text: one frame out of it.
   winter morning, warm lamplight in a dark room.
 - Write it in English, like the rest of the prompt.
 
-## After the image comes back
-
-Save the raw output in `content/illustration-prompts/generated-images/<slug>.png`
-(gitignored — it's a working file, not source material). From there it still
-needs converting: the picture that actually ships is source material in
-`content/images/` as WebP about 1600px wide, exactly as described in CLAUDE.md
-under *Adding a text*, which is also where the ffmpeg invocation lives — do not
-duplicate it here. The text's front matter then gets `image: <slug>.webp`.
-Neither the prompt nor the picture is in the source hash, so this is a rerun of
-seconds and re-narrates nothing.
+Turning the generated picture into what the site actually uses — the WebP
+conversion and the front matter — is a separate request; see CLAUDE.md under
+*Adding a text*.
