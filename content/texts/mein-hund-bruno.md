@@ -1,7 +1,7 @@
 ---
 title: Mein Hund Bruno
 level: A1
-order: 2
+order: 3
 topic: Animals
 image: mein-hund-bruno.webp
 ---
