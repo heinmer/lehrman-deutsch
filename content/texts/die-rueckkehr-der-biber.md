@@ -1,7 +1,7 @@
 ---
 title: Die Rückkehr der Biber
 level: B2
-order: 3
+order: 4
 topic: The return of the beaver to German rivers
 image: die-rueckkehr-der-biber.webp
 ---
