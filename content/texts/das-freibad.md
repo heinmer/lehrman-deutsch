@@ -3,6 +3,7 @@ title: Das Freibad
 level: B2
 order: 2
 topic: A town's open-air pool kept open by a volunteer association
+image: das-freibad.webp
 ---
 
 Das Freibad liegt am Rand der Stadt, zwischen einem Sportplatz und einem Streifen Wald, und ist seit den fünfziger Jahren in Betrieb. Die Becken sind aus Beton, die Umkleiden aus Holz, und die Uhr über dem Eingang geht seit Jahren zwei Minuten vor. Wer morgens um sieben kommt, schwimmt allein.
