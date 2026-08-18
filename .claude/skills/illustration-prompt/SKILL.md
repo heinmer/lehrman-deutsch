@@ -1,6 +1,6 @@
 ---
 name: illustration-prompt
-description: Write the image-generation prompt for a text's header illustration — derive a SCENE DESCRIPTION from the German text in content/texts/, paste it into the house prompt template and print the whole thing in the chat to be copied into an image generator. Use whenever a picture, illustration or image prompt is asked for for one of the texts.
+description: Write the image-generation prompt for a text's header illustration — derive a SCENE DESCRIPTION from the German text in content/texts/, paste it into the house prompt template and save it to content/illustration-prompts/<slug>.md, ready to paste into an image generator. Use whenever a picture, illustration or image prompt is asked for for one of the texts.
 ---
 
 # Illustration prompt for a text
@@ -20,10 +20,12 @@ image generator.
 3. **Fill the template.** Read `prompt-template.md` beside this file and replace
    the line `[INSERT THE SPECIFIC SCENE OR STORY DESCRIPTION HERE]` with the
    scene. Change nothing else in it.
-4. **Print the result in the chat**, in a fenced code block, so it can be copied
-   in one go. Above it, one line naming the scene chosen; below it, the ffmpeg
-   line from *After the image comes back*. Do not write the prompt to a file —
-   it is not source material and nothing in the build reads it.
+4. **Save the result to `content/illustration-prompts/<slug>.md`** — the filled
+   template and nothing else, no heading, no code fence, no commentary before or
+   after it. That directory holds one prompt per text, alongside
+   `generated-images/`, where the picture made from it lands once it comes back
+   from the generator (see *After the image comes back*). Tell the user in the
+   chat where the file was written; do not also paste the prompt there.
 
 ## Writing the scene description
 
@@ -51,11 +53,11 @@ text: one frame out of it.
 
 ## After the image comes back
 
-The picture is source material: it goes in `content/images/` as WebP about
-1600px wide (see CLAUDE.md, *Adding a text*), and the text's front matter gets
-`image: <slug>.webp`. Neither is in the source hash, so this is a rerun of
+Save the raw output in `content/illustration-prompts/generated-images/<slug>.png`
+(gitignored — it's a working file, not source material). From there it still
+needs converting: the picture that actually ships is source material in
+`content/images/` as WebP about 1600px wide, exactly as described in CLAUDE.md
+under *Adding a text*, which is also where the ffmpeg invocation lives — do not
+duplicate it here. The text's front matter then gets `image: <slug>.webp`.
+Neither the prompt nor the picture is in the source hash, so this is a rerun of
 seconds and re-narrates nothing.
-
-```bash
-ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 content/images/<slug>.webp
-```
