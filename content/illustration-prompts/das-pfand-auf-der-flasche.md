@@ -1,7 +1,7 @@
 Create a wide horizontal 2D storybook illustration for a German reading practice website.
 
 SCENE DESCRIPTION:
-The entrance lobby of a supermarket on an ordinary weekday, seen straight on. Slightly right of centre a chest-high grey reverse vending machine with a round rubber opening and a blank dark screen takes empty bottles; a woman in a brown coat feeds a clear bottle into it, a crate of empties at her feet. To the left, nested shopping trolleys stand in a row beside a broad glass front. Through the glass, on the far right, an older man in a cap carries a bulging plastic bag of bottles past a public waste bin with a metal ring on its side holding two more. Flat even daylight, cream and muted green surfaces, and a calm everyday mood in which nobody is looking at anybody.
+The entrance lobby of a supermarket on an ordinary weekday, seen straight on. Slightly right of centre a chest-high grey reverse vending machine with a round rubber opening and a blank dark screen takes empty bottles; a woman in a brown coat feeds a clear bottle into it, a crate of empties at her feet. To the left, a broad glass front looks out onto a quiet street with parked cars and trees. Through the glass, on the far right, an older man in a cap carries a bulging plastic bag of bottles past a public waste bin with a metal ring on its side holding two more. Flat even daylight, cream and muted green surfaces, and a calm everyday mood in which nobody is looking at anybody.
 
 VISUAL STYLE:
 
