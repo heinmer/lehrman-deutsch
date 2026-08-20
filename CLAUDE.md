@@ -184,15 +184,18 @@ Things that are easy to break:
   no single document has. And nothing here touches a document, so crediting
   them is outside the source hash and **re-narrates nothing** — which is the
   only reason this could be added to a finished site at all. It is one long
-  line like the rest (152 KB, 7.3 KB brotli): the shape repeats thirteen
-  authors across 738 entries, and interning them would save about 2 KB over
-  the wire for a shape nobody could read at a glance. Measured, not assumed.
+  line like the rest (653 KB, 28 KB brotli): the shape repeats twenty-one
+  authors across 3097 entries. Interning them — a table of names, an index per
+  clip — comes to 11 KB brotli, so the saving is now some 17 KB over the wire
+  against the 2 KB it was at 738 recordings, for a shape nobody could read at a
+  glance. Worth revisiting if the dictionary grows much further. Measured, not
+  assumed.
 - **Only definitive answers get cached.** A rate-limited lookup must never be
   written to `.cache/` as "no such word" — that silently drops common words
   from the dictionary. Only 200s and 404s are cached. `commons.ts` follows the
   same rule and for the same reason: it caches a page that answered, present or
   missing, and leaves a failed request uncached so the next run asks again.
-  It asks in batches of 50 titles, so 738 recordings are fifteen requests.
+  It asks in batches of 50 titles, so 3097 recordings are sixty-two requests.
 - **The build removes what no source accounts for.** Deleting a Markdown file
   used to leave its JSON, its narrations and its hash behind for good — the
   index stopped listing it, so nothing looked wrong while `dist` carried a text
@@ -233,10 +236,10 @@ Things that are easy to break:
   `public/media/words/`. Standard German is preferred over Austrian/Swiss.
   Who made each one, and on what terms, is fetched separately by `commons.ts`
   and written to `public/data/credits.json` — see the note on it below. The
-  licences are **not** all the same: today's 738 recordings run CC BY-SA 4.0,
+  licences are **not** all the same: today's 3097 recordings run CC BY-SA 4.0,
   3.0 and 2.5, CC BY 3.0 us and CC0, so nothing may state one licence for all
-  of them. There are, on the other hand, only **13 distinct authors** — one
-  person recorded 645 of the 738 — which is why the credit can be a short list
+  of them. There are, on the other hand, only **21 distinct authors** — one
+  person recorded 2927 of the 3097 — which is why the credit can be a short list
   of people rather than a table as long as the dictionary.
 - **Translations are not fetched at all.** They are written by hand beside the
   German, `content/translations/<slug>.md`, and read from there — see *Adding a
@@ -421,8 +424,8 @@ as `/…/` so transcriptions look the same everywhere.
   dictionary, the fonts (OFL) and the icons (ISC). The recordists are listed
   there **from the data** and never by hand — `recordists()` counts the authors
   in `credits.json` and orders them by how much they recorded — because a new
-  text can bring in a name nobody thought to add. Today it is thirteen people,
-  one of whom recorded 645 of the 738.
+  text can bring in a name nobody thought to add. Today it is twenty-one
+  people, one of whom recorded 2927 of the 3097.
 - **`useCredits(enabled)` is what fetches `credits.json`, and `enabled` is the
   point of it.** The panel asks only once it is showing a word and the info
   window only while it is open, so a reader who does neither never downloads
