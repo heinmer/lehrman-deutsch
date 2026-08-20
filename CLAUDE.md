@@ -1206,6 +1206,15 @@ ffmpeg -i in.png -vf "scale=1600:-2:flags=lanczos" -c:v libwebp -quality 85 out.
 written out of a text in `.claude/skills/illustration-prompt/`. The pictures
 being generated elsewhere is why it is a prompt to print and not a build step.
 
+**The PNG a generator hands back is kept**, in
+`content/illustration-prompts/generated-images/`, beside the prompt it was made
+from; the WebP under `content/images/` is converted out of it with the line
+above. That directory is gitignored — 2.5 MB per picture is not what the site
+serves and not what the repository carries — but it is the only copy that can be
+re-encoded from without generating the picture again, which is why it is kept at
+all. The same file turning up in a downloads folder or on a desktop is a
+duplicate of it: convert from the one that sits beside its prompt.
+
 **The sidebar reads as a course, and `order:` is what writes it.** Texts sort
 by level first — easiest to hardest, by position in `LEVELS` and not by how the
 labels happen to spell — and within a level by `order:`, lowest first. The
