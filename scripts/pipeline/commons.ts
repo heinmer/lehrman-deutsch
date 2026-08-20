@@ -69,7 +69,10 @@ function creditFrom(file: string, page: ApiPage): ClipCredit {
 
   return {
     file,
-    author: field("Artist"),
+    // "Artist" is where a page normally names its author, but one carrying a
+    // licence template of its own can leave it empty and put the name in
+    // "Attribution" — which is the field that licence asks to see printed.
+    author: field("Artist") ?? field("Attribution"),
     license: field("LicenseShortName"),
     licenseUrl: field("LicenseUrl"),
     page: filePageUrl(file),
