@@ -3,7 +3,6 @@ import { log, sleep } from "./util.ts";
 
 /** Starting gap between requests to the same host, in milliseconds. */
 const BASE_THROTTLE_MS = 350;
-const MAX_THROTTLE_MS = 4000;
 
 const lastRequestAt = new Map<string, number>();
 const hostDelay = new Map<string, number>();
@@ -17,14 +16,12 @@ async function throttle(host: string): Promise<void> {
 }
 
 /**
- * Back off for the rest of the run once a host rate-limits us. Retrying at the
- * same pace just collects more 429s: Wikimedia answers those with a ten-second
- * Retry-After, so pausing briefly between requests is far cheaper than being
- * turned away.
+ * A rate limit applies to the host, not only to the request that happened to
+ * receive it. Keep the server's requested delay as the new host-wide floor;
+ * otherwise one successful retry immediately sends the next file too soon.
  */
-function slowDown(host: string): void {
-  const next = Math.min((hostDelay.get(host) ?? BASE_THROTTLE_MS) * 1.8, MAX_THROTTLE_MS);
-  hostDelay.set(host, next);
+function slowDown(host: string, retryDelay: number): void {
+  hostDelay.set(host, rateLimitedHostDelay(hostDelay.get(host) ?? BASE_THROTTLE_MS, retryDelay));
 }
 
 /** Ease back towards the base pace while a host keeps saying yes. */
@@ -36,6 +33,24 @@ function speedUp(host: string): void {
 }
 
 export class NotFoundError extends Error {}
+
+/** Parses both forms allowed by HTTP: delay-seconds and an absolute date. */
+export function retryDelayMs(value: string | null, attempt: number, now = Date.now()): number {
+  if (value !== null) {
+    const seconds = Number(value);
+    if (Number.isFinite(seconds) && seconds >= 0) return seconds * 1000;
+
+    const date = Date.parse(value);
+    if (Number.isFinite(date)) return Math.max(date - now, 0);
+  }
+
+  return 1000 * 2 ** (attempt - 1);
+}
+
+/** A server-provided cooldown may raise a host's pace, never lower it. */
+export function rateLimitedHostDelay(current: number, retryDelay: number): number {
+  return Math.max(current, retryDelay);
+}
 
 /**
  * Fetches a URL, backing off on rate limits and transient failures.
@@ -65,12 +80,8 @@ export async function fetchWithRetry(
       }
       if (response.status === 404) throw new NotFoundError(url);
 
-      if (response.status === 429) slowDown(host);
-
-      const retryAfter = Number(response.headers.get("retry-after"));
-      const backoff = Number.isFinite(retryAfter) && retryAfter > 0
-        ? retryAfter * 1000
-        : 1000 * 2 ** (attempt - 1);
+      const backoff = retryDelayMs(response.headers.get("retry-after"), attempt);
+      if (response.status === 429) slowDown(host, backoff);
 
       lastError = `HTTP ${response.status}`;
       if (attempt < attempts) {

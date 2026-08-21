@@ -62,9 +62,13 @@ state is the thing to notice; it also costs a frame of the old text.
 
 `npm run content` is slow the first time a text is built — minutes per text,
 not seconds. Wikimedia rate-limits hard, so `scripts/pipeline/http.ts` starts at
-one request per host per 350ms and **backs off further for the rest of the run**
-once a host answers 429, easing back only while it keeps saying yes. Run it in
-the background and keep working; watch the log rather than waiting on it.
+one request per host per 350ms. Once a host answers 429, its `Retry-After`
+(delay-seconds or an HTTP date) becomes the **minimum gap for every later
+request to that host**, easing back only while it keeps saying yes. Applying it
+only to the rejected request was tried: the retry succeeded, the next recording
+arrived four seconds later, and `upload.wikimedia.org` answered 429 again for
+twenty minutes. Run the build in the background and keep working; watch the log
+rather than waiting on it.
 Reruns are cheap because dictionary responses and word recordings land in
 `.cache/` — narration does not, so anything that invalidates the source hash
 pays for `VOICES.length` fresh syntheses per text.
