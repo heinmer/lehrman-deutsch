@@ -70,9 +70,20 @@ arrived four seconds later, and `upload.wikimedia.org` answered 429 again for
 twenty minutes. Another 429 stretches that host-wide gap by half again, up to a
 measured twenty seconds (or a longer `Retry-After` when the server asks for
 one), rather than spending half the requests confirming that ten seconds was
-still too soon. A minute was tried and cost throughput without preventing a 429,
-so the cap is based on the run rather than on extra caution. Run the build in
-the background and keep working; watch the log rather than waiting on it.
+still too soon. Each successful response eases the current gap by only ten per
+cent; it never snaps back to 350ms after one yes. A minute was tried and cost
+throughput without preventing a 429, so the cap is based on the run rather than
+on extra caution.
+
+**Keep Wikimedia work sequential.** The vocabulary loop awaits each recording,
+and the Commons-credit loop awaits each batch of fifty; neither is a candidate
+for `Promise.all`. The host limiter schedules request starts, so concurrent
+callers would turn a polite gap back into a burst. A run printing intermittent
+429 lines has not necessarily stopped: successful recording downloads are
+quiet, while rejected attempts are the ones logged. Check the timestamps under
+`public/media/words/` or wait for the stage summary before killing it. Run the
+build in the background and keep working; watch the log rather than waiting on
+it.
 Reruns are cheap because dictionary responses and word recordings land in
 `.cache/` — narration does not, so anything that invalidates the source hash
 pays for `VOICES.length` fresh syntheses per text.
