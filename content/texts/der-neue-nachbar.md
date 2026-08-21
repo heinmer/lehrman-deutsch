@@ -1,7 +1,7 @@
 ---
 title: Der neue Nachbar
 level: A2
-order: 2
+order: 3
 topic: Getting to know a new neighbour in the building
 image: der-neue-nachbar.webp
 ---

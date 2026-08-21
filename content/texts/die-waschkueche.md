@@ -1,7 +1,7 @@
 ---
 title: Die Waschküche im Keller
 level: A2
-order: 6
+order: 8
 topic: A disputed washing day in a shared laundry room in the cellar
 image: die-waschkueche.webp
 ---

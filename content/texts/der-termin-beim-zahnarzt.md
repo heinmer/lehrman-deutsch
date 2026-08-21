@@ -1,7 +1,7 @@
 ---
 title: Der Termin beim Zahnarzt
 level: A2
-order: 4
+order: 5
 topic: A dental appointment for a painful tooth on a Friday morning
 image: der-termin-beim-zahnarzt.webp
 ---

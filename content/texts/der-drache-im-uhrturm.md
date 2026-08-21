@@ -1,7 +1,7 @@
 ---
 title: Der Drache im Uhrturm
 level: A2
-order: 5
+order: 7
 topic: A clockmaker's daughter helps a young dragon leave the village clock tower before the spring festival
 image: der-drache-im-uhrturm.webp
 ---

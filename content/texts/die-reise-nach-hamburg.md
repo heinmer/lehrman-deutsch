@@ -1,7 +1,7 @@
 ---
 title: Die Reise nach Hamburg
 level: A2
-order: 3
+order: 4
 topic: A train journey from a Bavarian village to Hamburg
 image: die-reise-nach-hamburg.webp
 ---

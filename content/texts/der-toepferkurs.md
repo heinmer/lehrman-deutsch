@@ -1,7 +1,7 @@
 ---
 title: Der Töpferkurs
 level: A2
-order: 8
+order: 11
 topic: A beginner makes her first bowl in an evening pottery class
 image: der-toepferkurs.webp
 ---
