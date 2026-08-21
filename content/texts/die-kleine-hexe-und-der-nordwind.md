@@ -1,7 +1,7 @@
 ---
 title: Die kleine Hexe und der Nordwind
 level: A1
-order: 9
+order: 8
 topic: A young witch makes peace with a forest troll and frees the north wind from a blue bottle
 image: die-kleine-hexe-und-der-nordwind.webp
 ---
