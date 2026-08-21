@@ -3,6 +3,7 @@ title: Der Umzug am Samstag
 level: A2
 order: 10
 topic: A student and her neighbours solve a series of practical problems during a rainy moving day
+image: der-umzug-am-samstag.webp
 ---
 
 Nach zwei Jahren in einem kleinen Studentenwohnheim zieht Marie in ihre erste eigene Wohnung. Sie liegt im vierten Stock eines alten Hauses. Für den Umzug hat Marie einen Lieferwagen gemietet und viele Kisten mit bunten Zetteln markiert. Ihr Bruder Tim kommt schon um sieben Uhr morgens. Zwei Freunde wollen später beim Tragen der Möbel helfen.

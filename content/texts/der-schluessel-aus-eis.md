@@ -3,6 +3,7 @@ title: Der Schlüssel aus Eis
 level: A2
 order: 2
 topic: A girl follows a snow fox through a winter park to return a magical ice key before midnight
+image: der-schluessel-aus-eis.webp
 ---
 
 In den Winterferien besucht Lea ihre Tante in einer kleinen Stadt am Fuß der Berge. Hinter dem Haus beginnt ein alter Park mit einem großen Teich. Seit einer Woche ist der Teich fest gefroren. Lea darf dort Schlittschuh laufen, aber sie soll immer in der Nähe des Ufers bleiben. Jeden Nachmittag dreht sie allein ihre Runden auf dem Eis.

@@ -3,6 +3,7 @@ title: Der Laden der verlorenen Schatten
 level: A2
 order: 6
 topic: A music student helps a mysterious shopkeeper return shadows that a storm separated from their owners
+image: der-laden-der-verlorenen-schatten.webp
 ---
 
 Emir kommt jeden Dienstagabend spät von seinem Gitarrenkurs nach Hause. Sein Weg führt durch eine Straße mit einer Bäckerei, einer Apotheke und vielen alten Laternen. Nach einem Herbststurm sind fast keine Menschen unterwegs. Emir geht schnell, weil kalter Regen auf seine Jacke fällt. Unter der letzten Laterne merkt er plötzlich, dass sein Schatten nicht mehr bei ihm ist.
