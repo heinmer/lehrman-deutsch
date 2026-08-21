@@ -1,7 +1,7 @@
 ---
 title: Der erste Schnee
 level: A1
-order: 4
+order: 5
 topic: Waking to the first snow and walking to work
 image: der-erste-schnee.webp
 ---
