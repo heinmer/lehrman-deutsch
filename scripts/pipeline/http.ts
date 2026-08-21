@@ -3,6 +3,7 @@ import { log, sleep } from "./util.ts";
 
 /** Starting gap between requests to the same host, in milliseconds. */
 const BASE_THROTTLE_MS = 350;
+const MAX_ADAPTIVE_THROTTLE_MS = 20_000;
 
 const lastRequestAt = new Map<string, number>();
 const hostDelay = new Map<string, number>();
@@ -49,7 +50,7 @@ export function retryDelayMs(value: string | null, attempt: number, now = Date.n
 
 /** A server-provided cooldown may raise a host's pace, never lower it. */
 export function rateLimitedHostDelay(current: number, retryDelay: number): number {
-  return Math.max(current, retryDelay);
+  return Math.max(Math.min(current * 1.5, MAX_ADAPTIVE_THROTTLE_MS), retryDelay);
 }
 
 /**

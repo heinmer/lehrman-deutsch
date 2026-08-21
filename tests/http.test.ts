@@ -18,5 +18,7 @@ test("an absent or invalid Retry-After uses exponential backoff", () => {
 
 test("a rate limit raises the whole host to the server's requested pace", () => {
   assert.equal(rateLimitedHostDelay(350, 10_000), 10_000);
+  assert.equal(rateLimitedHostDelay(10_000, 10_000), 15_000);
   assert.equal(rateLimitedHostDelay(20_000, 10_000), 20_000);
+  assert.equal(rateLimitedHostDelay(20_000, 600_000), 600_000);
 });

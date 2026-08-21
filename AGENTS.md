@@ -67,8 +67,12 @@ one request per host per 350ms. Once a host answers 429, its `Retry-After`
 request to that host**, easing back only while it keeps saying yes. Applying it
 only to the rejected request was tried: the retry succeeded, the next recording
 arrived four seconds later, and `upload.wikimedia.org` answered 429 again for
-twenty minutes. Run the build in the background and keep working; watch the log
-rather than waiting on it.
+twenty minutes. Another 429 stretches that host-wide gap by half again, up to a
+measured twenty seconds (or a longer `Retry-After` when the server asks for
+one), rather than spending half the requests confirming that ten seconds was
+still too soon. A minute was tried and cost throughput without preventing a 429,
+so the cap is based on the run rather than on extra caution. Run the build in
+the background and keep working; watch the log rather than waiting on it.
 Reruns are cheap because dictionary responses and word recordings land in
 `.cache/` — narration does not, so anything that invalidates the source hash
 pays for `VOICES.length` fresh syntheses per text.
