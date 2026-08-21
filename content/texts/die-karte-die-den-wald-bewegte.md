@@ -1,7 +1,7 @@
 ---
 title: Die Karte, die den Wald bewegte
 level: B1
-order: 9
+order: 4
 topic: An apprentice cartographer follows a living map to rescue a caravan from a wandering forest
 image: die-karte-die-den-wald-bewegte.webp
 ---

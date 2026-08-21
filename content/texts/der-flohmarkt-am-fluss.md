@@ -1,7 +1,7 @@
 ---
 title: Der Flohmarkt am Fluss
 level: B1
-order: 6
+order: 7
 topic: A first attempt at selling old things at a riverside flea market
 image: der-flohmarkt-am-fluss.webp
 ---

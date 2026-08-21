@@ -1,7 +1,7 @@
 ---
 title: Der Schlüsseldienst
 level: B1
-order: 5
+order: 6
 topic: A locked-out tenant overcharged by an emergency locksmith
 image: der-schluesseldienst.webp
 ---

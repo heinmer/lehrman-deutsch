@@ -1,7 +1,7 @@
 ---
 title: Der Vertrag mit dem Berggeist
 level: B2
-order: 8
+order: 6
 topic: A mountain city renegotiates the magical pact that warms its glasshouses while exhausting a sleeping spirit
 image: der-vertrag-mit-dem-berggeist.webp
 ---

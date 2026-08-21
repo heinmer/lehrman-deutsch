@@ -1,7 +1,7 @@
 ---
 title: Der Bach kehrt zurück
 level: C1
-order: 4
+order: 5
 topic: A city uncovers a buried stream to reduce flooding and create public space
 image: der-bach-kehrt-zurueck.webp
 ---

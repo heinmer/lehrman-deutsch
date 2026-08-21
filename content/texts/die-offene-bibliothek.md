@@ -1,7 +1,7 @@
 ---
 title: Die offene Bibliothek
 level: B2
-order: 6
+order: 7
 topic: A town library that stays open unstaffed in the evenings
 image: die-offene-bibliothek.webp
 ---

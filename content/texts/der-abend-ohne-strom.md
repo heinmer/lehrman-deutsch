@@ -1,7 +1,7 @@
 ---
 title: Der Abend ohne Strom
 level: B1
-order: 8
+order: 9
 topic: Neighbours in an apartment building spend an unexpected blackout together
 image: der-abend-ohne-strom.webp
 ---

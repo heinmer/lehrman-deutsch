@@ -1,7 +1,7 @@
 ---
 title: Ein Morgen im Zoo
 level: A1
-order: 7
+order: 1
 topic: A family arrives early at the zoo and follows the keepers through the morning
 image: ein-morgen-im-zoo.webp
 ---

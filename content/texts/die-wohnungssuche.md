@@ -1,7 +1,7 @@
 ---
 title: Die Wohnungssuche
 level: B1
-order: 7
+order: 8
 topic: Hunting for a flat in a crowded city, from viewings to the handover
 image: die-wohnungssuche.webp
 ---

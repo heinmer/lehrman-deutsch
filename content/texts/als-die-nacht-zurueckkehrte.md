@@ -1,7 +1,7 @@
 ---
 title: Als die Nacht zurückkehrte
 level: C1
-order: 5
+order: 4
 topic: A small town tests adaptive street lighting to protect darkness without sacrificing safety
 image: als-die-nacht-zurueckkehrte.webp
 ---

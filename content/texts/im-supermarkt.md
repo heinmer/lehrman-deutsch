@@ -1,7 +1,7 @@
 ---
 title: Im Supermarkt
 level: A1
-order: 5
+order: 6
 topic: A short morning shop in a supermarket
 image: im-supermarkt.webp
 ---
